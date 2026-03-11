@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { ExpenseWithPayer, GalaMember, User } from "@/types/database";
+import type { ExpenseWithDetails, GalaMember, User } from "@/types/database";
 
 interface Props {
   galaId: string;
   userId: string;
-  expenses: ExpenseWithPayer[];
+  expenses: ExpenseWithDetails[];
   members: (GalaMember & { user: User })[];
   onRefresh: () => void;
 }
@@ -15,38 +15,114 @@ interface Props {
 export default function BudgetTab({ galaId, userId, expenses, members, onRefresh }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ description: "", amount: "" });
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const totalSpent = expenses.reduce((s, e) => s + Number(e.amount), 0);
-  const memberCount = members.length || 1;
-  const perPerson = totalSpent / memberCount;
+  
+  // Calculate per-user totals
+  const userTotals = members.map(member => {
+    const userExpenses = expenses.flatMap(e => 
+      e.assignments
+        .filter(a => a.user_id === member.user_id)
+        .map(a => ({ amount: Number(a.amount), status: a.status }))
+    );
+    const total = userExpenses.reduce((sum, e) => sum + e.amount, 0);
+    const paid = userExpenses.filter(e => e.status === 'paid').reduce((sum, e) => sum + e.amount, 0);
+    const pending = userExpenses.filter(e => e.status === 'pending').reduce((sum, e) => sum + e.amount, 0);
+    return {
+      user: member.user,
+      total,
+      paid,
+      pending,
+    };
+  }).filter(u => u.total > 0); // Only show users with expenses
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   };
 
+  const toggleUser = (memberId: string) => {
+    setSelectedUsers(prev => 
+      prev.includes(memberId) 
+        ? prev.filter(id => id !== memberId)
+        : [...prev, memberId]
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.description || !form.amount) return;
+    if (!form.description || !form.amount || selectedUsers.length === 0) {
+      alert("Please fill all fields and select at least one person to assign the expense.");
+      return;
+    }
+    
     setSubmitting(true);
     const supabase = createClient();
-    const { error } = await supabase.from("expenses").insert({
-      gala_id: galaId,
-      paid_by: userId,
-      amount: parseFloat(form.amount),
-      description: form.description,
-    });
     
-    if (error) {
-      console.error("Failed to create expense:", error);
+    // Create the expense
+    const { data: newExpense, error: expenseError } = await supabase
+      .from("expenses")
+      .insert({
+        gala_id: galaId,
+        paid_by: userId, // Legacy field, keeping for compatibility
+        amount: parseFloat(form.amount),
+        description: form.description,
+        created_by: userId,
+      })
+      .select()
+      .single();
+    
+    if (expenseError || !newExpense) {
+      console.error("Failed to create expense:", expenseError);
       alert("Failed to create expense. Please try again.");
       setSubmitting(false);
       return;
     }
     
+    // Create expense assignments (split evenly among selected users)
+    const amountPerUser = parseFloat(form.amount) / selectedUsers.length;
+    const assignments = selectedUsers.map(uid => ({
+      expense_id: newExpense.id,
+      user_id: uid,
+      amount: amountPerUser,
+      status: 'pending' as const,
+    }));
+    
+    const { error: assignmentError } = await supabase
+      .from("expense_assignments")
+      .insert(assignments);
+    
+    if (assignmentError) {
+      console.error("Failed to create expense assignments:", assignmentError);
+      alert("Failed to assign expense. Please try again.");
+      setSubmitting(false);
+      return;
+    }
+    
     setForm({ description: "", amount: "" });
+    setSelectedUsers([]);
     setShowForm(false);
     setSubmitting(false);
+    onRefresh();
+  };
+
+  const markAsPaid = async (assignmentId: string) => {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("expense_assignments")
+      .update({ 
+        status: 'paid' as const,
+        paid_at: new Date().toISOString(),
+      })
+      .eq("id", assignmentId);
+    
+    if (error) {
+      console.error("Failed to mark as paid:", error);
+      alert("Failed to update payment status. Please try again.");
+      return;
+    }
+    
     onRefresh();
   };
 
@@ -70,7 +146,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
       {/* Add expense modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-xl bold-border shadow-playful w-full max-w-md p-6">
+          <div className="bg-white rounded-xl bold-border shadow-playful w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
             <h3 className="text-2xl font-black mb-4">Add Expense</h3>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
@@ -88,7 +164,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="font-black text-xs uppercase tracking-wider text-slate-500">
-                  Amount (USD) *
+                  Total Amount (USD) *
                 </label>
                 <input
                   name="amount"
@@ -102,6 +178,34 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
                   className="w-full h-12 px-4 border-3 border-slate-900 rounded-lg font-semibold focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
                 />
               </div>
+              <div className="flex flex-col gap-2">
+                <label className="font-black text-xs uppercase tracking-wider text-slate-500">
+                  Assign To * (Select who will pay)
+                </label>
+                <div className="flex flex-col gap-2 max-h-48 overflow-y-auto border-2 border-slate-200 rounded-lg p-3 bg-[#f8f6f5]">
+                  {members.map(({ user }) => (
+                    <label key={user.id} className="flex items-center gap-3 cursor-pointer hover:bg-white p-2 rounded-lg transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.includes(user.id)}
+                        onChange={() => toggleUser(user.id)}
+                        className="size-5 rounded border-2 border-slate-900 text-[#ff5833] focus:ring-[#ff5833]"
+                      />
+                      <div className="flex items-center gap-2">
+                        <div className="size-8 rounded-full bg-[#ff5833] border-2 border-slate-900 flex items-center justify-center">
+                          <span className="text-white text-xs font-black">{user.name.charAt(0)}</span>
+                        </div>
+                        <span className="font-bold text-sm">{user.name}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+                {selectedUsers.length > 0 && form.amount && (
+                  <p className="text-xs text-slate-500 font-medium">
+                    Split: ${(parseFloat(form.amount) / selectedUsers.length).toFixed(2)} per person
+                  </p>
+                )}
+              </div>
               <div className="flex gap-3">
                 <button
                   type="submit"
@@ -112,7 +216,10 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => {
+                    setShowForm(false);
+                    setSelectedUsers([]);
+                  }}
                   className="h-12 px-6 bg-white font-black rounded-lg border-2 border-slate-900 btn-push"
                 >
                   Cancel
@@ -134,11 +241,11 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
         </div>
         <div className="bg-white rounded-xl bold-border p-6 shadow-playful-sm">
           <div className="size-10 rounded-full bg-blue-100 flex items-center justify-center mb-3">
-            <span className="material-symbols-outlined text-blue-600">person</span>
+            <span className="material-symbols-outlined text-blue-600">people</span>
           </div>
-          <p className="text-sm font-black uppercase tracking-widest text-slate-400 mb-1">Cost Per Person</p>
-          <p className="text-4xl font-black">${perPerson.toFixed(2)}</p>
-          <p className="text-xs text-slate-400 font-medium mt-1">{memberCount} members</p>
+          <p className="text-sm font-black uppercase tracking-widest text-slate-400 mb-1">People with Expenses</p>
+          <p className="text-4xl font-black">{userTotals.length}</p>
+          <p className="text-xs text-slate-400 font-medium mt-1">of {members.length} members</p>
         </div>
         <div className="bg-[#ff5833] rounded-xl bold-border p-6 shadow-playful-sm text-white">
           <p className="text-sm font-black uppercase tracking-widest mb-3">Total Expenses</p>
@@ -147,7 +254,41 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
         </div>
       </div>
 
-      {/* Expense table */}
+      {/* Per-User Budget Summary */}
+      {userTotals.length > 0 && (
+        <div className="bg-white rounded-xl bold-border shadow-playful overflow-hidden">
+          <div className="p-5 border-b-3 border-slate-900 flex justify-between items-center bg-slate-50">
+            <h3 className="text-lg font-black uppercase">Budget by Person</h3>
+          </div>
+          <div className="p-6 space-y-4">
+            {userTotals.map(({ user, total, paid, pending }) => (
+              <div key={user.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border-2 border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-[#ff5833] border-2 border-slate-900 flex items-center justify-center">
+                    <span className="text-white text-sm font-black">{user.name.charAt(0)}</span>
+                  </div>
+                  <div>
+                    <p className="font-black text-slate-900">{user.name}</p>
+                    <p className="text-xs text-slate-500 font-medium">
+                      {paid > 0 && `Paid: $${paid.toFixed(2)}`}
+                      {paid > 0 && pending > 0 && " • "}
+                      {pending > 0 && `Pending: $${pending.toFixed(2)}`}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-black text-[#ff5833]">${total.toFixed(2)}</p>
+                  <p className="text-xs text-slate-500 font-bold">
+                    {pending === 0 ? "✓ All paid" : `${((paid / total) * 100).toFixed(0)}% paid`}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Expense Details */}
       <div className="bg-white rounded-xl bold-border shadow-playful overflow-hidden">
         <div className="p-5 border-b-3 border-slate-900 flex justify-between items-center bg-slate-50">
           <h3 className="text-lg font-black uppercase">All Expenses</h3>
@@ -159,52 +300,75 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
             <p className="font-medium mt-1">Add the first expense to get started.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b-2 border-slate-200 bg-slate-50">
-                  <th className="px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-400">Description</th>
-                  <th className="px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-400">Paid By</th>
-                  <th className="px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-400">Amount</th>
-                  <th className="px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-400">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {expenses.map((expense, i) => (
-                  <tr key={expense.id} className={`border-b border-slate-100 ${i % 2 === 0 ? "" : "bg-slate-50"}`}>
-                    <td className="px-6 py-4 font-bold">{expense.description}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="size-7 rounded-full bg-[#ff5833] flex items-center justify-center">
+          <div className="divide-y divide-slate-200">
+            {expenses.map((expense) => (
+              <div key={expense.id} className="p-6 hover:bg-slate-50 transition-colors">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                  <div className="flex-1">
+                    <h4 className="font-black text-lg text-slate-900">{expense.description}</h4>
+                    <div className="flex items-center gap-2 mt-1 text-sm">
+                      <span className="font-medium text-slate-500">Added by:</span>
+                      <span className="font-bold text-slate-700">{expense.creator_name || "Unknown"}</span>
+                      <span className="text-slate-300">•</span>
+                      <span className="text-slate-500 font-medium">
+                        {new Date(expense.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-3xl font-black text-[#ff5833]">${Number(expense.amount).toFixed(2)}</p>
+                    <p className="text-xs text-slate-500 font-bold mt-1">Total Expense</p>
+                  </div>
+                </div>
+                
+                {/* Assignments */}
+                <div className="mt-4 space-y-2">
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">
+                    Assigned To ({expense.assignments.length})
+                  </p>
+                  {expense.assignments.map((assignment) => (
+                    <div key={assignment.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border-2 border-slate-200">
+                      <div className="flex items-center gap-3">
+                        <div className="size-9 rounded-full bg-[#ff5833] border-2 border-slate-900 flex items-center justify-center shrink-0">
                           <span className="text-white text-xs font-black">
-                            {(expense.payer_name || "?").charAt(0)}
+                            {(assignment.user_name || "?").charAt(0)}
                           </span>
                         </div>
-                        <span className="font-bold text-sm">{expense.payer_name || "Unknown"}</span>
+                        <div>
+                          <p className="font-bold text-sm">{assignment.user_name || "Unknown"}</p>
+                          <p className="text-xs text-slate-500 font-medium">
+                            ${Number(assignment.amount).toFixed(2)}
+                          </p>
+                        </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="font-black text-[#ff5833]">
-                        ${Number(expense.amount).toFixed(2)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-slate-400 text-sm font-medium">
-                      {new Date(expense.created_at).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr className="border-t-3 border-slate-900 bg-[#ff5833]/5">
-                  <td className="px-6 py-4 font-black uppercase text-sm" colSpan={2}>
-                    Total
-                  </td>
-                  <td className="px-6 py-4 font-black text-[#ff5833] text-xl" colSpan={2}>
-                    ${totalSpent.toFixed(2)}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                      <div className="flex items-center gap-3">
+                        {assignment.status === 'paid' ? (
+                          <div className="flex items-center gap-2 bg-green-100 px-3 py-1.5 rounded-full border-2 border-green-500">
+                            <span className="material-symbols-outlined text-green-600 text-sm">check_circle</span>
+                            <span className="text-xs font-black text-green-700">PAID</span>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2 bg-yellow-100 px-3 py-1.5 rounded-full border-2 border-yellow-500">
+                              <span className="material-symbols-outlined text-yellow-600 text-sm">schedule</span>
+                              <span className="text-xs font-black text-yellow-700">PENDING</span>
+                            </div>
+                            {assignment.user_id === userId && (
+                              <button
+                                onClick={() => markAsPaid(assignment.id)}
+                                className="bg-green-500 hover:bg-green-600 text-white font-black text-xs px-3 py-1.5 rounded-lg border-2 border-slate-900 btn-push transition-colors"
+                              >
+                                Mark Paid
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

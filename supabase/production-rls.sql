@@ -30,6 +30,10 @@ drop policy if exists "Anyone can delete expenses" on public.expenses;
 drop policy if exists "Anyone can read memories" on public.memories;
 drop policy if exists "Anyone can create memories" on public.memories;
 drop policy if exists "Anyone can delete memories" on public.memories;
+drop policy if exists "Anyone can read expense assignments" on public.expense_assignments;
+drop policy if exists "Anyone can create expense assignments" on public.expense_assignments;
+drop policy if exists "Anyone can update expense assignments" on public.expense_assignments;
+drop policy if exists "Anyone can delete expense assignments" on public.expense_assignments;
 
 -- Note: Helper function not needed for simplified MVP policies
 -- Uncomment if you need stricter member-only access:
@@ -130,4 +134,17 @@ create policy "Anyone can create memories" on public.memories
   for insert with check (true);
 
 create policy "Anyone can delete memories" on public.memories
+  for delete using (true);
+
+-- EXPENSE_ASSIGNMENTS: Anyone can access (simplified for MVP)
+create policy "Anyone can read expense assignments" on public.expense_assignments
+  for select using (true);
+
+create policy "Anyone can create expense assignments" on public.expense_assignments
+  for insert with check (true);
+
+create policy "Anyone can update expense assignments" on public.expense_assignments
+  for update using (true);
+
+create policy "Anyone can delete expense assignments" on public.expense_assignments
   for delete using (true);

@@ -169,6 +169,7 @@ export type Database = {
           paid_by: string;
           amount: number;
           description: string;
+          created_by: string | null;
           created_at: string;
         };
         Insert: {
@@ -177,6 +178,7 @@ export type Database = {
           paid_by: string;
           amount: number;
           description: string;
+          created_by?: string | null;
           created_at?: string;
         };
         Update: {
@@ -185,6 +187,37 @@ export type Database = {
           paid_by?: string;
           amount?: number;
           description?: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      expense_assignments: {
+        Row: {
+          id: string;
+          expense_id: string;
+          user_id: string;
+          amount: number;
+          status: "pending" | "paid";
+          paid_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          expense_id: string;
+          user_id: string;
+          amount: number;
+          status?: "pending" | "paid";
+          paid_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          expense_id?: string;
+          user_id?: string;
+          amount?: number;
+          status?: "pending" | "paid";
+          paid_at?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -231,6 +264,7 @@ export type Suggestion = Database["public"]["Tables"]["suggestions"]["Row"];
 export type Vote = Database["public"]["Tables"]["votes"]["Row"];
 export type Task = Database["public"]["Tables"]["tasks"]["Row"];
 export type Expense = Database["public"]["Tables"]["expenses"]["Row"];
+export type ExpenseAssignment = Database["public"]["Tables"]["expense_assignments"]["Row"];
 export type Memory = Database["public"]["Tables"]["memories"]["Row"];
 
 export type SuggestionWithVotes = Suggestion & {
@@ -244,6 +278,17 @@ export type TaskWithAssignee = Task & {
   assignee_avatar?: string | null;
 };
 
+export type ExpenseAssignmentWithUser = ExpenseAssignment & {
+  user_name?: string;
+  user_avatar?: string | null;
+};
+
+export type ExpenseWithDetails = Expense & {
+  creator_name?: string;
+  assignments: ExpenseAssignmentWithUser[];
+};
+
+// Legacy type for backward compatibility
 export type ExpenseWithPayer = Expense & {
   payer_name?: string;
 };

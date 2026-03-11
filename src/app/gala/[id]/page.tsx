@@ -17,7 +17,7 @@ import type {
   GalaWithMembers,
   SuggestionWithVotes,
   TaskWithAssignee,
-  ExpenseWithPayer,
+  ExpenseWithDetails,
   User,
   Gala,
   GalaMember,
@@ -25,6 +25,7 @@ import type {
   Vote,
   Task,
   Expense,
+  ExpenseAssignment,
   Memory,
 } from "@/types/database";
 
@@ -45,7 +46,7 @@ export default function GalaDashboard() {
   const [gala, setGala] = useState<GalaWithMembers | null>(null);
   const [suggestions, setSuggestions] = useState<SuggestionWithVotes[]>([]);
   const [tasks, setTasks] = useState<TaskWithAssignee[]>([]);
-  const [expenses, setExpenses] = useState<ExpenseWithPayer[]>([]);
+  const [expenses, setExpenses] = useState<ExpenseWithDetails[]>([]);
   const [memories, setMemories] = useState<(Memory & { user?: User })[]>([]);
   const { user: currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -194,7 +195,7 @@ export default function GalaDashboard() {
     }));
     setTasks(tasksWithAssignees);
 
-    // Fetch expenses
+    // Fetch expenses with assignments
     const { data: rawExpenses } = await supabase
       .from("expenses")
       .select("*")
@@ -202,11 +203,25 @@ export default function GalaDashboard() {
       .order("created_at", { ascending: false });
     const expensesData = (rawExpenses || []) as Expense[];
 
-    const expensesWithPayers: ExpenseWithPayer[] = expensesData.map((e) => ({
+    // Fetch all expense assignments
+    const { data: rawAssignments } = await supabase
+      .from("expense_assignments")
+      .select("*")
+      .in("expense_id", expensesData.map(e => e.id));
+    const assignmentsData = (rawAssignments || []) as ExpenseAssignment[];
+
+    const expensesWithDetails: ExpenseWithDetails[] = expensesData.map((e) => ({
       ...e,
-      payer_name: usersData.find((u) => u.id === e.paid_by)?.name,
+      creator_name: usersData.find((u) => u.id === e.created_by)?.name,
+      assignments: assignmentsData
+        .filter(a => a.expense_id === e.id)
+        .map(a => ({
+          ...a,
+          user_name: usersData.find((u) => u.id === a.user_id)?.name,
+          user_avatar: usersData.find((u) => u.id === a.user_id)?.avatar,
+        })),
     }));
-    setExpenses(expensesWithPayers);
+    setExpenses(expensesWithDetails);
 
     // Fetch memories
     const { data: rawMemories } = await supabase
@@ -224,6 +239,113 @@ export default function GalaDashboard() {
 
     setLoading(false);
   }, [id, currentUser]);
+
+  // Optimized refresh functions for specific data
+  const refreshTasks = useCallback(async () => {
+    if (!gala) return;
+    const supabase = createClient();
+    
+    const { data: rawTasks } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("gala_id", id)
+      .order("created_at", { ascending: false });
+    const tasksData = (rawTasks || []) as Task[];
+
+    const usersData = gala.members.map(m => m.user);
+    const tasksWithAssignees: TaskWithAssignee[] = tasksData.map((t) => ({
+      ...t,
+      assignee_name: usersData.find((u) => u.id === t.assigned_to)?.name,
+      assignee_avatar: usersData.find((u) => u.id === t.assigned_to)?.avatar,
+    }));
+    setTasks(tasksWithAssignees);
+  }, [id, gala]);
+
+  const refreshExpenses = useCallback(async () => {
+    if (!gala) return;
+    const supabase = createClient();
+    
+    const { data: rawExpenses } = await supabase
+      .from("expenses")
+      .select("*")
+      .eq("gala_id", id)
+      .order("created_at", { ascending: false });
+    const expensesData = (rawExpenses || []) as Expense[];
+
+    // Fetch all expense assignments
+    const { data: rawAssignments } = await supabase
+      .from("expense_assignments")
+      .select("*")
+      .in("expense_id", expensesData.map(e => e.id));
+    const assignmentsData = (rawAssignments || []) as ExpenseAssignment[];
+
+    const usersData = gala.members.map(m => m.user);
+    const expensesWithDetails: ExpenseWithDetails[] = expensesData.map((e) => ({
+      ...e,
+      creator_name: usersData.find((u) => u.id === e.created_by)?.name,
+      assignments: assignmentsData
+        .filter(a => a.expense_id === e.id)
+        .map(a => ({
+          ...a,
+          user_name: usersData.find((u) => u.id === a.user_id)?.name,
+          user_avatar: usersData.find((u) => u.id === a.user_id)?.avatar,
+        })),
+    }));
+    setExpenses(expensesWithDetails);
+  }, [id, gala]);
+
+  const refreshSuggestions = useCallback(async () => {
+    if (!gala) return;
+    const supabase = createClient();
+    
+    const { data: rawSuggestions } = await supabase
+      .from("suggestions")
+      .select("*")
+      .eq("gala_id", id)
+      .order("created_at", { ascending: false });
+    const suggestionsData = (rawSuggestions || []) as Suggestion[];
+
+    const { data: rawVotes } = await supabase
+      .from("votes")
+      .select("*")
+      .in(
+        "suggestion_id",
+        suggestionsData.map((s) => s.id)
+      );
+    const votesData = (rawVotes || []) as Vote[];
+
+    const userId = currentUser?.id;
+    const usersData = gala.members.map(m => m.user);
+    const suggestionsWithVotes: SuggestionWithVotes[] = suggestionsData.map((s) => {
+      const suggVotes = votesData.filter((v) => v.suggestion_id === s.id);
+      return {
+        ...s,
+        vote_count: suggVotes.length,
+        user_has_voted: userId ? suggVotes.some((v) => v.user_id === userId) : false,
+        author_name: usersData.find((u) => u.id === s.user_id)?.name,
+      };
+    });
+    setSuggestions(suggestionsWithVotes);
+  }, [id, gala, currentUser]);
+
+  const refreshMemories = useCallback(async () => {
+    if (!gala) return;
+    const supabase = createClient();
+    
+    const { data: rawMemories } = await supabase
+      .from("memories")
+      .select("*")
+      .eq("gala_id", id)
+      .order("created_at", { ascending: false });
+    const memoriesData = (rawMemories || []) as Memory[];
+
+    const usersData = gala.members.map(m => m.user);
+    const memoriesWithUsers = memoriesData.map((m) => ({
+      ...m,
+      user: usersData.find((u) => u.id === m.user_id),
+    }));
+    setMemories(memoriesWithUsers);
+  }, [id, gala]);
 
   useEffect(() => {
     fetchData();
@@ -411,7 +533,7 @@ export default function GalaDashboard() {
             galaId={id}
             userId={currentUser?.id || ""}
             suggestions={suggestions}
-            onRefresh={fetchData}
+            onRefresh={refreshSuggestions}
           />
         )}
         {tab === "tasks" && (
@@ -420,7 +542,7 @@ export default function GalaDashboard() {
             userId={currentUser?.id || ""}
             tasks={tasks}
             members={gala.members}
-            onRefresh={fetchData}
+            onRefresh={refreshTasks}
           />
         )}
         {tab === "budget" && (
@@ -429,7 +551,7 @@ export default function GalaDashboard() {
             userId={currentUser?.id || ""}
             expenses={expenses}
             members={gala.members}
-            onRefresh={fetchData}
+            onRefresh={refreshExpenses}
           />
         )}
         {tab === "memories" && (
@@ -437,7 +559,7 @@ export default function GalaDashboard() {
             galaId={id}
             userId={currentUser?.id || ""}
             memories={memories}
-            onRefresh={fetchData}
+            onRefresh={refreshMemories}
           />
         )}
       </main>
