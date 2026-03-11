@@ -49,6 +49,44 @@ npm install
 ### 3. Configure environment
 
 ```bash
+cp .env.example .env.local
+# Edit .env.local and add your Supabase credentials
+```
+
+### 4. Run locally
+
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3001](http://localhost:3001)
+
+---
+
+## 🚀 Production Deployment
+
+### Quick Deploy (Tomorrow!)
+
+1. **Run deployment checker:**
+   ```bash
+   ./deploy-check.sh
+   ```
+
+2. **Apply security policies:**
+   - Open Supabase SQL Editor
+   - Run `supabase/production-rls.sql` (REQUIRED!)
+
+3. **Deploy to Vercel:**
+   - Push to GitHub
+   - Import in [vercel.com](https://vercel.com)
+   - Add environment variables
+   - Deploy!
+
+**📖 See [PRODUCTION_GUIDE.md](./PRODUCTION_GUIDE.md) for complete deployment instructions!**
+
+---
+
+```bash
 cp .env.local.example .env.local
 ```
 

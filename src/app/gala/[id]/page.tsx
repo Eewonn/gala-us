@@ -53,19 +53,20 @@ export default function GalaDashboard() {
   const [inviteLink, setInviteLink] = useState("");
   const [coverImage, setCoverImage] = useState<string | null>(null);
 
-  useEffect(() => {
-    const storedCover = localStorage.getItem(`galaus_cover_${id}`);
-    if (storedCover) setCoverImage(storedCover);
-  }, [id]);
-
-  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       const dataUrl = ev.target?.result as string;
       setCoverImage(dataUrl);
-      localStorage.setItem(`galaus_cover_${id}`, dataUrl);
+      
+      // Save to database
+      const supabase = createClient();
+      await supabase
+        .from("galas")
+        .update({ cover_image: dataUrl })
+        .eq("id", id);
     };
     reader.readAsDataURL(file);
   };
@@ -87,6 +88,11 @@ export default function GalaDashboard() {
     }
 
     const gala = galaData as Gala;
+    
+    // Set cover image from database
+    if (gala.cover_image) {
+      setCoverImage(gala.cover_image);
+    }
 
     // Fetch members + user details
     const { data: rawMembers } = await supabase

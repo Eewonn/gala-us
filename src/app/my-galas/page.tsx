@@ -44,11 +44,6 @@ export default function MyGalasPage() {
     }
   };
 
-  const getCoverImage = (galaId: string) => {
-    const stored = localStorage.getItem(`galaus_cover_${galaId}`);
-    return stored || null;
-  };
-
   if (!user) {
     return null;
   }
@@ -85,7 +80,6 @@ export default function MyGalasPage() {
         ) : galas.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {galas.map((gala) => {
-              const coverImage = getCoverImage(gala.id);
               return (
                 <Link
                   key={gala.id}
@@ -94,9 +88,9 @@ export default function MyGalasPage() {
                 >
                   {/* Cover Image */}
                   <div className="w-full h-48 bg-gradient-to-br from-[#ff5833] to-[#ff8833] relative overflow-hidden">
-                    {coverImage ? (
+                    {gala.cover_image ? (
                       <img
-                        src={coverImage}
+                        src={gala.cover_image}
                         alt={gala.title}
                         className="w-full h-full object-cover"
                       />
