@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import GalaLogo from "@/components/GalaLogo";
-import { useAuth } from "@/contexts/AuthContext";
-import UserDropdown from "@/components/UserDropdown";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const features = [
   {
@@ -33,56 +32,13 @@ const features = [
 ];
 
 export default function LandingPage() {
-  const { user } = useAuth();
-
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8f6f5]">
       {/* Google Material Symbols font */}
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');`}</style>
 
       {/* Header */}
-      <header className="flex items-center justify-between px-6 md:px-20 py-6 sticky top-0 bg-[#f8f6f5]/90 backdrop-blur-md z-50 border-b-2 border-[#23130f]/10">
-        <GalaLogo />
-        <nav className="hidden md:flex items-center gap-10">
-          <a className="hover:text-[#ff5833] font-bold transition-colors" href="#features">
-            Features
-          </a>
-          <a className="hover:text-[#ff5833] font-bold transition-colors" href="#how">
-            How it works
-          </a>
-        </nav>
-        <div className="flex items-center gap-3">
-          {user ? (
-            <>
-              <Link href="/create-gala" className="h-11 px-6 bg-[#ff5833] text-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm">
-                Create a Gala
-              </Link>
-              <UserDropdown />
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="h-11 px-5 bg-white font-black rounded-full bold-border shadow-playful-sm btn-push items-center justify-center text-sm hidden sm:flex"
-              >
-                Log In
-              </Link>
-              <Link
-                href="/create-gala"
-                className="h-11 px-6 bg-[#ff5833] text-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm"
-              >
-                Create a Gala
-              </Link>
-              <Link
-                href="/join"
-                className="h-11 px-6 bg-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm"
-              >
-                Join
-              </Link>
-            </>
-          )}
-        </div>
-      </header>
+      <Navbar showCreateButton={false} variant="landing" />
 
       <main className="flex-1">
         {/* Hero */}
@@ -260,58 +216,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="bg-[#23130f] text-white py-16 px-6 md:px-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-3">
-              <div className="size-8 bg-[#ff5833] rounded flex items-center justify-center border-2 border-white">
-                <span className="material-symbols-outlined text-white text-sm font-bold">
-                  celebration
-                </span>
-              </div>
-              <span className="text-2xl font-extrabold tracking-tighter uppercase italic">
-                GalaUs
-              </span>
-            </div>
-            <p className="text-slate-400 font-medium">
-              The social planning platform that makes getting together actually
-              fun.
-            </p>
-          </div>
-          {[
-            {
-              label: "Product",
-              links: ["Features", "Pricing", "Mobile App", "Web Dashboard"],
-            },
-            {
-              label: "Company",
-              links: ["About", "Blog", "Careers", "Press"],
-            },
-            {
-              label: "Legal",
-              links: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
-            },
-          ].map((col) => (
-            <div key={col.label}>
-              <h4 className="text-sm font-black mb-6 uppercase tracking-widest text-[#ff5833]">
-                {col.label}
-              </h4>
-              <ul className="flex flex-col gap-3 text-slate-400 font-bold text-sm">
-                {col.links.map((l) => (
-                  <li key={l}>
-                    <a href="#" className="hover:text-white transition-colors">
-                      {l}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/10 text-slate-500 text-sm font-medium">
-          © {new Date().getFullYear()} GalaUs. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
