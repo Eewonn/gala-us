@@ -37,12 +37,20 @@ export default function TasksTab({ galaId, userId, tasks, members, onRefresh }: 
     if (!newTitle.trim()) return;
     setSubmitting(true);
     const supabase = createClient();
-    await supabase.from("tasks").insert({
+    const { error } = await supabase.from("tasks").insert({
       gala_id: galaId,
       title: newTitle.trim(),
       assigned_to: assignTo || null,
       status: "todo",
     });
+    
+    if (error) {
+      console.error("Failed to create task:", error);
+      alert("Failed to create task. Please try again.");
+      setSubmitting(false);
+      return;
+    }
+    
     setNewTitle("");
     setAssignTo("");
     setShowForm(false);
@@ -52,7 +60,14 @@ export default function TasksTab({ galaId, userId, tasks, members, onRefresh }: 
 
   const updateStatus = async (id: string, status: Status) => {
     const supabase = createClient();
-    await supabase.from("tasks").update({ status }).eq("id", id);
+    const { error } = await supabase.from("tasks").update({ status }).eq("id", id);
+    
+    if (error) {
+      console.error("Failed to update task:", error);
+      alert("Failed to update task. Please try again.");
+      return;
+    }
+    
     onRefresh();
   };
 

@@ -30,12 +30,20 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
     if (!form.description || !form.amount) return;
     setSubmitting(true);
     const supabase = createClient();
-    await supabase.from("expenses").insert({
+    const { error } = await supabase.from("expenses").insert({
       gala_id: galaId,
       paid_by: userId,
       amount: parseFloat(form.amount),
       description: form.description,
     });
+    
+    if (error) {
+      console.error("Failed to create expense:", error);
+      alert("Failed to create expense. Please try again.");
+      setSubmitting(false);
+      return;
+    }
+    
     setForm({ description: "", amount: "" });
     setShowForm(false);
     setSubmitting(false);
