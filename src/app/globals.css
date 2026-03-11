@@ -1,0 +1,103 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-jakarta);
+  --font-mono: var(--font-geist-mono);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --color-gala-primary: #ff5833;
+  --color-gala-bg: #f8f6f5;
+  --color-gala-dark: #23130f;
+}
+
+:root {
+  --background: #f8f6f5;
+  --foreground: #1a0a07;
+  --card: #ffffff;
+  --card-foreground: #1a0a07;
+  --popover: #ffffff;
+  --popover-foreground: #1a0a07;
+  --primary: #ff5833;
+  --primary-foreground: #ffffff;
+  --secondary: #f0eeec;
+  --secondary-foreground: #1a0a07;
+  --muted: #f0eeec;
+  --muted-foreground: #78716c;
+  --accent: #fff0ed;
+  --accent-foreground: #ff5833;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #e2e0de;
+  --input: #e2e0de;
+  --ring: #ff5833;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: #23130f;
+  --foreground: #f8f6f5;
+  --card: #2e1a15;
+  --card-foreground: #f8f6f5;
+  --popover: #2e1a15;
+  --popover-foreground: #f8f6f5;
+  --primary: #ff5833;
+  --primary-foreground: #ffffff;
+  --secondary: #3d231d;
+  --secondary-foreground: #f8f6f5;
+  --muted: #3d231d;
+  --muted-foreground: #a8a29e;
+  --accent: #3d231d;
+  --accent-foreground: #ff8c72;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: rgba(255,255,255,0.1);
+  --input: rgba(255,255,255,0.15);
+  --ring: #ff5833;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* GalaUs Neo-Brutalist Utilities */
+.bold-border { border: 3px solid #23130f; }
+.bold-border-2 { border: 2px solid #23130f; }
+.shadow-playful { box-shadow: 8px 8px 0px 0px #23130f; }
+.shadow-playful-sm { box-shadow: 4px 4px 0px 0px #23130f; }
+.shadow-playful-primary { box-shadow: 8px 8px 0px 0px #ff5833; }
+.shadow-playful-primary-sm { box-shadow: 4px 4px 0px 0px #ff5833; }
+.btn-push { transition: all 0.15s ease; }
+.btn-push:hover { transform: translate(-2px, -2px); }
+.btn-push:active { transform: translate(0px, 0px); box-shadow: none !important; }
+
+.dark .bold-border { border-color: rgba(255,255,255,0.2); }
+.dark .bold-border-2 { border-color: rgba(255,255,255,0.2); }
+.dark .shadow-playful { box-shadow: 8px 8px 0px 0px rgba(255,255,255,0.1); }
+.dark .shadow-playful-sm { box-shadow: 4px 4px 0px 0px rgba(255,255,255,0.1); }

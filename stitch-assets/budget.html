@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GalaUs Budget Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff5833",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23130f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        .thick-border {
+            border-width: 3px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Navigation -->
+<header class="flex items-center justify-between border-b-4 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-4 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-primary rounded flex items-center justify-center text-white thick-border border-slate-900">
+<span class="material-symbols-outlined">diamond</span>
+</div>
+<h2 class="text-2xl font-black tracking-tighter uppercase">GalaUs</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex size-10 items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 transition-colors thick-border border-slate-900">
+<span class="material-symbols-outlined text-slate-900">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-primary thick-border border-slate-900 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile avatar illustration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfzdAttxhuHukg6-GoPirNifL22uES2Mltg9Q9sIl9VuIqwjyfAFDx93eCEwympFmokAZrOgoWozvpLbGMWwfZfgfBrTlz_Gj0rkg4SXA6cgzfYQGeDFbhm2pndT8F8bh_iUdjfWTlrxA0Iox2FtT2LVodIWfUAi-DmVMj-0iNlOGp61CZIrNQc9pl0flKyec0UjRI1qJGpIW3T7q6FEHGoVDhPDtkt3mmV2WhHRwKw7olL6wgUxultYwNKOklr89MGWvFuc7e4Hbz"/>
+</div>
+</div>
+</header>
+<div class="flex flex-1 flex-col lg:flex-row">
+<!-- Sidebar -->
+<aside class="w-full lg:w-72 border-r-4 border-slate-900 dark:border-slate-700 p-6 flex flex-col gap-6 bg-white dark:bg-slate-900">
+<div class="flex flex-col gap-2">
+<p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Navigation</p>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-transparent hover:border-slate-900 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-bold">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-transparent hover:border-slate-900 transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-bold">Guest List</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-bold">Budget</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-transparent hover:border-slate-900 transition-all" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-bold">Schedule</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-transparent hover:border-slate-900 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-bold">Settings</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-4 rounded-xl bg-primary/10 border-2 border-dashed border-primary">
+<p class="text-sm font-bold text-primary">Need Help?</p>
+<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Contact your gala coordinator for budget overrides.</p>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-6 lg:p-10 flex flex-col gap-8">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="text-5xl font-black tracking-tighter text-slate-900 dark:text-white mb-2 uppercase italic">Event Budget</h1>
+<p class="text-slate-500 font-medium text-lg italic">Tracking every penny for the 2024 Annual Charity Gala</p>
+</div>
+<button class="bg-primary text-white px-8 py-4 rounded-xl font-black border-2 border-slate-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">add_circle</span>
+                            NEW EXPENSE
+                        </button>
+</div>
+<!-- Statistics Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl thick-border border-slate-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary size-10 flex items-center justify-center bg-primary/10 rounded-full">payments</span>
+<span class="text-xs font-black px-2 py-1 bg-green-100 text-green-700 rounded border border-green-700">TRACKED</span>
+</div>
+<p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Total Spent</p>
+<p class="text-4xl font-black text-slate-900 dark:text-white">$4,250.00</p>
+</div>
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl thick-border border-slate-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-primary size-10 flex items-center justify-center bg-primary/10 rounded-full">person</span>
+<span class="text-xs font-black px-2 py-1 bg-blue-100 text-blue-700 rounded border border-blue-700">50 GUESTS</span>
+</div>
+<p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Cost Per Person</p>
+<p class="text-4xl font-black text-slate-900 dark:text-white">$85.00</p>
+</div>
+<div class="bg-primary text-white p-8 rounded-xl thick-border border-slate-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+<div class="flex items-center justify-between mb-2">
+<p class="text-sm font-bold uppercase tracking-widest">Budget Used</p>
+<p class="text-2xl font-black">75%</p>
+</div>
+<div class="w-full bg-white/30 rounded-full h-6 border-2 border-slate-900 overflow-hidden mb-4">
+<div class="bg-white h-full" style="width: 75%"></div>
+</div>
+<p class="text-sm font-bold">$4,250 of $6,000 goal</p>
+</div>
+</div>
+<!-- Expense Table -->
+<div class="bg-white dark:bg-slate-800 rounded-xl thick-border border-slate-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+<div class="p-6 border-b-4 border-slate-900 flex justify-between items-center bg-slate-50 dark:bg-slate-700">
+<h3 class="text-xl font-black uppercase">Recent Expenses</h3>
+<div class="flex gap-2">
+<button class="p-2 border-2 border-slate-900 rounded-lg bg-white hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 border-2 border-slate-900 rounded-lg bg-white hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b-2 border-slate-900 bg-slate-50 dark:bg-slate-700">
+<th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500">Expense</th>
+<th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500">Category</th>
+<th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500">Paid By</th>
+<th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500">Date</th>
+<th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500 text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y-2 divide-slate-100 dark:divide-slate-700">
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-slate-100 dark:bg-slate-600 rounded-lg flex items-center justify-center border-2 border-slate-900">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<span class="font-bold">Grand Ballroom Catering</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-orange-100 text-orange-700 border border-orange-700 rounded-full text-xs font-black">FOOD</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded-full bg-primary/20 border-2 border-slate-900 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Avatar of team member Sarah" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4rPcfnRIEKvXV47gif0uT34N5nSltoclmRkf-GywgRkISLSvp8yUKa-NlRmBW4SHi4bkjoLzywyUfeDeZVgt5ob1XMfID39oKEzgPtViSYvdN0AZBQvVqe0BnjzkAxAc1ebMe2O_gd9FNeZFV98kWfbt06MIzCISUCe9sSo_554RuY_4LntHI0WcoaVfIqfG5-N_UKSGyrx2cuU_O92PnP-eXRPHRFBpDPkvWXP5bKJXyTMohmI5zXPNCizQ1O6wF_s_99Wv3aLLf"/>
+</div>
+<span class="text-sm font-bold">Sarah Jenkins</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium">Oct 12, 2023</td>
+<td class="px-6 py-5 text-right font-black text-lg">$2,800.00</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-slate-100 dark:bg-slate-600 rounded-lg flex items-center justify-center border-2 border-slate-900">
+<span class="material-symbols-outlined">music_note</span>
+</div>
+<span class="font-bold">Live Jazz Quartet</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-purple-100 text-purple-700 border border-purple-700 rounded-full text-xs font-black">MUSIC</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded-full bg-primary/20 border-2 border-slate-900 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Avatar of team member Mike" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFR4Py_KJcUWvwBhLk_SXmpEIpVKHvUNggU6twdd8TzxVdNrDUESarDVTNj0XaE-6Z7Vlhmm8qGluF2hzEYLqzv_MkhaMKwxwv06V6w7hPFX7jxrjVMNrwyeDJnoYs8kxTubyhgKcp-5SnBND_JmA6VY-1wbEp1tHlwX1gDXrElWuaEu3UC7KDRn7p6Q6QqjsIw8lsffB-WS6WxJvLMvB7ehWUVPnVrCFfcx8IfyKEBHnnD8Vhy6mm4JGuN-jxUv50JYOI4yBcB9hm"/>
+</div>
+<span class="text-sm font-bold">Mike Ross</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium">Oct 14, 2023</td>
+<td class="px-6 py-5 text-right font-black text-lg">$950.00</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-slate-100 dark:bg-slate-600 rounded-lg flex items-center justify-center border-2 border-slate-900">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<span class="font-bold">Floral Centerpieces</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-pink-100 text-pink-700 border border-pink-700 rounded-full text-xs font-black">DECOR</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded-full bg-primary/20 border-2 border-slate-900 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Avatar of team member Sarah" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzpgngHM4Qp4h-Iw_kgrUdeohqB5zEtMBpu0NIUPpJdUSPa8nJyV0Kh-xnKHts1G-IcDchHEqtyGZE6xSms4mNVkzOWpB8dv-35ic1lda3qzETrL2cDGHfeNO2iPMqNq1fl3_UHzRzjEKwXc2ldFWKn7Ywfr9iTI_ux8bxI1oRLQF0nndVY6mCQNyaeTvJ6AUn0WgtGGopyDk_u6oxrP9kpNZEPGySxYQBAT61Qf5K3h0G3ta2-lYf_Y81-Mxyku7-RVnSXnB_cMnY"/>
+</div>
+<span class="text-sm font-bold">Sarah Jenkins</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium">Oct 15, 2023</td>
+<td class="px-6 py-5 text-right font-black text-lg">$500.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Bottom Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="bg-background-light dark:bg-slate-800 p-8 rounded-xl border-4 border-slate-900 border-dashed">
+<h3 class="text-xl font-black uppercase mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                                Expense Distribution
+                            </h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between text-sm font-bold">
+<span>Food &amp; Beverage</span>
+<span>65%</span>
+</div>
+<div class="w-full bg-slate-200 h-4 rounded-full border-2 border-slate-900 overflow-hidden">
+<div class="bg-primary h-full" style="width: 65%"></div>
+</div>
+<div class="flex items-center justify-between text-sm font-bold mt-4">
+<span>Entertainment</span>
+<span>22%</span>
+</div>
+<div class="w-full bg-slate-200 h-4 rounded-full border-2 border-slate-900 overflow-hidden">
+<div class="bg-indigo-500 h-full" style="width: 22%"></div>
+</div>
+<div class="flex items-center justify-between text-sm font-bold mt-4">
+<span>Decorations</span>
+<span>13%</span>
+</div>
+<div class="w-full bg-slate-200 h-4 rounded-full border-2 border-slate-900 overflow-hidden">
+<div class="bg-pink-500 h-full" style="width: 13%"></div>
+</div>
+</div>
+</div>
+<div class="bg-slate-900 text-white p-8 rounded-xl thick-border border-slate-900 shadow-[8px_8px_0px_0px_rgba(255,88,51,1)]">
+<h3 class="text-xl font-black uppercase mb-4 text-primary">Quick Notes</h3>
+<ul class="space-y-4">
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<p class="text-sm">Final payment for the catering is due next week Monday.</p>
+</li>
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-primary">error</span>
+<p class="text-sm">AV rental quote came in $200 over initial estimate. Review needed.</p>
+</li>
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-primary">lightbulb</span>
+<p class="text-sm">We can save $100 if we use the venue's default linens instead of custom rentals.</p>
+</li>
+</ul>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+</body></html>

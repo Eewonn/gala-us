@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff5833",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23130f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .thick-border {
+            border: 3px solid #1d0f0c;
+        }
+        .shadow-bold {
+            box-shadow: 6px 6px 0px 0px #1d0f0c;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between bg-white dark:bg-slate-800 rounded-xl thick-border p-4 mb-8 shadow-bold">
+<div class="flex items-center gap-4">
+<div class="bg-primary p-2 rounded-lg thick-border flex items-center justify-center">
+<span class="material-symbols-outlined text-white font-bold">celebration</span>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase">GalaUs</h2>
+</div>
+<div class="flex items-center gap-4">
+<nav class="hidden md:flex gap-6 mr-6">
+<a class="font-bold text-primary border-b-4 border-primary pb-1" href="#">Overview</a>
+<a class="font-bold text-slate-500 hover:text-primary transition-colors" href="#">Guests</a>
+<a class="font-bold text-slate-500 hover:text-primary transition-colors" href="#">Schedule</a>
+<a class="font-bold text-slate-500 hover:text-primary transition-colors" href="#">Assets</a>
+</nav>
+<button class="size-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center thick-border">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="size-12 rounded-full bg-primary thick-border overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Profile picture of a smiling young man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB19mKrJxAOAx_m2sQN7Yohu81sH6ZQu9gFtMM7okW5iJyQ_99lVCeXMAjcKzBmu1DVLPW-c1H-qO7EkIWgkcfS0K5zE6-_kSlDKviIG8tZXcXSUnlxVOmwP465J8St6hpwd3gP8zR4gExx5V_80I-xC2hRSD6UYClRDB5S6BmQEqyoZL7fyhWZyYkDUZcxUIM-gYB23_mE8QdTlmBLFOs4MDTPn3FZeS6slPMQl8ib7aJ1w4LHrmSRE9yl09E1Ckuip6syHZTXovv5"/>
+</div>
+</div>
+</header>
+<!-- Hero Section: Event Cover -->
+<div class="relative group mb-8">
+<div class="w-full h-[320px] rounded-xl thick-border shadow-bold overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+<img class="w-full h-full object-cover" data-alt="Vibrant tech conference stage with neon lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK3RtlbQnKVdTBvi6JyfUknBjuzgxizaQ53mMqEM9mxgwlpQ3CprvWmkccMx3virjEKrqHEDw0L96qvE-ze5iRUXiWWxJcyc8Cg8w7HdfxFt_a7V0i3trAGpjMkRrR1_Dxcu53UEe7FNWXXbvRk882aA1Ch5oFG7ClhzxewcE_xlQi8W2X4Nzt61iIYSNSobekCkderg-bfsErrUuXiVtCoeJJuyBcv88Bib8Yme8UznEr-Lnv6ZX_vfs5sJrX0_h-HaNf50TFqV9b"/>
+<div class="absolute bottom-0 left-0 p-8 z-20 w-full flex justify-between items-end">
+<div>
+<span class="bg-primary text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest mb-3 inline-block">Featured Event</span>
+<h1 class="text-4xl md:text-5xl font-black text-white leading-tight uppercase">Summer Tech Gala 2024</h1>
+<p class="text-white/80 font-bold mt-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">location_on</span>
+                            Silicon Valley Convention Center
+                        </p>
+</div>
+<div class="hidden md:block">
+<button class="bg-white text-slate-900 font-black px-6 py-3 rounded-full thick-border flex items-center gap-2 hover:translate-x-1 hover:-translate-y-1 transition-transform">
+                            Edit Event <span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Column: Organizer & Participants -->
+<div class="lg:col-span-2 space-y-8">
+<!-- Organizer Card -->
+<div class="bg-white dark:bg-slate-800 p-6 rounded-xl thick-border shadow-bold">
+<div class="flex flex-col md:flex-row items-center gap-6">
+<div class="size-24 rounded-xl thick-border overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Creative collective agency team working together" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGeXH8adb6VP_z0OL0_1cTagL_VPEDBt9uRgxEbGnAPrAs34s8G8r7hMOBf7gTUG9jQyrZKN7DiRPcKT7fzOeNNjn4AyCnLcd7pZAU5y05O61I3G25jHYtXZV2WvTmz0Vtbr1WkRTF5eOuSo_gS-h6TAdzan3s8YYUKLE9UC2JqgU3pB_0NRPrZz93I3xBpxHjMCVg7gIGCUnoF0nIrxlsY2v-lq_OX1sVdYeHff2Ke3uHJ-G9MlrwgLo6ilg6rNcH0u_wsdSYct61"/>
+</div>
+<div class="flex-1 text-center md:text-left">
+<p class="text-primary font-black text-sm uppercase tracking-widest">Organizer</p>
+<h3 class="text-2xl font-black text-slate-900 dark:text-white uppercase">Creative Collective</h3>
+<p class="text-slate-500 dark:text-slate-400 font-bold">Lead Experience Design Agency</p>
+<div class="flex gap-3 mt-4 justify-center md:justify-start">
+<button class="bg-primary text-white font-black px-6 py-2 rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">mail</span> Message
+                                </button>
+<button class="bg-slate-100 dark:bg-slate-700 font-black px-6 py-2 rounded-full thick-border">
+                                    Profile
+                                </button>
+</div>
+</div>
+<div class="hidden md:block w-px h-16 bg-slate-200 dark:bg-slate-700"></div>
+<div class="hidden md:flex flex-col items-center px-4">
+<p class="text-slate-400 font-bold text-xs uppercase">Rating</p>
+<div class="flex text-primary">
+<span class="material-symbols-outlined fill-current">star</span>
+<span class="material-symbols-outlined fill-current">star</span>
+<span class="material-symbols-outlined fill-current">star</span>
+<span class="material-symbols-outlined fill-current">star</span>
+<span class="material-symbols-outlined">star_half</span>
+</div>
+<p class="text-slate-900 dark:text-white font-black">4.8/5.0</p>
+</div>
+</div>
+</div>
+<!-- Participants Section -->
+<div class="bg-white dark:bg-slate-800 p-6 rounded-xl thick-border shadow-bold">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-black text-slate-900 dark:text-white uppercase">Participants</h3>
+<a class="text-primary font-black flex items-center gap-1 hover:underline" href="#">
+                            View All <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<div class="flex flex-col items-center gap-2 p-4 bg-background-light dark:bg-slate-900 rounded-xl thick-border">
+<div class="size-16 rounded-full thick-border overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a female participant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCacOTpyZaqkmjH1-2GLEiG2SfdfBzl3-jbZSZq3uwdJGvA550TEZ_nZJbNcqglWIuGIod686Ikpmf4n9cDDrUgCRbGQaZ7yCbCnX8w901jJgoUanAhfBAnKRsB6Sr32pSEeGd2JQW18J9aULLor7ChoybJiWU_W1ayz4GVhDqkk8aUR8hA2BuweXBVKulYQ-aVsQM7c1bo3MRMSatyLq0Rd8Dcwow-hpHbAU06cm0RRWkAtT8zZUXlDcFiSAxHj5EPX1BsMIKEJn2f"/>
+</div>
+<p class="font-black text-sm truncate w-full text-center">Sarah J.</p>
+<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-black uppercase">Speaker</span>
+</div>
+<div class="flex flex-col items-center gap-2 p-4 bg-background-light dark:bg-slate-900 rounded-xl thick-border">
+<div class="size-16 rounded-full thick-border overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a male attendee" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVrG7v5BJ8Y5iZYlmGBoKtBxA1afOrgzGKdwqsjAMiuEqxOAIjYoSC1_7V1aisQj4g_TIP3E0FUUJ7o3MXwNyx_CkoAitZ9gF4p0tmaKto2lg_Ej5Ma4ZAH0n6hGD_ZESOSbuCtKv9mIve8nSWNI5LOQqtbQYkBXPxBiK9Ga2EuM2LBsJ1NcJtO4i5xF9unMOv0CWH0z7sokFwP9Ay_uje9on14NlOQbhknz-eMM2FlQLA8BOzB0U1TqJ5OcaLWzZ0E8mqP_-7o0Dj"/>
+</div>
+<p class="font-black text-sm truncate w-full text-center">Alex Chen</p>
+<span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-black uppercase">Guest</span>
+</div>
+<div class="flex flex-col items-center gap-2 p-4 bg-background-light dark:bg-slate-900 rounded-xl thick-border">
+<div class="size-16 rounded-full thick-border overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a female developer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvmqDE7TElSRjJAu887CgdOUrvHX8wC8hq5NwaSiJDp3kEC3Qa9m3IBK-n4Tgp6v_DxuL17BFIsN5_xT271NYQu14_gdfzb7mayclJZ56_ZiPu3kYZP6DegtDeyXhsIoKU0OHTkaybI5gu2mRRFdgU1BuYoJIGIdEJpKVlFhVGFMpjNm39udtIDah__iQnKYT_zCLF5XKVV8IjY8WqHctgqkA09sf9bJEZ3A7aRjOmApYHnffZL2NOGTVXzDAhA8UrBCy5lPB0tsMG"/>
+</div>
+<p class="font-black text-sm truncate w-full text-center">Ina Gomez</p>
+<span class="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-black uppercase">VIP</span>
+</div>
+<div class="flex flex-col items-center justify-center gap-1 p-4 bg-primary/10 border-2 border-dashed border-primary rounded-xl cursor-pointer hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary font-bold">add</span>
+<p class="font-black text-xs text-primary uppercase text-center">Invite More</p>
+</div>
+</div>
+</div>
+<!-- Event Stage / Milestones -->
+<div class="bg-white dark:bg-slate-800 p-6 rounded-xl thick-border shadow-bold">
+<h3 class="text-xl font-black text-slate-900 dark:text-white uppercase mb-6">Event Stage</h3>
+<div class="relative pt-2">
+<div class="absolute top-1/2 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700 -translate-y-1/2 z-0"></div>
+<div class="absolute top-1/2 left-0 w-3/4 h-1 bg-primary -translate-y-1/2 z-0"></div>
+<div class="relative z-10 flex justify-between">
+<div class="flex flex-col items-center">
+<div class="size-6 rounded-full bg-primary thick-border border-white flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px]">check</span>
+</div>
+<span class="mt-2 text-xs font-black uppercase">Planning</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="size-6 rounded-full bg-primary thick-border border-white flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px]">check</span>
+</div>
+<span class="mt-2 text-xs font-black uppercase">Catering</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="size-8 rounded-full bg-white dark:bg-slate-800 thick-border border-primary ring-4 ring-primary/30 flex items-center justify-center -mt-1 scale-110">
+<span class="material-symbols-outlined text-primary text-[18px]">rocket_launch</span>
+</div>
+<span class="mt-2 text-xs font-black text-primary uppercase">Promotion</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="size-6 rounded-full bg-slate-200 dark:bg-slate-700 thick-border border-white flex items-center justify-center"></div>
+<span class="mt-2 text-xs font-bold text-slate-400 uppercase">Live Day</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Countdown & Stats -->
+<div class="space-y-8">
+<!-- Countdown Timer Card -->
+<div class="bg-primary p-6 rounded-xl thick-border shadow-bold text-white">
+<h3 class="text-lg font-black uppercase mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined">timer</span> Time to Launch
+                    </h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/20 p-4 rounded-xl backdrop-blur-sm text-center">
+<p class="text-3xl font-black leading-none">02</p>
+<p class="text-[10px] font-black uppercase tracking-widest mt-1">Days</p>
+</div>
+<div class="bg-white/20 p-4 rounded-xl backdrop-blur-sm text-center">
+<p class="text-3xl font-black leading-none">14</p>
+<p class="text-[10px] font-black uppercase tracking-widest mt-1">Hours</p>
+</div>
+<div class="bg-white/20 p-4 rounded-xl backdrop-blur-sm text-center">
+<p class="text-3xl font-black leading-none">35</p>
+<p class="text-[10px] font-black uppercase tracking-widest mt-1">Mins</p>
+</div>
+<div class="bg-white/20 p-4 rounded-xl backdrop-blur-sm text-center">
+<p class="text-3xl font-black leading-none">12</p>
+<p class="text-[10px] font-black uppercase tracking-widest mt-1">Secs</p>
+</div>
+</div>
+<button class="w-full mt-6 bg-white text-primary font-black py-3 rounded-full uppercase tracking-tighter hover:bg-slate-100 transition-colors">
+                        Go To Livestream
+                    </button>
+</div>
+<!-- Event Details Mini-Card -->
+<div class="bg-white dark:bg-slate-800 p-6 rounded-xl thick-border shadow-bold">
+<h3 class="text-lg font-black text-slate-900 dark:text-white uppercase mb-4">Quick Stats</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-background-light dark:bg-slate-900 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">confirmation_number</span>
+<span class="font-bold text-sm">Tickets Sold</span>
+</div>
+<span class="font-black">1,248 / 1,500</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-background-light dark:bg-slate-900 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">groups</span>
+<span class="font-bold text-sm">Waiting List</span>
+</div>
+<span class="font-black">422</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-background-light dark:bg-slate-900 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">monetization_on</span>
+<span class="font-bold text-sm">Revenue</span>
+</div>
+<span class="font-black">$45,280</span>
+</div>
+</div>
+</div>
+<!-- Map Widget -->
+<div class="bg-white dark:bg-slate-800 p-3 rounded-xl thick-border shadow-bold">
+<div class="w-full h-40 bg-slate-200 dark:bg-slate-700 rounded-lg overflow-hidden relative border-2 border-slate-900">
+<img class="w-full h-full object-cover" data-alt="Abstract stylized map of an urban area" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0GHXa7-XTBMNTQP7noiXZltThzogo2EIifEQshoUJfvZbRLRfyDOKhsvHInXewGYa7RDOyzXa7ki7tBm12k4MgYvo3LUsHYK37QXkwHdjJqh7atlFx7HszZAtpC8MR-LCxKEOLA0v81l7EnERjVq_q2MOri4yK2oB8eteTawbRqTGWN5VEG6MZmAABPoZR83dNVNgJE8nebKpNlrz42jSphyrA_ET-cEM144r6Q9VWKmWIfpcqP_nFSL9IK26G8G7UYRMDZfSVSR1"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl drop-shadow-lg">location_on</span>
+</div>
+</div>
+<div class="p-2 pt-3">
+<p class="font-black text-sm uppercase">San Francisco, CA</p>
+<p class="text-xs font-bold text-slate-500">747 Market St, Suite 100</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

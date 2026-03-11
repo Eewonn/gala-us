@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GalaUs - Task Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff5833",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23130f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ff583333;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b-3 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-4 sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-primary flex items-center justify-center rounded-lg border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+<span class="material-symbols-outlined text-white font-bold">celebration</span>
+</div>
+<h2 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">GalaUs</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-bold transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-extrabold border-b-2 border-primary" href="#">Tasks</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-bold transition-colors" href="#">Teams</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-bold transition-colors" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="bg-slate-100 dark:bg-slate-700 border-2 border-slate-900 dark:border-slate-600 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-primary w-64" placeholder="Find a task..." type="text"/>
+</div>
+<button class="size-10 flex items-center justify-center bg-background-light dark:bg-slate-700 border-2 border-slate-900 dark:border-slate-600 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="size-10 rounded-full border-2 border-slate-900 overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+<img class="w-full h-full object-cover" data-alt="User profile avatar smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTsAB1JO1lJy3tGeJMZFx4suQDEarHsKYjEj7HhtgxQllqPs2Fqt_Z0Hjrly-3-e4HFYqg_nIE5yxlXIiJ_L77KSbhwsmILRuKLvD6MBtrJ5ufyy1fdJn2dmn1imbQ6cifCE2zZ04JLyjRmtbXZA95YtyL3T-DbwBHEzKqriact3gPFIi9JDxRDNwSdH7vKXLdfRfBh4g8p-osoq9KppBI22yZOQcM1sehVT26lzn7YRpGQJTO4yw0LHTT6tCanX9o-3oTIKJY18Bo"/>
+</div>
+</div>
+</header>
+<main class="flex-1 px-4 md:px-8 py-8 max-w-7xl mx-auto w-full">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<div class="flex -space-x-3">
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800" data-alt="Team member portrait 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTRgrtOr952_z7HaOyx7ssYygwC8YUX--HZ4ggkyj-bq4JPgHmNT5iOVxb37CRWy3s7gFHyR4e5hqfAYIhYQ_T5P1J3VOtjiSFQk1rs1lSKr-z5zQJchB_mc8uWtuPVTnIgtp9ZRUqHW3SW1bmoONXeMDN7he06oI7IFIiTfOBzqRT2ZaqHfp6wjLIQyqfjAMCUrS29OG8kJ1SFLGWUU1btxRPQQpUKjAIQm1icTSw-T-T8Yvvj6SgvNGfRN4JNuxGq_V6K3iWjOob"/>
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800" data-alt="Team member portrait 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5peg2StZj4snOfOy62rOwceExCXQpRS-8kVrBNitQGBdw3VZsyfMvpXTHprcLSULqntCgOPBrQ8RA1sz9Ao9g92sehizC75G7hxzRXMx85W6JDBvlTB65AK9hsW9_Kppev4DCtw4hgMHmsugYBVprmtlOq0ZrmUGP0yWSUle23keYx_0v9Mm5TwCv7m5Djh2mT4_X4zaaAQiaBc-nRmAjOAjdr2aIUx5goJjlA4qQZrI81NfTuftoBrzi-WZtWZbmTBWxO2JSHCp2"/>
+<img class="size-8 rounded-full border-2 border-white dark:border-slate-800" data-alt="Team member portrait 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZaD0akhC2GP0k_4LK-B0lpxgtBgkGemcc0X_MhpYtyKt8WoSXKBa2GR1a_gftlgNEc97F2j4XKIqug1YJbbOlLYkpG8y_J4rnI4hkWsDKIgKNl8MQE3MqNMtwvQTLNh4DqNMzvQRANmDKMr9hV6H0Gbo4_oTTGXLd_4Sd9LSg0OqlP0YJ-bml79oVcP0uLFEKh5jvhb2K7Dxcf81tHdT9iyrcr5pBeipX8Rd3FiIH-KC6ssBd0iEd3cQWhWSPKam0kCWH1zu2ZbER"/>
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] font-bold">+5</div>
+</div>
+<span class="text-slate-500 text-sm font-semibold">Active Project: Summer Gala '24</span>
+</div>
+<h1 class="text-5xl font-black text-slate-900 dark:text-white mb-2 leading-none">Task Board</h1>
+<p class="text-slate-500 dark:text-slate-400 font-medium">Manage and track your team's progress with high energy.</p>
+</div>
+<button class="bg-primary text-white px-8 py-4 rounded-xl border-3 border-slate-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0 active:shadow-none transition-all font-black flex items-center gap-2">
+<span class="material-symbols-outlined">add_circle</span>
+                    NEW TASK
+                </button>
+</div>
+<div class="flex border-b-3 border-slate-900 dark:border-slate-700 mb-8 gap-1">
+<button class="px-6 py-3 bg-primary text-white border-t-3 border-x-3 border-slate-900 dark:border-slate-900 rounded-t-xl font-extrabold translate-y-[3px]">All Tasks</button>
+<button class="px-6 py-3 text-slate-500 dark:text-slate-400 font-bold hover:text-primary transition-colors">My Tasks</button>
+<button class="px-6 py-3 text-slate-500 dark:text-slate-400 font-bold hover:text-primary transition-colors">Team View</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center border-2 border-slate-900">
+<span class="material-symbols-outlined text-slate-900 dark:text-white text-sm">sticky_note_2</span>
+</div>
+<h3 class="text-xl font-black">TO DO</h3>
+<span class="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full font-bold">5</span>
+</div>
+<button class="material-symbols-outlined text-slate-400 hover:text-primary">more_horiz</button>
+</div>
+<div class="flex flex-col gap-4">
+<div class="bg-white dark:bg-slate-800 p-5 rounded-lg border-3 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(255,88,51,1)] transition-all group">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded border-2 border-primary uppercase tracking-wider">High Priority</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary">drag_indicator</span>
+</div>
+<h4 class="text-lg font-extrabold mb-4 group-hover:text-primary transition-colors">Design venue entrance mockups</h4>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img class="size-8 rounded-full border-2 border-slate-900" data-alt="Portrait of designer member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5X3or9m-4R-Zetqhcu68RXyWcIHFrsjOMi4sDl6wSepvtdaHNAZVcxGQGACxPUy-eL67CHvjlorzRJ5VOAubEZfnHgQhv4bi0UdoLWdF9uht20F8fidCWUiYnG1kmiyQcYuRx5KRaDu1JdiaOQ25ns9a-wNajyRdMuUf9irb4jtAaIUeJPdXPjy0RYZ3khbFgaHebuOcg_Mlu_xcFDpI0B76VjzeIFhBPVWdkDsak_PsmFDy_-uIYjSgSa7uynN_g85YlAKaaDGPF"/>
+<span class="text-xs font-bold text-slate-500">Sarah M.</span>
+</div>
+<div class="flex items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-[10px] font-bold">Oct 12</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-800 p-5 rounded-lg border-3 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(255,88,51,1)] transition-all group">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-black px-2 py-1 rounded border-2 border-blue-600 dark:border-blue-400 uppercase tracking-wider">Planning</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary">drag_indicator</span>
+</div>
+<h4 class="text-lg font-extrabold mb-4">Vendor outreach for catering</h4>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img class="size-8 rounded-full border-2 border-slate-900" data-alt="Portrait of planning manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC43xvaui4UQYwH--eQHVLVr4JrbVv4cqWX1OXrrMEsvQBgVfKAx8ORJDNDVjC5SNdtizyiHunoO6ePi7VtazHtlxei3C4wXSQCWkJJRhOqGpAYHEJtZePXXGJRsbgzVTpRj1hjPckWqnAyrE0w2VbzQow3tS1niw3YlffS56omANpFjB8vP9158eEUaBSO_qukYPBrT8ZmkIaP1482VmAzGUjPvIjnkjq7laWG-JKTLd_JxC9yMGJd_oYx9Csb0JLp7cTJ_wrzJQT6"/>
+<span class="text-xs font-bold text-slate-500">Marc J.</span>
+</div>
+<div class="flex items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-[10px] font-bold">Oct 15</span>
+</div>
+</div>
+</div>
+<button class="border-2 border-dashed border-slate-300 dark:border-slate-700 py-4 rounded-lg text-slate-400 font-bold hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add</span>
+                            Drop a task here
+                        </button>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-yellow-400 rounded-lg flex items-center justify-center border-2 border-slate-900">
+<span class="material-symbols-outlined text-slate-900 text-sm">sync</span>
+</div>
+<h3 class="text-xl font-black">IN PROGRESS</h3>
+<span class="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full font-bold">3</span>
+</div>
+<button class="material-symbols-outlined text-slate-400 hover:text-primary">more_horiz</button>
+</div>
+<div class="flex flex-col gap-4">
+<div class="bg-white dark:bg-slate-800 p-5 rounded-lg border-3 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-l-primary border-l-8 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded border-2 border-primary uppercase tracking-wider">Urgent</span>
+<span class="material-symbols-outlined text-slate-300">drag_indicator</span>
+</div>
+<h4 class="text-lg font-extrabold mb-4">Finalize ticket pricing structure</h4>
+<div class="mb-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-bold text-slate-500">Progress</span>
+<span class="text-[10px] font-bold text-primary">65%</span>
+</div>
+<div class="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full border border-slate-900 overflow-hidden">
+<div class="h-full bg-primary" style="width: 65%"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img class="size-8 rounded-full border-2 border-slate-900" data-alt="Portrait of finance manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzV0dtlvcc-O-axUiCxMiPoS3wfGXFEfWEa4dkZAiwW63x4CWObDnkag-BCApLQfjtDy9EooC5ptTj2umTBW5hy_C72gqPqzLDt2Sf2kDCJ2AMvGEwXiLhw7q72m5HpeTHyATH9X63bS0Co8I__ygKPw6bNMxVWHT8RkeleJQHo0XQ34SUc-yI4z-NGhigMPpOxPIhEGEZteVSUsXCYGF0O0DqUWjmD3Gp_8wNHJuLwj6WDcIQSsq0p6yOJiKU0VPB2k4H-7VONx7J"/>
+<span class="text-xs font-bold text-slate-500">Benny G.</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400 text-sm">chat_bubble</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">attach_file</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-800 p-5 rounded-lg border-3 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all group">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[10px] font-black px-2 py-1 rounded border-2 border-purple-600 dark:border-purple-400 uppercase tracking-wider">Social</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary">drag_indicator</span>
+</div>
+<h4 class="text-lg font-extrabold mb-4">Instagram teaser campaign</h4>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="flex -space-x-2">
+<img class="size-6 rounded-full border border-slate-900" data-alt="Team member small icon A" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAovVyeqW5aTaAIj5z6nPB7EXFwC7DOmj-VQUBa5_Xe4z94JFGHW9fOFHlC_3AvxYPQhcYxfiWeBjJM7Cjk4Ft9yHFg-lMPvsXoFAaAgxa3JZhgrDfeav1g2qVGHXZJcMJz2NdFxIjTWC7LiE-h5hnLDdWoeGlfSNUs_EGKqSnx5u9dewi2c0ZOLUVpvrok3Ms8TaFC0fxzsy-cwZIhO_7ZUzWTfH0JZVQvLwZ8bWNnZl_do2E1UARaozx5tf8B7E0BUiadqMOg7wyG"/>
+<img class="size-6 rounded-full border border-slate-900" data-alt="Team member small icon B" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKJ30QOOjiAczO8utsqf9DNxU008qdtPnVQoJywBQKAZkwYRK-s9Bi-ubkRlouHBhBaS_5jlt5RPc0R2cVbzWAVx1BA2ZVLUCzT8g9e914zYh_IqI2ZTHnBfznU5Nq57fKPdbqy12I0wJY1MmJcbe-84DsdQQACvgr9Y_VSKaO132jRbagNMijzMpont5E03IMUhTBv991ADI_OImjK4f_6y02iEuC1dQbros20gTC40soQoDw2Lk40FQT8ltvOe0VgZqH8tjzzFGb"/>
+</div>
+<span class="text-xs font-bold text-slate-500">Growth Team</span>
+</div>
+<div class="flex items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+<span class="text-[10px] font-bold">12</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-emerald-400 rounded-lg flex items-center justify-center border-2 border-slate-900">
+<span class="material-symbols-outlined text-slate-900 text-sm">check_circle</span>
+</div>
+<h3 class="text-xl font-black">DONE</h3>
+<span class="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full font-bold">8</span>
+</div>
+<button class="material-symbols-outlined text-slate-400 hover:text-primary">more_horiz</button>
+</div>
+<div class="flex flex-col gap-4">
+<div class="bg-emerald-50 dark:bg-emerald-900/20 p-5 rounded-lg border-3 border-emerald-500/30 dark:border-emerald-500/20 opacity-75 group relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2">
+<span class="material-symbols-outlined text-emerald-500">task_alt</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-emerald-100 text-emerald-600 text-[10px] font-black px-2 py-1 rounded border-2 border-emerald-600 uppercase tracking-wider">Completed</span>
+</div>
+<h4 class="text-lg font-extrabold mb-4 text-slate-500 line-through">Secure Main Hall reservation</h4>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img class="size-8 rounded-full border-2 border-slate-300" data-alt="Portrait of manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP9KxK-tIv684BZSHPF1JYEUglbQvxXmkx6G7GMpgM683YQAcTEbM_9JIQaFI8tmKuRGSCFnbHgvBTewc_utR_et4AGf9-gvfQl98GDvgklC2ZjBx_JtF_olF7rCaUFlqKdA-gClTS1IahRyUi-LclDXimM4h1zLDawwfGCGFFrEmIbVa5W1qgfYVzLB4MmKY__-kQ-Lva22pandUAQDDkJEp8_H3lE9rgAcK7Pki9MTEASCRUtPbq9rwvVyEiXryPj5K3nE0WDWAF"/>
+<span class="text-xs font-bold text-slate-400">Alex R.</span>
+</div>
+</div>
+</div>
+<div class="bg-emerald-50 dark:bg-emerald-900/20 p-5 rounded-lg border-3 border-emerald-500/30 dark:border-emerald-500/20 opacity-75 group relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2">
+<span class="material-symbols-outlined text-emerald-500">task_alt</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-emerald-100 text-emerald-600 text-[10px] font-black px-2 py-1 rounded border-2 border-emerald-600 uppercase tracking-wider">Completed</span>
+</div>
+<h4 class="text-lg font-extrabold mb-4 text-slate-500 line-through">Select official theme colors</h4>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img class="size-8 rounded-full border-2 border-slate-300" data-alt="Portrait of creative lead" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfjc736Hk9dlx8_r4lp1K30YP1lGZgZRBsljxq2mgy_lV4B6eTtYbKbhdO5Mp6eMebp3M00-oT_Pv5nGAgX1vPxAnz8a69jNfFrIQC9aJmHj5mnRxEWNWVdn8pKTAKVgrPxT8da0otBG-7sgd2c_SMRilZGfTweuzoPo3KrC3UupS2U-jqGNgeBLZlrIZH56ro01QEqiRQwqbtyU6BG6Nc4YyaYAh4fuk98XvqMxqC6_Zoa0jnl5vVxnh4hgvHfOxGCvv3oDCGxqY1"/>
+<span class="text-xs font-bold text-slate-400">Luna W.</span>
+</div>
+</div>
+</div>
+<div class="bg-emerald-50 dark:bg-emerald-900/20 p-5 rounded-lg border-3 border-emerald-500/30 dark:border-emerald-500/20 opacity-75 group relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2">
+<span class="material-symbols-outlined text-emerald-500">task_alt</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-emerald-100 text-emerald-600 text-[10px] font-black px-2 py-1 rounded border-2 border-emerald-600 uppercase tracking-wider">Completed</span>
+</div>
+<h4 class="text-lg font-extrabold mb-4 text-slate-500 line-through">Send early bird invitations</h4>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img class="size-8 rounded-full border-2 border-slate-300" data-alt="Portrait of comms officer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQIpECFJtxRowiehzYv6t2La4ImJB5ldQoVkOJWuC7T_D2hG32oGXm3c9NLaootqHWDsMhZVMIW11dTJtmJ26tmoAqGVQeW908Pq1i_kNB4OmPxVGdpQXLggdjFlZ_yKQgMvZPZbpKaZCV-PLeV5HOz4f_x0VvoxR0Z_T8a2ym958JqayckvXWczLO5L-XJesOgnhsETEMyDjhhP0OlZRkNMQvr3MYQEnZrW0C1xLXQGSKKunA9D7dPPPmfDdweuGJAI6-yS1JnDDj"/>
+<span class="text-xs font-bold text-slate-400">Dave P.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-auto border-t-3 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<span class="text-xs font-extrabold bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full border border-slate-900">v2.4.0-playful</span>
+<p class="text-xs font-bold text-slate-500">© 2024 GalaUs Project Management Hub</p>
+</div>
+<div class="flex items-center gap-6">
+<a class="text-xs font-black text-slate-900 dark:text-white hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-xs font-black text-slate-900 dark:text-white hover:text-primary transition-colors" href="#">Terms</a>
+<a class="text-xs font-black text-slate-900 dark:text-white hover:text-primary transition-colors" href="#">Help Center</a>
+<div class="flex gap-2">
+<div class="size-6 bg-slate-900 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px]">share</span>
+</div>
+<div class="size-6 bg-primary rounded flex items-center justify-center border-2 border-slate-900">
+<span class="material-symbols-outlined text-white text-[14px]">send</span>
+</div>
+</div>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

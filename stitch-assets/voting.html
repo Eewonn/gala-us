@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff5833",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23130f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .thick-border { border-width: 3px; }
+        .card-shadow { box-shadow: 8px 8px 0px 0px #ff5833; }
+        .card-shadow-hover:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0px 0px #ff5833; transition: all 0.2s ease; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b-4 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 md:px-10 py-4 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white border-2 border-slate-900">
+<span class="material-symbols-outlined">celebration</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-2xl font-black leading-tight tracking-tight">GalaUs</h2>
+</div>
+<div class="flex flex-1 justify-end gap-4 items-center">
+<nav class="hidden md:flex gap-6 mr-8">
+<a class="font-bold hover:text-primary" href="#">Dashboard</a>
+<a class="font-bold text-primary border-b-4 border-primary" href="#">Voting</a>
+<a class="font-bold hover:text-primary" href="#">Chat</a>
+</nav>
+<div class="flex gap-3">
+<button class="flex size-11 cursor-pointer items-center justify-center rounded-full bg-primary/10 border-2 border-slate-900 dark:border-slate-400 text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex size-11 cursor-pointer items-center justify-center rounded-full bg-primary/10 border-2 border-slate-900 dark:border-slate-400 text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+<div class="bg-primary/20 border-2 border-slate-900 rounded-full size-11 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User profile avatar close up face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcGc024Gz1CgWwXq86CdfPcrimki9HONRJ-geZiCT_uDcwUKVzDlO4AWyai1A8B3npmE8JotbjLVLopR97-q1zZDnq_wN-bBQcEEwzLGQdlqtgDi8Rv0euDIvNXkOoQ4_RIiYEgYN2D8swO7TKj8sPf5HYBVxwNT1OIudMgVhAGzBa4cSJcmWeu57DmfJYGho871gE3sq-CQXWg5FMMgjW4Y7rSr1HxLwKuVJurOQLiQ31rqYpFknpUunduzKVr-yyO8Vfmmd3mwLT"/>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-7xl mx-auto w-full p-6 md:p-10">
+<!-- Hero Section -->
+<div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
+<div class="max-w-2xl">
+<h1 class="text-5xl md:text-6xl font-black text-slate-900 dark:text-white mb-4 leading-none">
+                            Shape the <span class="text-primary italic">Grand Gala</span>
+</h1>
+<p class="text-xl font-medium text-slate-600 dark:text-slate-400">
+                            Cast your votes or suggest new ideas for our biggest event of the year. Every voice counts!
+                        </p>
+</div>
+<div class="flex gap-4">
+<button class="bg-primary text-white font-black px-8 py-4 rounded-xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_#000] active:translate-y-1 active:shadow-none transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">add_circle</span>
+                            NEW SUGGESTION
+                        </button>
+</div>
+</div>
+<!-- Category Tabs -->
+<div class="mb-10 overflow-x-auto pb-2">
+<div class="flex border-b-4 border-slate-200 dark:border-slate-700 min-w-max">
+<button class="px-8 py-4 text-lg font-black border-b-8 border-primary text-primary flex items-center gap-2">
+<span class="material-symbols-outlined">location_on</span> LOCATION
+                        </button>
+<button class="px-8 py-4 text-lg font-black text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-2">
+<span class="material-symbols-outlined">restaurant</span> FOOD &amp; DRINKS
+                        </button>
+<button class="px-8 py-4 text-lg font-black text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-2">
+<span class="material-symbols-outlined">calendar_month</span> DATE &amp; TIME
+                        </button>
+<button class="px-8 py-4 text-lg font-black text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-2">
+<span class="material-symbols-outlined">local_activity</span> ACTIVITIES
+                        </button>
+</div>
+</div>
+<!-- Suggestions Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Suggestion Card 1 -->
+<div class="bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden card-shadow card-shadow-hover flex flex-col">
+<div class="h-48 relative border-b-4 border-slate-900">
+<img class="w-full h-full object-cover" data-alt="Sunset ocean pier with golden light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDztPgIeW_t-f83dvnEe_6dCYuWO3riL0bxqoNZQbtq_5pCpASGp8W_f4SMhlHhHXAfEBxhrdb5B7WAXuRzefh6rhDlWIZ_xLZV9O2Ik_6nktqpPMRbx5gt7BiW0mErwdKhLi9BA0jKF8-Ph_CHVnD1HStGj7nGZvytnZjBf--xPNZf-kXr8P4ggoMaEURDe26Hh-baY6NaPQLVGpBMATL0VLf7zv40GyJAtopqjY-c9E8rQf9_iuqzf8IAbJaAvxKZbaShyXaK8zsc"/>
+<div class="absolute top-4 right-4 bg-white px-3 py-1 border-2 border-slate-900 rounded-full font-bold text-sm">
+                                42 VOTES
+                            </div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-2xl font-black">Sunset Pier</h3>
+<span class="material-symbols-outlined text-primary">verified</span>
+</div>
+<p class="text-slate-600 dark:text-slate-400 mb-6 font-medium">Breathtaking views and ocean breeze for the evening cocktail hour.</p>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 bg-primary text-white font-bold py-3 rounded-lg border-2 border-slate-900 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined fill-1">thumb_up</span> UPVOTE
+                                </button>
+<button class="size-12 border-2 border-slate-900 rounded-lg flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
+<span class="material-symbols-outlined">comment</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Suggestion Card 2 -->
+<div class="bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden card-shadow card-shadow-hover flex flex-col">
+<div class="h-48 relative border-b-4 border-slate-900">
+<img class="w-full h-full object-cover" data-alt="Elegant rooftop bar with city lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD24h-3bU_hE4cTgSZPFco7crKLDLoUwOX_AhH6sF0f4Lf2_LxIaPCHmGQaI8QXgjqkvd6CCTpUczhSbiwOaqfMzNr8iNZU7m5WqsMSGpw5L6pkMA3VnLCne7lIreP_tNINYMWyQ01vM3JG-WR9FpX75LvX3_5UFiZYupfUcP6dTaPDj3oA5SCviq101SGm065qnVNieZ8vvovm1eqMRhXzCOpnNtLImRHMyGQTFuBQ9qD099DMDJYjunCT6LxaiIDm05Z3fUXnGIRw"/>
+<div class="absolute top-4 right-4 bg-white px-3 py-1 border-2 border-slate-900 rounded-full font-bold text-sm">
+                                38 VOTES
+                            </div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-2xl font-black">The Sky Lounge</h3>
+<span class="material-symbols-outlined text-primary">new_releases</span>
+</div>
+<p class="text-slate-600 dark:text-slate-400 mb-6 font-medium">Modern aesthetic with 360-degree views of the city skyline.</p>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-bold py-3 rounded-lg border-2 border-slate-900 flex items-center justify-center gap-2 hover:bg-primary/10">
+<span class="material-symbols-outlined">thumb_up</span> UPVOTE
+                                </button>
+<button class="size-12 border-2 border-slate-900 rounded-lg flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
+<span class="material-symbols-outlined">comment</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Suggestion Card 3 (Food Highlight) -->
+<div class="bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden card-shadow card-shadow-hover flex flex-col">
+<div class="h-48 relative border-b-4 border-slate-900">
+<img class="w-full h-full object-cover" data-alt="Grand ballroom with crystal chandeliers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQFzvBRjzPmc9TGwNYbNhmGmuBbPboPs6bI8xQASwyF7VZRnMGzl8FcnWh74x6k0H7vkdLyBTRTJr6DTPRFGYD2HcNYke2VhzyaSapmCAij7goGuI9POnUX2rIdF8OY4nhiFgD0z6oSrc4i2h5r78fYLSPqIpBthMbkUv2rSeKE-7SuhJZMW1gjEaSTtTEOpJGXpmqQsSiIToQeNEWEN0o4-4bgK5TPg6bVszHZ6pVFtnzII5r_vHj0nnN3uS-WTxgmgSR9h5KCvWm"/>
+<div class="absolute top-4 right-4 bg-white px-3 py-1 border-2 border-slate-900 rounded-full font-bold text-sm">
+                                25 VOTES
+                            </div>
+</div>
+<div class="p-6 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-2xl font-black">Grand Ballroom</h3>
+</div>
+<p class="text-slate-600 dark:text-slate-400 mb-6 font-medium">Classic and sophisticated. Perfect for a formal black-tie event.</p>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-bold py-3 rounded-lg border-2 border-slate-900 flex items-center justify-center gap-2 hover:bg-primary/10">
+<span class="material-symbols-outlined">thumb_up</span> UPVOTE
+                                </button>
+<button class="size-12 border-2 border-slate-900 rounded-lg flex items-center justify-center text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
+<span class="material-symbols-outlined">comment</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Add New Suggestion Placeholder -->
+<div class="border-4 border-dashed border-slate-400 dark:border-slate-600 rounded-xl flex flex-col items-center justify-center p-10 bg-slate-50 dark:bg-slate-800/50 hover:border-primary transition-colors group">
+<div class="size-16 rounded-full border-4 border-slate-400 dark:border-slate-600 flex items-center justify-center mb-4 group-hover:border-primary group-hover:bg-primary/10">
+<span class="material-symbols-outlined text-4xl text-slate-400 dark:text-slate-600 group-hover:text-primary">add</span>
+</div>
+<h4 class="text-xl font-black text-slate-500 dark:text-slate-500 group-hover:text-primary">Add a Location</h4>
+<p class="text-sm font-bold text-slate-400 dark:text-slate-600 mt-2">Submit your favorite spot</p>
+</div>
+</div>
+<!-- Leaderboard Section -->
+<div class="mt-20">
+<div class="bg-primary/10 border-4 border-slate-900 rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="flex items-center gap-6">
+<div class="size-20 bg-primary text-white rounded-full border-4 border-slate-900 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl">trophy</span>
+</div>
+<div>
+<h3 class="text-3xl font-black">CURRENT FAVORITE</h3>
+<p class="text-lg font-bold text-primary">Sunset Pier leads with 42 votes!</p>
+</div>
+</div>
+<div class="flex -space-x-4">
+<div class="size-12 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Portrait of a smiling young man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-kwBTWHu3uyMcb508_qwTj5JY8pqXnA2se7TvKIjGvq3ajAY-iRnjQjd6omZh6q40Wacp7Yk8sGrzmtHsQFkwvJmuSik5UPVxk4kCL11DuDqqTkywJ6s6TegokrFuqsSaZRYESbsg_Zl8HxflMx_paPQHvHjjlgryl0om2g4kvJBNDzRVfOtKcV1wdda7TSHNfuAolGzTrQ7hUtdTd25a0F68U5LXpYoeDIvdxkOrLrO09lVPMTNG0HGCYcv8EjQ7oy_GYpfyV499"/>
+</div>
+<div class="size-12 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Portrait of a woman with red hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvBTu36f6c_4E_igKKqPB3vLa_2OrE-WobJBSkTjRwmwjHL13k_NuQPziijgQwcsoEY17nL2PNW6F_xlpxp8ewFttEOIbv_1UaHh8iouo14gKjlUyU-iBFAyRyHBQ6SQVVu50ci-J0_qpXFa54PmUNFzNyxhHP2WCk4HCJII4Na_PLFGztARpG9wM47UYnU7Zc9sKxnCt31Ic6fSMCjtEGjespIrpDQavFa1A4v72XD_2R8GcrhXchF0JQaR43ulA9iBX1nZl7ok8X"/>
+</div>
+<div class="size-12 rounded-full border-2 border-slate-900 overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Portrait of a man wearing glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGo3o4JDNixFEwEKkHBdK5YZK_xHSNnzYpKG1E1GtcgEFu6kBT8tPVYgmAcaxmCVJqft9M83hL1BX9-Q_Gq7YezVCFxDGEhNwHSiArN-hzEfE1RQAo_20pF1rud9mbzXHKEqS6brlomTCV_2crzNf3z7cc_hl6TiF0KEJ7FrAXLp8wDeIe6QXo0W2zg0-AwC9wMHe5oGAwuJy02dkMq33-QF6LlydiZsZc9C0bGo7eajxquKyAVmVAE-H9weinPAHeab8_h36s6mAF"/>
+</div>
+<div class="size-12 rounded-full border-2 border-slate-900 bg-white flex items-center justify-center font-bold text-xs">
+                                +39
+                            </div>
+</div>
+<button class="bg-slate-900 text-white font-black px-6 py-3 rounded-lg hover:bg-slate-800 transition-colors">
+                            VIEW FULL STATS
+                        </button>
+</div>
+</div>
+</main>
+<!-- Footer Decorative -->
+<footer class="mt-auto py-10 px-10 border-t-4 border-slate-900 bg-white dark:bg-slate-800">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-black">favorite</span>
+<span class="font-black text-slate-900 dark:text-white uppercase tracking-widest">Built for the community by GalaUs</span>
+</div>
+<div class="flex gap-8 font-bold">
+<a class="hover:text-primary" href="#">Guidelines</a>
+<a class="hover:text-primary" href="#">Privacy</a>
+<a class="hover:text-primary" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

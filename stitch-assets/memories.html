@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GalaUs | Memories Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400,700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff5833",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23130f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .thick-border { border-width: 3px; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Navigation -->
+<header class="flex items-center justify-between border-b-4 border-slate-900 dark:border-primary/30 bg-white dark:bg-slate-900 px-6 py-4 lg:px-20 sticky top-0 z-50">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-2 rounded-lg border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+<span class="material-symbols-outlined text-white font-bold">celebration</span>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tighter text-slate-900 dark:text-white uppercase">GalaUs</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-bold hover:text-primary transition-colors uppercase tracking-wider" href="#">Home</a>
+<a class="text-sm font-bold text-primary border-b-2 border-primary uppercase tracking-wider" href="#">Memories</a>
+<a class="text-sm font-bold hover:text-primary transition-colors uppercase tracking-wider" href="#">Events</a>
+<a class="text-sm font-bold hover:text-primary transition-colors uppercase tracking-wider" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 rounded-full border-2 border-slate-900 px-4 py-1">
+<span class="material-symbols-outlined text-slate-500">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-40" placeholder="Search memories..." type="text"/>
+</div>
+<div class="size-10 rounded-full border-2 border-slate-900 bg-primary/20 flex items-center justify-center overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="Portrait of a smiling young man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHf-Mfg-B-YhYjG0VZ3kb0ocJedX1dG8KHECWwqVJlBeA3PX5NuNnSYAZWoedyjZkDJqNscF_rV_bSSTMhQgr0Y7K_UZBYSp3JXClqbrTlg3nbqzraIaFSphXKgbR4qEUTYb4mb1K9Fke-hQkiI6CU8s-YgaMLyWTuETcxIMMZOMDgz9CMAQQtKKJa4akYszJJa9yNJ8fSvo62LjQ1Ro-jMKOLBSNmeLb_sy7YHEB4x-fL7Lh-bxht2tgOsrmbJ6J9RAZI2UIu4kqh"/>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto w-full px-6 py-10">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div class="space-y-2">
+<h1 class="text-5xl md:text-6xl font-black text-slate-900 dark:text-white leading-none">
+                    YOUR <span class="text-primary italic underline decoration-slate-900 underline-offset-4">MEMORIES</span>
+</h1>
+<p class="text-lg font-medium text-slate-600 dark:text-slate-400">Captured magic from your greatest celebrations.</p>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white font-black px-8 py-4 rounded-xl border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none uppercase tracking-widest">
+<span class="material-symbols-outlined">cloud_upload</span>
+                Upload New
+            </button>
+</div>
+<!-- Filter Chips -->
+<div class="flex flex-wrap gap-4 mb-10">
+<button class="px-6 py-2 rounded-full border-2 border-slate-900 bg-primary text-white font-bold text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">All Photos</button>
+<button class="px-6 py-2 rounded-full border-2 border-slate-900 bg-white dark:bg-slate-800 hover:bg-primary/10 font-bold text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">Summer Gala '24</button>
+<button class="px-6 py-2 rounded-full border-2 border-slate-900 bg-white dark:bg-slate-800 hover:bg-primary/10 font-bold text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">Wedding Expo</button>
+<button class="px-6 py-2 rounded-full border-2 border-slate-900 bg-white dark:bg-slate-800 hover:bg-primary/10 font-bold text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">Birthday Bashes</button>
+<button class="px-6 py-2 rounded-full border-2 border-slate-900 bg-white dark:bg-slate-800 hover:bg-primary/10 font-bold text-sm shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">Corporate Mixers</button>
+</div>
+<!-- Gallery Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="group relative bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(255,88,51,1)]">
+<div class="aspect-[4/3] overflow-hidden border-b-4 border-slate-900">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="People dancing at a colorful gala event" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt3mGYlICCqotSdQAbnSqBQr0EGqPcV_VH4TpdUkdLDlnARHD8JvufQP2HbBKtg8alSeDbhO_26fVz6r7tov1O-XNwmwicM6P5v5CpfTdIjvJ59t-pbBSO2o-D3DH1i_3VezI4pNdFipH0Eu14RKb7tTTy90ZcCAwR47jC831uiQQ5W2NA8ZVnSnLjh6UJFgxKoYOy6OXlZYk7zO5jqEqrKHqmH54P4tedWhOuuoQzY-rGTmxoAEkqmGf_CC8VZgLtfs1L40T4BSbx"/>
+</div>
+<div class="p-5 flex justify-between items-start bg-white dark:bg-slate-800">
+<div>
+<h3 class="font-black text-xl text-slate-900 dark:text-white uppercase leading-tight">Grand Entrance</h3>
+<p class="text-sm font-bold text-primary mt-1">Summer Gala 2024</p>
+</div>
+<button class="text-slate-900 dark:text-white p-1 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group relative bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+<div class="aspect-[4/3] overflow-hidden border-b-4 border-slate-900">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Close up of a fancy tiered wedding cake" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-Ll3yk0bDGZ99qmAPXLT590g1djG1L4V7LFokwVJPesTImW106rDZSFnh6zeZThgjsWsv-KPhk2TyewRoLJTZ5B1Utnr3Jv91ORy1ScJW6gDDmJFg-jsXBLKi_23y2eimJz54m4tDwVL_eD-z8XEjj8EjX4hbb6fBuzen3P6-G5NcAhyqmwnDfTVXTAWiLOH6gygfe3QycLYTEL4q8WpP-99lDNkLiwIcB2nLv4k8ubSEKnCe3YWWyaghniTQYjo9K5YYErE5XEct"/>
+</div>
+<div class="p-5 flex justify-between items-start bg-white dark:bg-slate-800">
+<div>
+<h3 class="font-black text-xl text-slate-900 dark:text-white uppercase leading-tight">Cake Cutting</h3>
+<p class="text-sm font-bold text-primary mt-1">Wedding Expo</p>
+</div>
+<button class="text-slate-900 dark:text-white p-1 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group relative bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(255,88,51,1)]">
+<div class="aspect-[4/3] overflow-hidden border-b-4 border-slate-900">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Bright lights and crowds at a night dance party" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNP88wor7A6XESYBqzLv5rcpx_fhFwoDwwAiqboYebu15kwUIiF8ohU1cO_dQTPjFEEQEobCuMoHnH1BDfBpMxWavWwmt10FWeBHFZksfezLn3lK11X-2jMIKm5dLogZjBGsRJG5a2dfziLmX7yny3w98hX6RV023D7cLhdAXXbwxb_iWSDbQhYnHVxS3aAbxwhNEnIBvcg7Dt9LrUWm2wH7J--jB54AhF1uDIcPMSs0E2oudxyM2uue0PC7tm6ws3Mdb5l-LrwsVi"/>
+</div>
+<div class="p-5 flex justify-between items-start bg-white dark:bg-slate-800">
+<div>
+<h3 class="font-black text-xl text-slate-900 dark:text-white uppercase leading-tight">Midnight Rave</h3>
+<p class="text-sm font-bold text-primary mt-1">Birthday Bash</p>
+</div>
+<button class="text-slate-900 dark:text-white p-1 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group relative bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+<div class="aspect-[4/3] overflow-hidden border-b-4 border-slate-900">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Elegant table setup with floral centerpieces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCG1JyQNoQeS1J8KQvm_2G7rn6T17hJh2D8xhCP8xqBth1eUfJJmEyez5N7xow62cxeanPrsHpBPJQiFKoz8KuH_3J3XmxN-qEUPKu0MBwuwgC_NVSZxUsKtYL0i3mWVhb14oRDiztyPgbzYHOFGFxqqC458JXgHFcsmXahBpMwJ0mw3yt47LTxUuyXue61PeAmh4ptJ40zRk-KiHSo-j1f4qEqQTbLOeLxMfOeoGJ4UL9VRxCHSznv9mL7W1NNPIKobgq02LiFdIoW"/>
+</div>
+<div class="p-5 flex justify-between items-start bg-white dark:bg-slate-800">
+<div>
+<h3 class="font-black text-xl text-slate-900 dark:text-white uppercase leading-tight">Floral Magic</h3>
+<p class="text-sm font-bold text-primary mt-1">Wedding Expo</p>
+</div>
+<button class="text-slate-900 dark:text-white p-1 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group relative bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(255,88,51,1)]">
+<div class="aspect-[4/3] overflow-hidden border-b-4 border-slate-900">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Group of friends laughing at an outdoor party" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyJOddRFICE-P2roW-TOrvMjKcQ5WnYkUUVs0FDl3cXONp9D125jQldmdPKkLeLoIysMq7zx9YtDg7SBfrEAIpU01_gcAE6d-csoO_kzu64-TIJNuXNuJTPP2QnPCNdx19HLVEjDaazqo8YQW2JSGxmQFj2KNTliSrAh628mtPhbaoix_2xiRkJUanktPhb7bbON6n96Lvt6D2B08LqNyEN6h6YvhUfQA5rVYDgxLfabBD9NcRmKqcCVVrfGuxcmwTZaMUaXLikJDg"/>
+</div>
+<div class="p-5 flex justify-between items-start bg-white dark:bg-slate-800">
+<div>
+<h3 class="font-black text-xl text-slate-900 dark:text-white uppercase leading-tight">Garden Toast</h3>
+<p class="text-sm font-bold text-primary mt-1">Summer Gala 2024</p>
+</div>
+<button class="text-slate-900 dark:text-white p-1 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group relative bg-white dark:bg-slate-800 border-4 border-slate-900 rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+<div class="aspect-[4/3] overflow-hidden border-b-4 border-slate-900 flex items-center justify-center bg-primary/10">
+<div class="text-center p-6">
+<span class="material-symbols-outlined text-primary text-6xl mb-2">add_a_photo</span>
+<p class="font-black text-slate-900 dark:text-white uppercase">Add to Album</p>
+</div>
+</div>
+<div class="p-5 flex justify-between items-start bg-white dark:bg-slate-800 opacity-50">
+<div>
+<h3 class="font-black text-xl text-slate-900 dark:text-white uppercase leading-tight">Create Highlight</h3>
+<p class="text-sm font-bold text-primary mt-1">New Category</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Highlight Section -->
+<div class="mt-20">
+<h2 class="text-3xl font-black text-slate-900 dark:text-white uppercase mb-8 flex items-center gap-3">
+<span class="size-10 bg-primary flex items-center justify-center rounded-lg border-2 border-slate-900 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+<span class="material-symbols-outlined text-white">star</span>
+</span>
+                Weekly Highlights
+            </h2>
+<div class="bg-primary/5 border-4 border-slate-900 rounded-2xl p-8 flex flex-col md:flex-row gap-10 items-center">
+<div class="w-full md:w-1/2 border-4 border-slate-900 rounded-xl overflow-hidden shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white">
+<img class="w-full aspect-video object-cover" data-alt="Beautifully lit outdoor event space at dusk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmpH3xdNn3v-3mJoXLjXj8kyvoswK_nz8Yu5pSre9kXiH4H6Up8dTbgTgpKKsj6LG7_JMfAPinvCpAahaafJBcNgkNsJStbAci6vEcsgSYRHyV3vgI2hEOYkK5wAXcbn9mG6rxxX-IZd5ZfPdt_qGqrZDTQt7ft9NwohnHmXbUvXYhuRuldF7zBz-IeJ43kG-4ypv8Mdr7inMPcARpMw7z7OBhaRD-uNiNcDdF-n34sQksOujOCXJoDRwam94XngWrwNfiIqskjqV5"/>
+</div>
+<div class="w-full md:w-1/2 space-y-6">
+<span class="bg-primary text-white font-black px-4 py-1 rounded-full text-xs uppercase tracking-widest border-2 border-slate-900 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">Editor's Pick</span>
+<h3 class="text-4xl font-black text-slate-900 dark:text-white leading-tight uppercase">The Golden Hour Soirée</h3>
+<p class="text-lg font-medium text-slate-700 dark:text-slate-300">
+                        Our biggest event yet! 500+ attendees, live jazz, and memories that will last a lifetime. Relive the sunset magic with the full digital album.
+                    </p>
+<div class="flex gap-4">
+<button class="flex-1 bg-white border-4 border-slate-900 py-3 rounded-xl font-black uppercase text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-slate-50 transition-colors">View Gallery</button>
+<button class="bg-primary border-4 border-slate-900 p-3 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+<span class="material-symbols-outlined text-white">share</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="mt-20 border-t-4 border-slate-900 bg-white dark:bg-slate-900 py-12 px-6">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-2 rounded-lg border-2 border-slate-900">
+<span class="material-symbols-outlined text-white font-bold">celebration</span>
+</div>
+<h2 class="text-xl font-extrabold text-slate-900 dark:text-white uppercase">GalaUs</h2>
+</div>
+<p class="text-sm font-bold text-slate-500 uppercase tracking-widest">© 2024 GalaUs Events Inc. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="size-10 border-2 border-slate-900 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]" href="#">
+<span class="material-symbols-outlined text-xl">camera_alt</span>
+</a>
+<a class="size-10 border-2 border-slate-900 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]" href="#">
+<span class="material-symbols-outlined text-xl">chat</span>
+</a>
+<a class="size-10 border-2 border-slate-900 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]" href="#">
+<span class="material-symbols-outlined text-xl">alternate_email</span>
+</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

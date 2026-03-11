@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#ff5833",
+                "background-light": "#f8f6f5",
+                "background-dark": "#23130f",
+              },
+              fontFamily: {
+                "display": ["Plus Jakarta Sans", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .bold-border {
+            border: 3px solid #23130f;
+        }
+        .bold-shadow {
+            box-shadow: 8px 8px 0px 0px #23130f;
+        }
+        .bold-shadow-sm {
+            box-shadow: 4px 4px 0px 0px #23130f;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between px-6 py-6 md:px-20 lg:px-40 border-b-4 border-slate-900 dark:border-slate-100 bg-white dark:bg-slate-900">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-primary flex items-center justify-center rounded-lg bold-border">
+<span class="material-symbols-outlined text-white font-bold">celebration</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-2xl font-black leading-tight tracking-tight uppercase">GalaUs</h2>
+</div>
+<button class="flex size-12 cursor-pointer items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 text-slate-900 dark:text-slate-100 border-2 border-slate-900 transition-all">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<main class="flex flex-1 justify-center py-12 px-6">
+<div class="layout-content-container flex flex-col max-w-[600px] w-full gap-8">
+<!-- Hero Visual Area -->
+<div class="relative w-full rounded-xl bold-border bold-shadow overflow-hidden bg-primary/20 aspect-video group">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Vibrant party crowd with colorful lighting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDCmvZc9fuNq-h27mWBqyoCr3ZEQKQby7pLktquxI5RoD6D_m4a_nqmIcTtbMH0M8LYhjrTkx_qKCg6HMEQytAvsUOMsmqC60QjM2oYu9mr-KLDPnHEIifBH76TUvjUQgKjBqAyl-W02Oru4bcRabVZBhNHMi5DajsAQFMH2Oze5HhwdZ-sUge4tDo4-c8MRa6HD_zDYUPP8ye-OimAj1euzfiraEwrJXUMCovLrHIRSZOX5479OPvdJ7p6ONHRo4MszudKkeSwcDSL')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent flex items-end p-8">
+<span class="bg-white text-slate-900 px-4 py-2 rounded-full font-black text-sm uppercase tracking-wider border-2 border-slate-900">Exclusive Event</span>
+</div>
+</div>
+<!-- Content Header -->
+<div class="flex flex-col gap-4">
+<h1 class="text-slate-900 dark:text-slate-100 text-5xl md:text-6xl font-black leading-none tracking-tight">
+                            Join the <span class="text-primary underline decoration-slate-900 dark:decoration-slate-100 underline-offset-4 italic">Gala</span>
+</h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg font-medium">
+                            The party is waiting. Pop in your details below to unlock your invitation and join the inner circle.
+                        </p>
+</div>
+<!-- Form Section -->
+<div class="flex flex-col gap-6 w-full">
+<!-- Invite Code Field -->
+<div class="flex flex-col gap-3">
+<label class="text-slate-900 dark:text-slate-100 text-lg font-extrabold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">key</span>
+                                Invite Link or Code
+                            </label>
+<div class="relative">
+<input class="form-input w-full rounded-xl border-4 border-slate-900 dark:border-slate-100 bg-white dark:bg-slate-800 p-5 text-xl font-bold placeholder:text-slate-400 focus:ring-4 focus:ring-primary focus:border-slate-900 outline-none transition-all bold-shadow-sm" placeholder="e.g. GALA-2024-XYZ" type="text"/>
+</div>
+</div>
+<!-- Name Field -->
+<div class="flex flex-col gap-3">
+<label class="text-slate-900 dark:text-slate-100 text-lg font-extrabold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">person</span>
+                                Your Name
+                            </label>
+<div class="relative">
+<input class="form-input w-full rounded-xl border-4 border-slate-900 dark:border-slate-100 bg-white dark:bg-slate-800 p-5 text-xl font-bold placeholder:text-slate-400 focus:ring-4 focus:ring-primary focus:border-slate-900 outline-none transition-all bold-shadow-sm" placeholder="How should we call you?" type="text"/>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-4">
+<button class="w-full bg-primary text-white py-6 rounded-xl text-2xl font-black uppercase tracking-widest border-4 border-slate-900 dark:border-slate-100 bold-shadow hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex items-center justify-center gap-3">
+                                Get In There
+                                <span class="material-symbols-outlined font-black">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Footer Help -->
+<div class="flex justify-center items-center gap-2 py-6">
+<p class="text-slate-500 dark:text-slate-400 font-bold">Lost your code?</p>
+<a class="text-primary font-black underline decoration-2 underline-offset-2" href="#">Ask an Organizer</a>
+</div>
+</div>
+</main>
+<!-- Decorative Floating Elements (Illustrative Style) -->
+<div class="hidden lg:block fixed bottom-10 right-10 size-32 bg-yellow-400 rounded-full border-4 border-slate-900 -rotate-12 flex items-center justify-center bold-shadow">
+<span class="material-symbols-outlined text-5xl text-slate-900">confirmation_number</span>
+</div>
+<div class="hidden lg:block fixed top-40 left-10 size-24 bg-primary rounded-xl border-4 border-slate-900 rotate-12 flex items-center justify-center bold-shadow">
+<span class="material-symbols-outlined text-4xl text-white">star</span>
+</div>
+</div>
+</div>
+</body></html>

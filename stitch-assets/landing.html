@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GalaUs - Plan Better Hangouts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff5833",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23130f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    borderWidth: {
+                        "3": "3px",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .bold-border {
+            border: 3px solid #23130f;
+        }
+        .shadow-playful {
+            box-shadow: 8px 8px 0px 0px #23130f;
+        }
+        .shadow-playful-sm {
+            box-shadow: 4px 4px 0px 0px #23130f;
+        }
+        .shadow-playful-primary {
+            box-shadow: 8px 8px 0px 0px #ff5833;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center justify-between px-6 md:px-20 py-6 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-50">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center bold-border">
+<span class="material-symbols-outlined text-white font-bold">celebration</span>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tighter uppercase italic">GalaUs</h2>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="hover:text-primary font-bold transition-colors" href="#">Features</a>
+<a class="hover:text-primary font-bold transition-colors" href="#">Pricing</a>
+<a class="hover:text-primary font-bold transition-colors" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex h-12 px-6 bg-primary text-white font-black rounded-full bold-border shadow-playful-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all items-center justify-center">
+                    Log In
+                </button>
+<button class="flex h-12 px-6 bg-white dark:bg-slate-800 text-primary font-black rounded-full bold-border shadow-playful-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all items-center justify-center">
+                    Create a Gala
+                </button>
+</div>
+</header>
+<main class="flex-1">
+<section class="max-w-7xl mx-auto px-6 md:px-20 py-16 md:py-28 flex flex-col md:flex-row items-center gap-16">
+<div class="flex-1 flex flex-col gap-8">
+<div class="inline-block px-4 py-1 bg-primary/10 border-2 border-primary text-primary font-bold rounded-full w-fit">
+                        The Ultimate Outing Planner 🚀
+                    </div>
+<h1 class="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight">
+                        Plan Better <span class="text-primary italic">Hangouts</span> with GalaUs
+                    </h1>
+<p class="text-xl md:text-2xl font-medium text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
+                        Stop the group chat chaos. GalaUs helps groups plan outings, track budgets, and share memories all in one beautiful space.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-6 mt-4">
+<button class="h-16 px-10 bg-primary text-white text-xl font-black rounded-xl bold-border shadow-playful hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                            Create a Gala
+                        </button>
+<button class="h-16 px-10 bg-white dark:bg-slate-900 text-xl font-black rounded-xl bold-border shadow-playful-primary hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                            Join with Invite Link
+                        </button>
+</div>
+</div>
+<div class="flex-1 relative">
+<div class="w-full aspect-square rounded-xl bold-border shadow-playful overflow-hidden bg-white">
+<img alt="Group of friends laughing and enjoying a rooftop party" class="w-full h-full object-cover" data-alt="Vibrant illustration of friends having fun at a social gathering" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkP4NLY15TNMTKZmQyzGmJKJr_r1rqlwN-cyAitxfwb3FMZ9IDgXKktGxqg40c7aaQdfwsZFJuHwRzSfd_GUOlvP56cu3I-LeUdAO43QR2DlFE7fi0u6Yx829izPY1ouO_c5U0vSyaJyP_lXXTBI4ZyQdxvM_2CipfQyszh7SBWB-KeDGYtP2nS8PKn6fI8b9Uq6_uGbqtU3tNVm-Dy4rgs9pXJO_-Fpx20ZzWNfikWI98l_tPiraR1z0NFIb74yJqSSCwnpvXBGL0"/>
+</div>
+<div class="absolute -bottom-6 -left-6 bg-yellow-400 p-4 bold-border shadow-playful-sm rounded-lg rotate-[-5deg] hidden md:block">
+<span class="text-black font-black text-lg">No more "IDK, you pick"</span>
+</div>
+<div class="absolute -top-6 -right-6 bg-primary p-4 bold-border shadow-playful-sm rounded-lg rotate-[5deg] hidden md:block">
+<span class="text-white font-black text-lg">Budgeting: Solved!</span>
+</div>
+</div>
+</section>
+<section class="max-w-7xl mx-auto px-6 md:px-20 py-24">
+<div class="flex flex-col items-center text-center gap-4 mb-20">
+<h2 class="text-4xl md:text-6xl font-black tracking-tight">Plan smarter, <span class="text-primary underline decoration-primary/30 underline-offset-8">party harder</span></h2>
+<p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl">Ditch the messy group chats for a streamlined planning experience designed for real friends.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Feature 1 -->
+<div class="group flex flex-col bg-white dark:bg-slate-800 rounded-xl bold-border p-8 shadow-playful hover:translate-y-[-8px] transition-all">
+<div class="size-16 rounded-full bg-blue-400 flex items-center justify-center bold-border mb-6 group-hover:rotate-12 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl font-bold">how_to_vote</span>
+</div>
+<h3 class="text-2xl font-black mb-3">Collaborative Voting</h3>
+<p class="text-slate-600 dark:text-slate-400 font-medium">Decide where to go, what to eat, and when to meet with zero friction.</p>
+</div>
+<!-- Feature 2 -->
+<div class="group flex flex-col bg-white dark:bg-slate-800 rounded-xl bold-border p-8 shadow-playful hover:translate-y-[-8px] transition-all">
+<div class="size-16 rounded-full bg-green-400 flex items-center justify-center bold-border mb-6 group-hover:rotate-12 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl font-bold">assignment_ind</span>
+</div>
+<h3 class="text-2xl font-black mb-3">Task Delegation</h3>
+<p class="text-slate-600 dark:text-slate-400 font-medium">Assign who's bringing the snacks and who's driving everyone home.</p>
+</div>
+<!-- Feature 3 -->
+<div class="group flex flex-col bg-white dark:bg-slate-800 rounded-xl bold-border p-8 shadow-playful hover:translate-y-[-8px] transition-all">
+<div class="size-16 rounded-full bg-purple-400 flex items-center justify-center bold-border mb-6 group-hover:rotate-12 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl font-bold">payments</span>
+</div>
+<h3 class="text-2xl font-black mb-3">Budget Tracking</h3>
+<p class="text-slate-600 dark:text-slate-400 font-medium">Split bills without the awkward conversations. Everyone sees who paid what.</p>
+</div>
+<!-- Feature 4 -->
+<div class="group flex flex-col bg-white dark:bg-slate-800 rounded-xl bold-border p-8 shadow-playful hover:translate-y-[-8px] transition-all">
+<div class="size-16 rounded-full bg-yellow-400 flex items-center justify-center bold-border mb-6 group-hover:rotate-12 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl font-bold">photo_library</span>
+</div>
+<h3 class="text-2xl font-black mb-3">Shared Memories</h3>
+<p class="text-slate-600 dark:text-slate-400 font-medium">A private space to upload photos and relive the best moments together.</p>
+</div>
+</div>
+</section>
+<section class="bg-primary/5 py-24 border-y-3 border-background-dark dark:border-slate-700">
+<div class="max-w-7xl mx-auto px-6 md:px-20">
+<div class="bg-white dark:bg-slate-900 rounded-xl bold-border p-8 md:p-16 shadow-playful-primary flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+<div class="flex-1 flex flex-col gap-6 relative z-10">
+<h2 class="text-4xl md:text-6xl font-black leading-tight">Ready to start your next adventure?</h2>
+<p class="text-xl text-slate-600 dark:text-slate-400 font-medium">Join thousands of groups already planning better hangouts. No credit card required.</p>
+<div class="flex flex-wrap gap-4 mt-4">
+<button class="h-16 px-10 bg-primary text-white text-xl font-black rounded-xl bold-border shadow-playful hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                                    Create a Gala Now
+                                </button>
+<button class="h-16 px-10 bg-white dark:bg-slate-800 text-xl font-black rounded-xl bold-border shadow-playful-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                                    Learn More
+                                </button>
+</div>
+</div>
+<div class="flex-1 w-full flex justify-center items-center relative min-h-[300px]">
+<div class="size-64 md:size-80 bg-yellow-300 rounded-full bold-border flex items-center justify-center relative">
+<span class="material-symbols-outlined text-slate-900 text-[100px] md:text-[140px] font-black">rocket_launch</span>
+<div class="absolute top-0 right-0 size-20 bg-blue-400 rounded-xl bold-border flex items-center justify-center rotate-12">
+<span class="material-symbols-outlined text-white text-4xl">celebration</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-background-dark text-white py-16 px-6 md:px-20">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded flex items-center justify-center border-2 border-white">
+<span class="material-symbols-outlined text-white text-sm font-bold">celebration</span>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tighter uppercase italic">GalaUs</h2>
+</div>
+<p class="text-slate-400 font-medium">The social planning platform that makes getting together actually fun.</p>
+</div>
+<div>
+<h4 class="text-lg font-black mb-6 uppercase tracking-widest text-primary">Product</h4>
+<ul class="flex flex-col gap-4 text-slate-400 font-bold">
+<li><a class="hover:text-white transition-colors" href="#">Features</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Pricing</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Mobile App</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Web Dashboard</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-black mb-6 uppercase tracking-widest text-primary">Company</h4>
+<ul class="flex flex-col gap-4 text-slate-400 font-bold">
+<li><a class="hover:text-white transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Press Kit</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-black mb-6 uppercase tracking-widest text-primary">Subscribe</h4>
+<div class="flex flex-col gap-4">
+<p class="text-sm text-slate-400 font-medium">Get the latest tips on planning the perfect hangout.</p>
+<div class="flex">
+<input class="bg-slate-800 border-2 border-white/20 rounded-l-lg px-4 py-2 w-full focus:outline-none focus:border-primary" placeholder="Email address" type="email"/>
+<button class="bg-primary px-4 rounded-r-lg border-2 border-primary hover:bg-primary/80">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-20 pt-8 border-t-2 border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-slate-500 font-bold text-sm">© 2024 GalaUs Inc. Built for good times.</p>
+<div class="flex gap-8 text-slate-500 font-bold text-sm">
+<a class="hover:text-white" href="#">Privacy Policy</a>
+<a class="hover:text-white" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

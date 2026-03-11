@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400,700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff5833",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23130f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .thick-border { border-width: 3px; }
+        .playful-shadow { box-shadow: 6px 6px 0px 0px #23130f; }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #ff5833 !important;
+            ring: 0 !important;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between border-b-4 border-slate-900 dark:border-slate-100 px-6 md:px-20 py-5 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-primary rounded flex items-center justify-center text-white thick-border border-slate-900">
+<span class="material-symbols-outlined font-bold">celebration</span>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tight">GalaUs</h2>
+</div>
+<div class="flex items-center gap-4 md:gap-8">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-bold hover:text-primary transition-colors" href="#">Explore</a>
+<a class="text-sm font-bold hover:text-primary transition-colors" href="#">My Galas</a>
+</nav>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-full size-11 bg-primary/10 hover:bg-primary/20 border-2 border-slate-900 transition-all">
+<span class="material-symbols-outlined text-slate-900">notifications</span>
+</button>
+<div class="size-11 rounded-full border-2 border-slate-900 bg-cover bg-center" data-alt="User profile avatar icon" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC-uUncALf0SDORAFiBVHnIVsc7ufde220Y55wvD_1qhd0lI-4YCdgaEomd-O9ECUG6zWAn7mpWJF0DvETK-QBFd_8TwyzySR4lFDDOVdcYdVv64qhtiNLXG0_9PRImrBYGuIVWo7ujcY9dM1nRSSK53SXuAzFtR_izqq23ll_YLFjTrhfQvh_PiQ7MY1CWzSrrtFrIX_ue9ZCRYNrpmZNdBioP8Ao6y2g3bb59rRKAYDTOEi5tYcqFIijgjS0pSjMiszqJk5BvkV23')"></div>
+</div>
+</div>
+</header>
+<main class="flex-1 flex justify-center py-12 px-6">
+<div class="max-w-[800px] w-full flex flex-col gap-10">
+<div class="flex flex-col gap-4">
+<div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary text-white text-sm font-black uppercase tracking-widest w-fit">
+                        New Event
+                    </div>
+<h1 class="text-5xl md:text-6xl font-black leading-tight tracking-tighter italic">Create a New Gala</h1>
+<p class="text-lg font-medium text-slate-600 dark:text-slate-400">Where all the best stories begin. Fill in the deets below!</p>
+</div>
+<form class="flex flex-col gap-8">
+<section class="bg-white dark:bg-slate-900/50 rounded-xl thick-border border-slate-900 p-8 playful-shadow">
+<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-lg font-extrabold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+                                    Event Name
+                                </label>
+<input class="w-full rounded-lg thick-border border-slate-900 bg-background-light p-4 text-lg font-bold placeholder:text-slate-400 focus:bg-white transition-all" placeholder="e.g. The Midnight Masquerade" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-lg font-extrabold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">description</span>
+                                    Description
+                                </label>
+<textarea class="w-full rounded-lg thick-border border-slate-900 bg-background-light p-4 text-lg font-bold placeholder:text-slate-400 focus:bg-white transition-all resize-none" placeholder="What's the vibe? Tell us everything!" rows="4"></textarea>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-lg font-extrabold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">image</span>
+                                    Cover Image
+                                </label>
+<div class="w-full aspect-video rounded-lg thick-border border-dashed border-slate-400 bg-background-light hover:bg-primary/5 cursor-pointer flex flex-col items-center justify-center transition-all group">
+<span class="material-symbols-outlined text-4xl text-slate-400 group-hover:text-primary mb-2">add_photo_alternate</span>
+<p class="font-bold text-slate-500 group-hover:text-primary">Click to upload or drag &amp; drop</p>
+<p class="text-xs text-slate-400 mt-1 uppercase font-black">PNG, JPG up to 10MB</p>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-slate-900/50 rounded-xl thick-border border-slate-900 p-8 playful-shadow">
+<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-1">
+<h3 class="text-xl font-black italic uppercase tracking-tight flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">how_to_vote</span>
+                                    Decision Type
+                                </h3>
+<p class="text-sm font-bold text-slate-500">How will you pick the final details for your Gala?</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer hidden" name="decision" type="radio"/>
+<div class="flex flex-col items-center gap-3 p-6 rounded-lg border-2 border-slate-900 bg-background-light peer-checked:bg-primary peer-checked:text-white transition-all h-full">
+<span class="material-symbols-outlined text-3xl">person_check</span>
+<span class="font-black text-sm text-center">Organizer Decides</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer hidden" name="decision" type="radio"/>
+<div class="flex flex-col items-center gap-3 p-6 rounded-lg border-2 border-slate-900 bg-background-light peer-checked:bg-primary peer-checked:text-white transition-all h-full">
+<span class="material-symbols-outlined text-3xl">groups</span>
+<span class="font-black text-sm text-center">Majority Vote</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer hidden" name="decision" type="radio"/>
+<div class="flex flex-col items-center gap-3 p-6 rounded-lg border-2 border-slate-900 bg-background-light peer-checked:bg-primary peer-checked:text-white transition-all h-full">
+<span class="material-symbols-outlined text-3xl">casino</span>
+<span class="font-black text-sm text-center">Random Picker</span>
+</div>
+</label>
+</div>
+</div>
+</section>
+<div class="flex flex-col md:flex-row gap-4 pt-4">
+<button class="flex-1 bg-primary text-white text-xl font-black py-5 rounded-xl thick-border border-slate-900 playful-shadow hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all uppercase italic tracking-widest" type="submit">
+                            Launch This Gala!
+                        </button>
+<button class="px-10 bg-white text-slate-900 text-xl font-black py-5 rounded-xl thick-border border-slate-900 playful-shadow hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all uppercase italic tracking-widest" type="button">
+                            Draft
+                        </button>
+</div>
+</form>
+<footer class="mt-12 py-10 border-t-2 border-slate-200 dark:border-slate-800 flex flex-col items-center gap-4">
+<div class="flex gap-6">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">share</span></a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">help</span></a>
+</div>
+<p class="text-xs font-black text-slate-400 uppercase tracking-widest">© 2024 GalaUs • Let's Party Responsibly</p>
+</footer>
+</div>
+</main>
+</div>
+</body></html>
