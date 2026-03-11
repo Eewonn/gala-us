@@ -97,6 +97,10 @@ export type Database = {
           user_id: string;
           type: "location" | "food" | "date" | "activity";
           content: string;
+          link: string | null;
+          event_date: string | null;
+          start_time: string | null;
+          end_time: string | null;
           created_at: string;
         };
         Insert: {
@@ -105,6 +109,10 @@ export type Database = {
           user_id: string;
           type: "location" | "food" | "date" | "activity";
           content: string;
+          link?: string | null;
+          event_date?: string | null;
+          start_time?: string | null;
+          end_time?: string | null;
           created_at?: string;
         };
         Update: {
@@ -113,6 +121,10 @@ export type Database = {
           user_id?: string;
           type?: "location" | "food" | "date" | "activity";
           content?: string;
+          link?: string | null;
+          event_date?: string | null;
+          start_time?: string | null;
+          end_time?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -222,6 +234,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      itinerary_items: {
+        Row: {
+          id: string;
+          gala_id: string;
+          title: string;
+          description: string | null;
+          scheduled_time: string;
+          order_index: number;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          gala_id: string;
+          title: string;
+          description?: string | null;
+          scheduled_time: string;
+          order_index?: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          gala_id?: string;
+          title?: string;
+          description?: string | null;
+          scheduled_time?: string;
+          order_index?: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       memories: {
         Row: {
           id: string;
@@ -265,12 +310,17 @@ export type Vote = Database["public"]["Tables"]["votes"]["Row"];
 export type Task = Database["public"]["Tables"]["tasks"]["Row"];
 export type Expense = Database["public"]["Tables"]["expenses"]["Row"];
 export type ExpenseAssignment = Database["public"]["Tables"]["expense_assignments"]["Row"];
+export type ItineraryItem = Database["public"]["Tables"]["itinerary_items"]["Row"];
 export type Memory = Database["public"]["Tables"]["memories"]["Row"];
 
 export type SuggestionWithVotes = Suggestion & {
   vote_count: number;
   user_has_voted: boolean;
   author_name?: string;
+};
+
+export type ItineraryItemWithCreator = ItineraryItem & {
+  creator_name?: string;
 };
 
 export type TaskWithAssignee = Task & {

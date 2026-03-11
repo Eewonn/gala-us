@@ -34,6 +34,10 @@ drop policy if exists "Anyone can read expense assignments" on public.expense_as
 drop policy if exists "Anyone can create expense assignments" on public.expense_assignments;
 drop policy if exists "Anyone can update expense assignments" on public.expense_assignments;
 drop policy if exists "Anyone can delete expense assignments" on public.expense_assignments;
+drop policy if exists "Anyone can read itinerary items" on public.itinerary_items;
+drop policy if exists "Anyone can create itinerary items" on public.itinerary_items;
+drop policy if exists "Anyone can update itinerary items" on public.itinerary_items;
+drop policy if exists "Anyone can delete itinerary items" on public.itinerary_items;
 
 -- Note: Helper function not needed for simplified MVP policies
 -- Uncomment if you need stricter member-only access:
@@ -147,4 +151,17 @@ create policy "Anyone can update expense assignments" on public.expense_assignme
   for update using (true);
 
 create policy "Anyone can delete expense assignments" on public.expense_assignments
+  for delete using (true);
+
+-- ITINERARY_ITEMS: Anyone can access (simplified for MVP)
+create policy "Anyone can read itinerary items" on public.itinerary_items
+  for select using (true);
+
+create policy "Anyone can create itinerary items" on public.itinerary_items
+  for insert with check (true);
+
+create policy "Anyone can update itinerary items" on public.itinerary_items
+  for update using (true);
+
+create policy "Anyone can delete itinerary items" on public.itinerary_items
   for delete using (true);

@@ -25,6 +25,10 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
   const [activeType, setActiveType] = useState<SuggType>("location");
   const [showForm, setShowForm] = useState(false);
   const [newContent, setNewContent] = useState("");
+  const [newLink, setNewLink] = useState("");
+  const [newDate, setNewDate] = useState("");
+  const [newStartTime, setNewStartTime] = useState("");
+  const [newEndTime, setNewEndTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const filtered = suggestions.filter((s) => s.type === activeType);
@@ -50,8 +54,16 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
       user_id: userId,
       type: activeType,
       content: newContent.trim(),
+      link: newLink.trim() || null,
+      event_date: newDate || null,
+      start_time: newStartTime || null,
+      end_time: newEndTime || null,
     });
     setNewContent("");
+    setNewLink("");
+    setNewDate("");
+    setNewStartTime("");
+    setNewEndTime("");
     setShowForm(false);
     setSubmitting(false);
     onRefresh();
@@ -107,6 +119,41 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                 placeholder={`Suggest a ${activeType}...`}
                 className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] resize-none"
               />
+              {(activeType === "location" || activeType === "food" || activeType === "activity") && (
+                <input
+                  type="url"
+                  value={newLink}
+                  onChange={(e) => setNewLink(e.target.value)}
+                  placeholder={activeType === "location" ? "🗺️ Google Maps link (recommended)" : "🔗 Link (optional)"}
+                  className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                />
+              )}
+              {activeType === "date" && (
+                <div className="space-y-3">
+                  <input
+                    type="date"
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                    className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="time"
+                      value={newStartTime}
+                      onChange={(e) => setNewStartTime(e.target.value)}
+                      placeholder="Start time"
+                      className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                    />
+                    <input
+                      type="time"
+                      value={newEndTime}
+                      onChange={(e) => setNewEndTime(e.target.value)}
+                      placeholder="End time (optional)"
+                      className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                    />
+                  </div>
+                </div>
+              )}
               <div className="flex gap-3">
                 <button
                   type="submit"
@@ -178,6 +225,33 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                   {s.type.toUpperCase()}
                 </p>
                 <p className="font-bold text-slate-800 flex-1 leading-snug">{s.content}</p>
+                {s.link && (
+                  <a
+                    href={s.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 bg-blue-50 text-blue-700 border-2 border-blue-400 font-bold text-sm px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-100 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-base">link</span>
+                    {s.type === "location" ? "View on Maps" : "View Link"}
+                  </a>
+                )}
+                {s.type === "date" && (s.event_date || s.start_time) && (
+                  <div className="mt-3 bg-green-50 border-2 border-green-400 rounded-lg p-3">
+                    {s.event_date && (
+                      <div className="flex items-center gap-2 font-bold text-green-800 text-sm">
+                        <span className="material-symbols-outlined text-base">calendar_today</span>
+                        {new Date(s.event_date).toLocaleDateString()}
+                      </div>
+                    )}
+                    {s.start_time && (
+                      <div className="flex items-center gap-2 font-bold text-green-800 text-sm mt-1">
+                        <span className="material-symbols-outlined text-base">schedule</span>
+                        {s.start_time}{s.end_time && ` - ${s.end_time}`}
+                      </div>
+                    )}
+                  </div>
+                )}
                 {s.author_name && (
                   <p className="text-xs text-slate-400 font-medium mt-2">by {s.author_name}</p>
                 )}

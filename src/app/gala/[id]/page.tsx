@@ -13,11 +13,13 @@ import VotingTab from "@/components/dashboard/VotingTab";
 import TasksTab from "@/components/dashboard/TasksTab";
 import BudgetTab from "@/components/dashboard/BudgetTab";
 import MemoriesTab from "@/components/dashboard/MemoriesTab";
+import ItineraryTab from "@/components/dashboard/ItineraryTab";
 import type {
   GalaWithMembers,
   SuggestionWithVotes,
   TaskWithAssignee,
   ExpenseWithDetails,
+  ItineraryItemWithCreator,
   User,
   Gala,
   GalaMember,
@@ -29,13 +31,14 @@ import type {
   Memory,
 } from "@/types/database";
 
-type Tab = "overview" | "voting" | "tasks" | "budget" | "memories";
+type Tab = "overview" | "voting" | "tasks" | "budget" | "itinerary" | "memories";
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: "overview", label: "Overview", icon: "dashboard" },
   { id: "voting", label: "Voting", icon: "how_to_vote" },
   { id: "tasks", label: "Tasks", icon: "task_alt" },
   { id: "budget", label: "Budget", icon: "payments" },
+  { id: "itinerary", label: "Itinerary", icon: "event_note" },
   { id: "memories", label: "Memories", icon: "photo_library" },
 ];
 
@@ -47,6 +50,7 @@ export default function GalaDashboard() {
   const [suggestions, setSuggestions] = useState<SuggestionWithVotes[]>([]);
   const [tasks, setTasks] = useState<TaskWithAssignee[]>([]);
   const [expenses, setExpenses] = useState<ExpenseWithDetails[]>([]);
+  const [itineraryItems, setItineraryItems] = useState<ItineraryItemWithCreator[]>([]);
   const [memories, setMemories] = useState<(Memory & { user?: User })[]>([]);
   const { user: currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -237,6 +241,20 @@ export default function GalaDashboard() {
     }));
     setMemories(memoriesWithUsers);
 
+    // Fetch itinerary items
+    const { data: rawItinerary } = await supabase
+      .from("itinerary_items")
+      .select("*")
+      .eq("gala_id", id)
+      .order("scheduled_time", { ascending: true });
+    const itineraryData = (rawItinerary || []) as ItineraryItemWithCreator[];
+    
+    const itineraryWithCreators = itineraryData.map((item) => ({
+      ...item,
+      creator_name: usersData.find((u) => u.id === item.created_by)?.name,
+    }));
+    setItineraryItems(itineraryWithCreators);
+
     setLoading(false);
   }, [id, currentUser]);
 
@@ -345,6 +363,25 @@ export default function GalaDashboard() {
       user: usersData.find((u) => u.id === m.user_id),
     }));
     setMemories(memoriesWithUsers);
+  }, [id, gala]);
+
+  const refreshItinerary = useCallback(async () => {
+    if (!gala) return;
+    const supabase = createClient();
+    
+    const { data: rawItinerary } = await supabase
+      .from("itinerary_items")
+      .select("*")
+      .eq("gala_id", id)
+      .order("scheduled_time", { ascending: true });
+    const itineraryData = (rawItinerary || []) as ItineraryItemWithCreator[];
+
+    const usersData = gala.members.map(m => m.user);
+    const itineraryWithCreators = itineraryData.map((item) => ({
+      ...item,
+      creator_name: usersData.find((u) => u.id === item.created_by)?.name,
+    }));
+    setItineraryItems(itineraryWithCreators);
   }, [id, gala]);
 
   useEffect(() => {
@@ -552,6 +589,14 @@ export default function GalaDashboard() {
             expenses={expenses}
             members={gala.members}
             onRefresh={refreshExpenses}
+          />
+        )}
+        {tab === "itinerary" && (
+          <ItineraryTab
+            galaId={id}
+            userId={currentUser?.id || ""}
+            items={itineraryItems}
+            onRefresh={refreshItinerary}
           />
         )}
         {tab === "memories" && (
