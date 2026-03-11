@@ -6,6 +6,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import GalaLogo from "@/components/GalaLogo";
 import SqueezeLoader from "@/components/SqueezeLoader";
+import { useAuth } from "@/contexts/AuthContext";
+import UserDropdown from "@/components/UserDropdown";
 import OverviewTab from "@/components/dashboard/OverviewTab";
 import VotingTab from "@/components/dashboard/VotingTab";
 import TasksTab from "@/components/dashboard/TasksTab";
@@ -45,21 +47,13 @@ export default function GalaDashboard() {
   const [tasks, setTasks] = useState<TaskWithAssignee[]>([]);
   const [expenses, setExpenses] = useState<ExpenseWithPayer[]>([]);
   const [memories, setMemories] = useState<(Memory & { user?: User })[]>([]);
-  const [currentUser, setCurrentUser] = useState<{ id: string; name: string } | null>(null);
+  const { user: currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [inviteLink, setInviteLink] = useState("");
   const [coverImage, setCoverImage] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("galaus_user");
-    if (stored) {
-      try {
-        setCurrentUser(JSON.parse(stored));
-      } catch {
-        // ignore
-      }
-    }
     const storedCover = localStorage.getItem(`galaus_cover_${id}`);
     if (storedCover) setCoverImage(storedCover);
   }, [id]);
@@ -256,24 +250,23 @@ export default function GalaDashboard() {
         </div>
         <div className="flex items-center gap-3">
           {currentUser ? (
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex flex-col items-end">
-                <p className="text-xs text-slate-400 font-bold">Logged in as</p>
-                <p className="font-black text-sm">{currentUser.name}</p>
-              </div>
-              <div className="size-10 rounded-full bg-[#ff5833] bold-border flex items-center justify-center">
-                <span className="text-white font-black">
-                  {currentUser.name.charAt(0)}
-                </span>
-              </div>
-            </div>
+            <UserDropdown redirectAfterLogout="/" />
           ) : (
-            <Link
-              href={`/join?code=${gala.invite_code}`}
-              className="h-10 px-5 bg-[#ff5833] text-white font-black rounded-full bold-border text-sm btn-push flex items-center"
-            >
-              Join Gala
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/login?redirect=/gala/${id}`}
+                className="h-10 px-5 bg-white font-black rounded-full bold-border text-sm btn-push flex items-center gap-1"
+              >
+                <span className="material-symbols-outlined text-sm">person</span>
+                Log In
+              </Link>
+              <Link
+                href={`/join?code=${gala.invite_code}`}
+                className="h-10 px-5 bg-[#ff5833] text-white font-black rounded-full bold-border text-sm btn-push flex items-center"
+              >
+                Join Gala
+              </Link>
+            </div>
           )}
         </div>
       </header>

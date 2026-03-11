@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import GalaLogo from "@/components/GalaLogo";
+import { useAuth } from "@/contexts/AuthContext";
+import UserDropdown from "@/components/UserDropdown";
 
 const features = [
   {
@@ -31,6 +33,8 @@ const features = [
 ];
 
 export default function LandingPage() {
+  const { user } = useAuth();
+
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8f6f5]">
       {/* Google Material Symbols font */}
@@ -48,18 +52,35 @@ export default function LandingPage() {
           </a>
         </nav>
         <div className="flex items-center gap-3">
-          <Link
-            href="/create-gala"
-            className="h-11 px-6 bg-[#ff5833] text-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm"
-          >
-            Create a Gala
-          </Link>
-          <Link
-            href="/join"
-            className="h-11 px-6 bg-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm"
-          >
-            Join
-          </Link>
+          {user ? (
+            <>
+              <Link href="/create-gala" className="h-11 px-6 bg-[#ff5833] text-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm">
+                Create a Gala
+              </Link>
+              <UserDropdown />
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="h-11 px-5 bg-white font-black rounded-full bold-border shadow-playful-sm btn-push items-center justify-center text-sm hidden sm:flex"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/create-gala"
+                className="h-11 px-6 bg-[#ff5833] text-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm"
+              >
+                Create a Gala
+              </Link>
+              <Link
+                href="/join"
+                className="h-11 px-6 bg-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm"
+              >
+                Join
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
