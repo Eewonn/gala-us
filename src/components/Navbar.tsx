@@ -21,6 +21,11 @@ export default function Navbar({ showCreateButton = true, variant = "default" }:
       
       {variant === "landing" && (
         <nav className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+          {user && (
+            <Link className="hover:text-[#ff5833] font-bold transition-colors" href="/my-galas">
+              My Galas
+            </Link>
+          )}
           <a className="hover:text-[#ff5833] font-bold transition-colors" href="#features">
             Features
           </a>

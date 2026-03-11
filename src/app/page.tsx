@@ -44,9 +44,6 @@ export default function LandingPage() {
         {/* Hero */}
         <section className="max-w-7xl mx-auto px-6 md:px-20 py-20 md:py-32 flex flex-col md:flex-row items-center gap-16">
           <div className="flex-1 flex flex-col gap-8">
-            <div className="inline-flex px-4 py-1.5 bg-[#ff5833]/10 border-2 border-[#ff5833] text-[#ff5833] font-bold rounded-full w-fit text-sm">
-              The Ultimate Outing Planner 🚀
-            </div>
             <h1 className="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight">
               Plan Better{" "}
               <span className="text-[#ff5833] italic">Hangouts</span> with
