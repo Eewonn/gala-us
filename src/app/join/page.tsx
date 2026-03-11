@@ -35,7 +35,7 @@ function JoinForm() {
       const { data: galaData, error: galaErr } = await supabase
         .from("galas")
         .select("*")
-        .eq("invite_code", form.inviteCode.trim().toUpperCase())
+        .eq("invite_code", form.inviteCode.trim().toLowerCase())
         .single();
 
       if (galaErr || !galaData) {

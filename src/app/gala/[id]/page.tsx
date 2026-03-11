@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import GalaLogo from "@/components/GalaLogo";
+import SqueezeLoader from "@/components/SqueezeLoader";
 import OverviewTab from "@/components/dashboard/OverviewTab";
 import VotingTab from "@/components/dashboard/VotingTab";
 import TasksTab from "@/components/dashboard/TasksTab";
@@ -48,6 +49,7 @@ export default function GalaDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [inviteLink, setInviteLink] = useState("");
+  const [coverImage, setCoverImage] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("galaus_user");
@@ -58,7 +60,21 @@ export default function GalaDashboard() {
         // ignore
       }
     }
-  }, []);
+    const storedCover = localStorage.getItem(`galaus_cover_${id}`);
+    if (storedCover) setCoverImage(storedCover);
+  }, [id]);
+
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      setCoverImage(dataUrl);
+      localStorage.setItem(`galaus_cover_${id}`, dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const fetchData = useCallback(async () => {
     const supabase = createClient();
@@ -201,16 +217,7 @@ export default function GalaDashboard() {
   }, [fetchData]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#f8f6f5] flex items-center justify-center">
-        <div className="text-center">
-          <span className="material-symbols-outlined text-[#ff5833] text-6xl animate-spin block mb-4">
-            progress_activity
-          </span>
-          <p className="font-black text-xl">Loading your Gala...</p>
-        </div>
-      </div>
-    );
+    return <SqueezeLoader />;
   }
 
   if (error || !gala) {
@@ -272,18 +279,49 @@ export default function GalaDashboard() {
       </header>
 
       {/* Cover */}
-      <div className="relative h-48 md:h-64 w-full overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-[#ff5833]/30 via-yellow-100 to-slate-100">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+      <div className="relative h-48 md:h-64 w-full overflow-hidden border-b-4 border-slate-900 group">
+        {/* Background: uploaded image or white default */}
+        {coverImage ? (
+          <img
+            src={coverImage}
+            alt="Gala cover"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-white" />
+        )}
+
+        {/* Overlay: darker when image is set for text legibility */}
+        <div className={`absolute inset-0 ${coverImage ? "bg-gradient-to-t from-black/60 to-transparent" : "bg-gradient-to-t from-black/20 to-transparent"}`} />
+
+        {/* Edit cover button */}
+        <label className="absolute top-4 right-4 cursor-pointer z-10">
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleCoverUpload}
+          />
+          <div className="flex items-center gap-2 bg-white/90 hover:bg-white border-2 border-slate-900 rounded-full px-4 py-2 shadow-playful-sm btn-push transition-all">
+            <span className="material-symbols-outlined text-slate-700 text-base">
+              {coverImage ? "edit" : "add_photo_alternate"}
+            </span>
+            <span className="font-black text-sm text-slate-700 hidden sm:block">
+              {coverImage ? "Change Cover" : "Add Cover"}
+            </span>
+          </div>
+        </label>
+
         <div className="absolute bottom-0 left-0 p-6 md:p-10 flex justify-between items-end w-full">
           <div>
             <span className="bg-[#ff5833] text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest mb-2 inline-block">
               {gala.stage}
             </span>
-            <h1 className="text-3xl md:text-5xl font-black text-white leading-tight uppercase">
+            <h1 className={`text-3xl md:text-5xl font-black leading-tight uppercase ${coverImage ? "text-white" : "text-slate-900"}`}>
               {gala.title}
             </h1>
             {gala.description && (
-              <p className="text-white/70 font-medium mt-1 max-w-xl">
+              <p className={`font-medium mt-1 max-w-xl ${coverImage ? "text-white/70" : "text-slate-500"}`}>
                 {gala.description}
               </p>
             )}

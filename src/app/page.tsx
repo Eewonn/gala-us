@@ -97,12 +97,11 @@ export default function LandingPage() {
 
           <div className="flex-1 relative w-full max-w-lg">
             <div className="w-full aspect-square rounded-xl bold-border shadow-playful overflow-hidden bg-white">
-              {/* Hero illustration – colourful placeholder */}
-              <div className="w-full h-full bg-gradient-to-br from-[#ff5833]/20 via-yellow-100 to-blue-100 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[#ff5833] text-[160px] font-black opacity-80">
-                  celebration
-                </span>
-              </div>
+              <img
+                src="/catfriends.jpg"
+                alt="Friends hanging out together"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="absolute -bottom-6 -left-6 bg-yellow-400 p-4 bold-border shadow-playful-sm rounded-lg rotate-[-5deg] hidden md:block">
               <span className="text-black font-black text-base">
