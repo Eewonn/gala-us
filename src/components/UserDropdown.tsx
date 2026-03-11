@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { createClient } from "@/lib/supabase/client";
 
 interface Props {
   redirectAfterLogout?: string;
@@ -11,7 +12,28 @@ interface Props {
 export default function UserDropdown({ redirectAfterLogout = "/" }: Props) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [avatar, setAvatar] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
+
+  // Fetch avatar from database
+  useEffect(() => {
+    if (!user) return;
+    
+    const fetchAvatar = async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from("users")
+        .select("avatar")
+        .eq("id", user.id)
+        .single();
+      
+      if (data?.avatar) {
+        setAvatar(data.avatar);
+      }
+    };
+    
+    fetchAvatar();
+  }, [user]);
 
   // Close on outside click
   useEffect(() => {
@@ -32,12 +54,6 @@ export default function UserDropdown({ redirectAfterLogout = "/" }: Props) {
     .join("")
     .slice(0, 2)
     .toUpperCase();
-
-  // Avatar: use saved base64 from localStorage if available
-  const savedAvatar =
-    typeof window !== "undefined"
-      ? localStorage.getItem(`galaus_avatar_${user.id}`)
-      : null;
 
   const handleLogout = () => {
     setOpen(false);
@@ -62,8 +78,8 @@ export default function UserDropdown({ redirectAfterLogout = "/" }: Props) {
           </p>
         </div>
         <div className="size-10 rounded-full bg-[#ff5833] bold-border shadow-playful-sm flex items-center justify-center overflow-hidden group-hover:opacity-85 transition-opacity">
-          {savedAvatar ? (
-            <img src={savedAvatar} alt={user.name} className="w-full h-full object-cover" />
+          {avatar ? (
+            <img src={avatar} alt={user.name} className="w-full h-full object-cover" />
           ) : (
             <span className="text-white font-black text-sm">{initials}</span>
           )}
@@ -79,8 +95,8 @@ export default function UserDropdown({ redirectAfterLogout = "/" }: Props) {
           {/* User info header */}
           <div className="flex items-center gap-3 px-4 py-4 border-b-2 border-slate-100">
             <div className="size-10 rounded-full bg-[#ff5833] border-2 border-slate-900 flex items-center justify-center overflow-hidden shrink-0">
-              {savedAvatar ? (
-                <img src={savedAvatar} alt={user.name} className="w-full h-full object-cover" />
+              {avatar ? (
+                <img src={avatar} alt={user.name} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-white font-black text-sm">{initials}</span>
               )}

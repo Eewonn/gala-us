@@ -29,12 +29,9 @@ export default function ProfilePage() {
     }
   }, [authUser, router]);
 
-  // Load user details + saved avatar
+  // Load user details + avatar from database
   useEffect(() => {
     if (!authUser) return;
-
-    const savedAvatar = localStorage.getItem(`galaus_avatar_${authUser.id}`);
-    setAvatar(savedAvatar);
 
     const fetchProfile = async () => {
       const supabase = createClient();
@@ -47,6 +44,10 @@ export default function ProfilePage() {
         const p = data as User;
         setProfile(p);
         setName(p.name);
+        // Load avatar from database
+        if (p.avatar) {
+          setAvatar(p.avatar);
+        }
       }
     };
     fetchProfile();
@@ -55,6 +56,13 @@ export default function ProfilePage() {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image must be less than 2MB");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
@@ -71,18 +79,19 @@ export default function ProfilePage() {
 
     try {
       const supabase = createClient();
+      
+      // Update both name and avatar in database
       const { error: err } = await supabase
         .from("users")
-        .update({ name: name.trim() })
+        .update({ 
+          name: name.trim(),
+          avatar: avatar || null
+        })
         .eq("id", authUser.id);
 
-      if (err) throw err;
-
-      // Save avatar to localStorage
-      if (avatar) {
-        localStorage.setItem(`galaus_avatar_${authUser.id}`, avatar);
-      } else {
-        localStorage.removeItem(`galaus_avatar_${authUser.id}`);
+      if (err) {
+        console.error("Failed to save profile:", err);
+        throw err;
       }
 
       // Update auth context with new name

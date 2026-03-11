@@ -56,6 +56,13 @@ export default function GalaDashboard() {
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image must be less than 2MB");
+      return;
+    }
+    
     const reader = new FileReader();
     reader.onload = async (ev) => {
       const dataUrl = ev.target?.result as string;
@@ -63,10 +70,16 @@ export default function GalaDashboard() {
       
       // Save to database
       const supabase = createClient();
-      await supabase
+      const { error: updateError } = await supabase
         .from("galas")
         .update({ cover_image: dataUrl })
         .eq("id", id);
+      
+      if (updateError) {
+        console.error("Failed to save cover image:", updateError);
+        alert("Failed to save cover image. Please try again.");
+        setCoverImage(null);
+      }
     };
     reader.readAsDataURL(file);
   };
