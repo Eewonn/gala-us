@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { SuggestionWithVotes } from "@/types/database";
 import LocationPreview from "@/components/LocationPreview";
@@ -31,9 +31,25 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
   const [newStartTime, setNewStartTime] = useState("");
   const [newEndTime, setNewEndTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [editingSuggestion, setEditingSuggestion] = useState<SuggestionWithVotes | null>(null);
+  const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
   const filtered = suggestions.filter((s) => s.type === activeType);
   const sorted = [...filtered].sort((a, b) => b.vote_count - a.vote_count);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuOpen) {
+        const target = e.target as HTMLElement;
+        if (!target.closest('[data-menu]')) {
+          setMenuOpen(null);
+        }
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
 
   const handleVote = async (suggId: string, hasVoted: boolean) => {
     const supabase = createClient();
@@ -50,24 +66,73 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
     if (!newContent.trim()) return;
     setSubmitting(true);
     const supabase = createClient();
-    await supabase.from("suggestions").insert({
-      gala_id: galaId,
-      user_id: userId,
-      type: activeType,
-      content: newContent.trim(),
-      link: newLink.trim() || null,
-      event_date: newDate || null,
-      start_time: newStartTime || null,
-      end_time: newEndTime || null,
-    });
+    
+    if (editingSuggestion) {
+      // Update existing suggestion
+      await supabase
+        .from("suggestions")
+        .update({
+          content: newContent.trim(),
+          link: newLink.trim() || null,
+          event_date: newDate || null,
+          start_time: newStartTime || null,
+          end_time: newEndTime || null,
+        })
+        .eq("id", editingSuggestion.id);
+    } else {
+      // Create new suggestion
+      await supabase.from("suggestions").insert({
+        gala_id: galaId,
+        user_id: userId,
+        type: activeType,
+        content: newContent.trim(),
+        link: newLink.trim() || null,
+        event_date: newDate || null,
+        start_time: newStartTime || null,
+        end_time: newEndTime || null,
+      });
+    }
+    
     setNewContent("");
     setNewLink("");
     setNewDate("");
     setNewStartTime("");
     setNewEndTime("");
     setShowForm(false);
+    setEditingSuggestion(null);
     setSubmitting(false);
     onRefresh();
+  };
+
+  const handleEditClick = (suggestion: SuggestionWithVotes) => {
+    setEditingSuggestion(suggestion);
+    setActiveType(suggestion.type);
+    setNewContent(suggestion.content);
+    setNewLink(suggestion.link || "");
+    setNewDate(suggestion.event_date || "");
+    setNewStartTime(suggestion.start_time || "");
+    setNewEndTime(suggestion.end_time || "");
+    setShowForm(true);
+    setMenuOpen(null);
+  };
+
+  const handleDeleteClick = async (suggestionId: string) => {
+    if (!confirm("Are you sure you want to delete this suggestion?")) return;
+    
+    const supabase = createClient();
+    await supabase.from("suggestions").delete().eq("id", suggestionId);
+    setMenuOpen(null);
+    onRefresh();
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingSuggestion(null);
+    setNewContent("");
+    setNewLink("");
+    setNewDate("");
+    setNewStartTime("");
+    setNewEndTime("");
   };
 
   return (
@@ -95,7 +160,9 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-xl bold-border shadow-playful w-full max-w-md p-6">
-            <h3 className="text-2xl font-black mb-4">Add Suggestion</h3>
+            <h3 className="text-2xl font-black mb-4">
+              {editingSuggestion ? "Edit Suggestion" : "Add Suggestion"}
+            </h3>
             <form onSubmit={handleAddSuggestion} className="flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-2">
                 {TYPES.map((t) => (
@@ -103,9 +170,10 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                     key={t}
                     type="button"
                     onClick={() => setActiveType(t)}
+                    disabled={!!editingSuggestion}
                     className={`flex items-center gap-2 p-3 rounded-lg border-2 font-bold text-sm transition-all ${
                       activeType === t ? "border-[#ff5833] bg-[#ff5833]/5" : "border-slate-200 hover:border-slate-900"
-                    }`}
+                    } ${editingSuggestion ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     <span className="material-symbols-outlined text-base">{TYPE_META[t].icon}</span>
                     {TYPE_META[t].label}
@@ -125,7 +193,7 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                   type="url"
                   value={newLink}
                   onChange={(e) => setNewLink(e.target.value)}
-                  placeholder={activeType === "location" ? "🗺️ Google Maps link (recommended)" : "🔗 Link (optional)"}
+                  placeholder={activeType === "location" ? "Google Maps link (recommended)" : "Link (optional)"}
                   className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
                 />
               )}
@@ -161,11 +229,11 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                   disabled={submitting}
                   className="flex-1 h-12 bg-[#ff5833] text-white font-black rounded-lg border-2 border-slate-900 btn-push disabled:opacity-50"
                 >
-                  {submitting ? "Adding..." : "Add Suggestion"}
+                  {submitting ? (editingSuggestion ? "Saving..." : "Adding...") : (editingSuggestion ? "Save Changes" : "Add Suggestion")}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowForm(false)}
+                  onClick={handleCloseForm}
                   className="h-12 px-6 bg-white font-black rounded-lg border-2 border-slate-900 btn-push"
                 >
                   Cancel
@@ -213,9 +281,40 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
               key={s.id}
               className={`bg-white rounded-xl bold-border overflow-hidden flex flex-col transition-all relative ${s.user_has_voted ? "shadow-playful-primary" : "shadow-playful-sm"}`}
             >
-              {/* Votes badge */}
-              <div className="absolute top-3 right-3 bg-white px-3 py-1 border-2 border-slate-900 rounded-full font-bold text-sm z-10">
-                {s.vote_count} VOTES
+              {/* Votes badge and menu */}
+              <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+                <div className="bg-white px-3 py-1 border-2 border-slate-900 rounded-full font-bold text-sm">
+                  {s.vote_count} VOTES
+                </div>
+                {s.user_id === userId && (
+                  <div className="relative" data-menu>
+                    <button
+                      onClick={() => setMenuOpen(menuOpen === s.id ? null : s.id)}
+                      className="size-8 bg-white border-2 border-slate-900 rounded-full flex items-center justify-center hover:bg-slate-50 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-base">more_vert</span>
+                    </button>
+                    {menuOpen === s.id && (
+                      <div className="absolute right-0 top-full mt-2 bg-white border-3 border-slate-900 rounded-xl shadow-playful-sm overflow-hidden min-w-[140px]">
+                        <button
+                          onClick={() => handleEditClick(s)}
+                          className="w-full px-4 py-2.5 text-left font-bold text-sm hover:bg-slate-50 transition-colors flex items-center gap-2"
+                        >
+                          <span className="material-symbols-outlined text-base">edit</span>
+                          Edit
+                        </button>
+                        <div className="h-px bg-slate-200"></div>
+                        <button
+                          onClick={() => handleDeleteClick(s.id)}
+                          className="w-full px-4 py-2.5 text-left font-bold text-sm hover:bg-red-50 text-red-600 transition-colors flex items-center gap-2"
+                        >
+                          <span className="material-symbols-outlined text-base">delete</span>
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               
               {/* Header/Preview Area */}
@@ -234,17 +333,6 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                   {s.type.toUpperCase()}
                 </p>
                 <p className="font-bold text-slate-800 flex-1 leading-snug">{s.content}</p>
-                {s.link && s.type === "location" && (
-                  <a
-                    href={s.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 bg-blue-600 text-white font-bold text-sm px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors border-2 border-slate-900 btn-push"
-                  >
-                    <span className="material-symbols-outlined text-base">directions</span>
-                    Open in Maps
-                  </a>
-                )}
                 {s.link && s.type !== "location" && (
                   <a
                     href={s.link}
