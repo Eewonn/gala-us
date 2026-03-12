@@ -289,7 +289,7 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
 
       {/* Suggestions grid */}
       {sorted.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-xl bold-border">
+        <div className="text-center py-20 bg-card rounded-xl bold-border">
           <span className="material-symbols-outlined text-6xl text-slate-300 block mb-4">lightbulb</span>
           <p className="text-xl font-black text-slate-400">No suggestions yet</p>
           <p className="text-slate-400 font-medium mt-1">Be the first to suggest a {activeType}!</p>
@@ -299,26 +299,26 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
           {sorted.map((s) => (
             <div
               key={s.id}
-              className={`bg-white rounded-xl bold-border overflow-hidden flex flex-col transition-all relative ${s.user_has_voted ? "shadow-playful-primary" : "shadow-playful-sm"}`}
+              className={`bg-card rounded-xl bold-border overflow-hidden flex flex-col h-[480px] transition-all relative ${s.user_has_voted ? "shadow-playful-primary" : "shadow-playful-sm"}`}
             >
               {/* Votes badge and menu */}
               <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
-                <div className="bg-white px-3 py-1 border-2 border-slate-900 rounded-full font-bold text-sm">
+                <div className="bg-card px-3 py-1 border-2 border-slate-900 dark:border-white/20 rounded-full font-bold text-sm">
                   {s.vote_count} VOTES
                 </div>
                 {s.user_id === userId && (
                   <div className="relative" data-menu>
                     <button
                       onClick={() => setMenuOpen(menuOpen === s.id ? null : s.id)}
-                      className="size-8 bg-white border-2 border-slate-900 rounded-full flex items-center justify-center hover:bg-slate-50 transition-colors"
+                      className="size-8 bg-card border-2 border-slate-900 dark:border-white/20 rounded-full flex items-center justify-center hover:bg-secondary transition-colors"
                     >
                       <span className="material-symbols-outlined text-base">more_vert</span>
                     </button>
                     {menuOpen === s.id && (
-                      <div className="absolute right-0 top-full mt-2 bg-white border-3 border-slate-900 rounded-xl shadow-playful-sm overflow-hidden min-w-[140px]">
+                      <div className="absolute right-0 top-full mt-2 bg-card border-3 border-slate-900 dark:border-white/20 rounded-xl shadow-playful-sm overflow-hidden min-w-[140px]">
                         <button
                           onClick={() => handleEditClick(s)}
-                          className="w-full px-4 py-2.5 text-left font-bold text-sm hover:bg-slate-50 transition-colors flex items-center gap-2"
+                          className="w-full px-4 py-2.5 text-left font-bold text-sm hover:bg-secondary transition-colors flex items-center gap-2"
                         >
                           <span className="material-symbols-outlined text-base">edit</span>
                           Edit
@@ -348,48 +348,50 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                 </div>
               )}
               
-              <div className="p-5 flex flex-col flex-1">
+              <div className="p-5 flex flex-col flex-1 min-h-0">
                 <p className={`text-xs font-black px-2 py-0.5 rounded-full border w-fit mb-2 ${TYPE_META[s.type]?.color}`}>
                   {s.type.toUpperCase()}
                 </p>
-                <p className="font-bold text-slate-800 flex-1 leading-snug">{s.content}</p>
-                {s.link && s.type !== "location" && (
-                  <a
-                    href={s.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 bg-blue-50 text-blue-700 border-2 border-blue-400 font-bold text-sm px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-100 transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-base">link</span>
-                    View Link
-                  </a>
-                )}
-                {s.type === "date" && (s.event_date || s.start_time) && (
-                  <div className="mt-3 bg-green-50 border-2 border-green-400 rounded-lg p-3">
-                    {s.event_date && (
-                      <div className="flex items-center gap-2 font-bold text-green-800 text-sm">
-                        <span className="material-symbols-outlined text-base">calendar_today</span>
-                        {new Date(s.event_date).toLocaleDateString()}
-                      </div>
-                    )}
-                    {s.start_time && (
-                      <div className="flex items-center gap-2 font-bold text-green-800 text-sm mt-1">
-                        <span className="material-symbols-outlined text-base">schedule</span>
-                        {s.start_time}{s.end_time && ` - ${s.end_time}`}
-                      </div>
-                    )}
-                  </div>
-                )}
+                <p className="font-bold text-slate-800 leading-snug line-clamp-3 mb-3">{s.content}</p>
+                <div className="flex-1 min-h-0">
+                  {s.link && s.type !== "location" && (
+                    <a
+                      href={s.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-blue-50 text-blue-700 border-2 border-blue-400 font-bold text-sm px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-100 transition-colors w-fit"
+                    >
+                      <span className="material-symbols-outlined text-base">link</span>
+                      View Link
+                    </a>
+                  )}
+                  {s.type === "date" && (s.event_date || s.start_time) && (
+                    <div className="bg-green-50 border-2 border-green-400 rounded-lg p-3">
+                      {s.event_date && (
+                        <div className="flex items-center gap-2 font-bold text-green-800 text-sm">
+                          <span className="material-symbols-outlined text-base">calendar_today</span>
+                          {new Date(s.event_date).toLocaleDateString()}
+                        </div>
+                      )}
+                      {s.start_time && (
+                        <div className="flex items-center gap-2 font-bold text-green-800 text-sm mt-1">
+                          <span className="material-symbols-outlined text-base">schedule</span>
+                          {s.start_time}{s.end_time && ` - ${s.end_time}`}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
                 {s.author_name && (
-                  <p className="text-xs text-slate-400 font-medium mt-2">by {s.author_name}</p>
+                  <p className="text-xs text-slate-400 font-medium mb-3">by {s.author_name}</p>
                 )}
-                <div className="mt-4">
+                <div>
                   <button
                     onClick={() => handleVote(s.id, s.user_has_voted)}
-                    className={`w-full py-2.5 rounded-lg border-2 border-slate-900 font-black flex items-center justify-center gap-2 transition-all btn-push ${
+                    className={`w-full py-2.5 rounded-lg border-2 border-slate-900 dark:border-white/20 font-black flex items-center justify-center gap-2 transition-all btn-push ${
                       s.user_has_voted
                         ? "bg-[#ff5833] text-white"
-                        : "bg-white text-slate-900 hover:bg-[#ff5833]/10"
+                        : "bg-card text-foreground hover:bg-[#ff5833]/10"
                     }`}
                   >
                     <span className="material-symbols-outlined text-base">
