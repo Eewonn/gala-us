@@ -65,6 +65,8 @@ export default function GalaDashboard() {
   const [editingDate, setEditingDate] = useState(false);
   const [newStartDate, setNewStartDate] = useState("");
   const [newEndDate, setNewEndDate] = useState("");
+  const [confirmingRsvp, setConfirmingRsvp] = useState(false);
+  const [userRsvpStatus, setUserRsvpStatus] = useState<"pending" | "confirmed" | null>(null);
 
   const copyInviteLink = () => {
     const link = `${window.location.origin}/join?code=${gala?.invite_code || ""}`;
@@ -121,6 +123,37 @@ export default function GalaDashboard() {
     setNewStartDate(gala?.start_date || "");
     setNewEndDate(gala?.end_date || "");
     setEditingDate(true);
+  };
+
+  const handleRsvp = async () => {
+    if (!currentUser || !gala) return;
+    
+    try {
+      setConfirmingRsvp(true);
+      const supabase = createClient();
+      
+      const { error } = await supabase
+        .from("gala_members")
+        .update({ rsvp_status: "confirmed" })
+        .eq("gala_id", gala.id)
+        .eq("user_id", currentUser.id);
+      
+      if (error) throw error;
+      
+      setUserRsvpStatus("confirmed");
+      // Update the gala object to reflect the RSVP status
+      const updatedMembers = gala.members.map(m => 
+        m.user_id === currentUser.id 
+          ? { ...m, rsvp_status: "confirmed" as const }
+          : m
+      );
+      setGala({ ...gala, members: updatedMembers });
+    } catch (error) {
+      console.error("Failed to confirm RSVP:", error);
+      setAlertDialog({isOpen: true, title: "RSVP Failed", message: "Failed to confirm your attendance. Please try again.", type: "error"});
+    } finally {
+      setConfirmingRsvp(false);
+    }
   };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -735,8 +768,25 @@ export default function GalaDashboard() {
               </p>
             )}
           </div>
-          <div className="hidden md:flex items-center gap-2 bg-white rounded-full bold-border px-4 py-2">
-            <div className="flex -space-x-2">
+          <div className="hidden md:flex items-center gap-3">
+            {currentUser && !userRsvpStatus && !gala.members.find(m => m.user_id === currentUser.id)?.rsvp_status?.includes("confirmed") && (
+              <button
+                onClick={handleRsvp}
+                disabled={confirmingRsvp}
+                className="bg-[#ff5833] hover:bg-[#ff6b47] disabled:opacity-50 text-white font-black px-4 py-2 rounded-full bold-border btn-push transition-colors"
+              >
+                {confirmingRsvp ? "RSVP..." : "RSVP"}
+              </button>
+            )}
+            {(userRsvpStatus === "confirmed" || gala.members.find(m => m.user_id === currentUser?.id)?.rsvp_status === "confirmed") && (
+              <div className="bg-[#ff5833]/10 text-[#ff5833] font-black px-4 py-2 rounded-full bold-border border-[#ff5833] flex items-center gap-2">
+                <span className="material-symbols-outlined text-base">check_circle</span>
+                CONFIRMED
+              </div>
+            )}
+            <div className="w-px h-8 bg-slate-200" />
+            <div className="flex items-center gap-2 bg-white rounded-full bold-border px-4 py-2">
+              <div className="flex -space-x-2">
               {gala.members.slice(0, 3).map(({ user }) => (
                 <div
                   key={user.id}
@@ -751,6 +801,7 @@ export default function GalaDashboard() {
             <span className="font-black text-sm text-slate-700">
               {gala.members.length} members
             </span>
+            </div>
           </div>
         </div>
       </div>
