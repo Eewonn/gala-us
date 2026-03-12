@@ -56,14 +56,14 @@ export default function GalaDashboard() {
   const { user: currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [inviteLink, setInviteLink] = useState("");
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [alertDialog, setAlertDialog] = useState<{isOpen: boolean; title: string; message: string; type: "error"|"success"|"warning"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
   const [showInviteDropdown, setShowInviteDropdown] = useState(false);
   const [copiedItem, setCopiedItem] = useState<"link" | "code" | null>(null);
 
   const copyInviteLink = () => {
-    navigator.clipboard.writeText(inviteLink);
+    const link = `${window.location.origin}/join?code=${gala?.invite_code || ""}`;
+    navigator.clipboard.writeText(link);
     setCopiedItem("link");
     setShowInviteDropdown(false);
     setTimeout(() => setCopiedItem(null), 2000);
@@ -167,12 +167,6 @@ export default function GalaDashboard() {
       members: membersWithUsers,
       organizer: organizerData || { id: gala.organizer_id, name: "Unknown", email: null, avatar: null, created_at: "" },
     });
-
-    setInviteLink(
-      typeof window !== "undefined"
-        ? `${window.location.origin}/join?code=${gala.invite_code}`
-        : `/join?code=${gala.invite_code}`
-    );
 
     // Fetch suggestions + votes
     const { data: rawSuggestions } = await supabase

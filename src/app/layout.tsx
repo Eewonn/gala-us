@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   title: "GalaUs – Plan Better Hangouts",
   description:
     "GalaUs is a collaborative event planning platform that helps groups organize outings, vote on plans, track budgets, and share memories.",
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/apple-icon.svg",
+  },
 };
 
 export default function RootLayout({
