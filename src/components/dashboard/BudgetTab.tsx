@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { ExpenseWithDetails, GalaMember, User } from "@/types/database";
+import type { ExpenseWithDetails, GalaMember, User, Expense } from "@/types/database";
 import AlertDialog from "@/components/AlertDialog";
 
 interface Props {
@@ -84,7 +84,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
         created_by: userId,
       })
       .select()
-      .single();
+      .single<Expense>();
     
     if (expenseError || !newExpense) {
       console.error("Failed to create expense:", expenseError);
