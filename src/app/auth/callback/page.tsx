@@ -16,47 +16,38 @@ function CallbackHandler() {
     const handleCallback = async () => {
       try {
         const supabase = createClient();
-
-        // With implicit flow, tokens are in the URL hash (#access_token=...)
-        // The Supabase client auto-detects via detectSessionInUrl: true,
-        // but we need to wait for it to process.
-        
-        // First, check if there's a hash with tokens
         const hash = window.location.hash;
-        if (hash && hash.includes("access_token")) {
-          // Give the Supabase client a moment to process the hash
-          // Then verify the session was established
-          let attempts = 0;
-          const maxAttempts = 20;
-          
-          while (attempts < maxAttempts) {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-              router.replace(redirect);
+
+        // Implicit flow: tokens are in the URL hash (#access_token=...&refresh_token=...)
+        if (hash) {
+          const params = new URLSearchParams(hash.substring(1));
+          const accessToken = params.get("access_token");
+          const refreshToken = params.get("refresh_token");
+
+          if (accessToken && refreshToken) {
+            const { error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+
+            if (sessionError) {
+              console.error("Failed to set session:", sessionError);
+              setError(sessionError.message);
               return;
             }
-            // Wait 250ms before checking again
-            await new Promise(resolve => setTimeout(resolve, 250));
-            attempts++;
+
+            router.replace(redirect);
+            return;
           }
-          
-          // If we get here, session was never established
-          setError("Login timed out. Please try requesting a new magic link.");
-          return;
         }
 
-        // No hash tokens — check if already signed in
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) {
-          setError(sessionError.message);
-          return;
-        }
+        // Fallback: check for existing session (e.g. already logged in)
+        const { data: { session } } = await supabase.auth.getSession();
         if (session) {
           router.replace(redirect);
           return;
         }
-        
-        // No session found at all
+
         setError("No login session found. Please request a new magic link.");
       } catch (err: unknown) {
         console.error("Auth callback error:", err);
