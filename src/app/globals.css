@@ -107,3 +107,44 @@
 /* Hide scrollbar for tabs */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Custom scrollbar styling to match neo-brutalist theme */
+.gala-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.gala-scrollbar::-webkit-scrollbar-track {
+  background: #f0eeec;
+  border: 2px solid #23130f;
+  border-radius: 0;
+}
+
+.gala-scrollbar::-webkit-scrollbar-thumb {
+  background: #ff5833;
+  border: 2px solid #23130f;
+  border-radius: 0;
+}
+
+.gala-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #ff6b47;
+}
+
+/* Firefox scrollbar */
+.gala-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #ff5833 #f0eeec;
+}
+
+/* Dark mode scrollbar */
+.dark .gala-scrollbar::-webkit-scrollbar-track {
+  background: #3d231d;
+  border-color: rgba(255,255,255,0.2);
+}
+
+.dark .gala-scrollbar::-webkit-scrollbar-thumb {
+  border-color: rgba(255,255,255,0.2);
+}
+
+.dark .gala-scrollbar {
+  scrollbar-color: #ff5833 #3d231d;
+}
