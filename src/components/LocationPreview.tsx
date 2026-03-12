@@ -85,16 +85,18 @@ export default function LocationPreview({ url, className = "" }: Props) {
   }, [url]);
 
   if (!locationData?.isGoogleMaps) {
-    // Not a Google Maps URL, show regular link
+    // Not a Google Maps URL, show full-size link button
     return (
       <a
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className={`bg-blue-50 text-blue-700 border-2 border-blue-400 font-bold text-sm px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-100 transition-colors ${className}`}
+        className={`h-40 bg-[#ff5833] hover:bg-[#ff6b47] flex flex-col items-center justify-center border-b-3 border-slate-900 transition-colors group ${className}`}
       >
-        <span className="material-symbols-outlined text-base">link</span>
-        View Link
+        <span className="material-symbols-outlined text-6xl text-white/30 group-hover:text-white/40 mb-2">
+          link
+        </span>
+        <span className="text-white font-black text-sm">VIEW LINK</span>
       </a>
     );
   }
