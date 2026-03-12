@@ -20,9 +20,12 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
   const [showConfirmChange, setShowConfirmChange] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [targetStage, setTargetStage] = useState<"planning" | "confirmed" | "live" | "completed">("planning");
+  const [confirmingRsvp, setConfirmingRsvp] = useState(false);
+  const [userRsvpStatus, setUserRsvpStatus] = useState<"pending" | "confirmed" | null>(null);
 
   // Get current user info
   const currentUser = gala.members.find(m => m.user_id === userId);
+  const currentUserRsvpStatus = userRsvpStatus || currentUser?.rsvp_status || "pending";
   const userName = currentUser?.user.name || "Guest";
   
   // Personal metrics
@@ -81,6 +84,32 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
     
     setChangingStage(false);
     onRefresh();
+  };
+
+  // Handle RSVP confirmation
+  const handleRsvp = async () => {
+    if (!currentUser) return;
+    
+    try {
+      setConfirmingRsvp(true);
+      const supabase = createClient();
+      
+      const { error } = await supabase
+        .from("gala_members")
+        .update({ rsvp_status: "confirmed" })
+        .eq("gala_id", gala.id)
+        .eq("user_id", userId);
+      
+      if (error) throw error;
+      
+      setUserRsvpStatus("confirmed");
+      onRefresh();
+    } catch (error) {
+      console.error("Failed to confirm RSVP:", error);
+      setShowErrorAlert(true);
+    } finally {
+      setConfirmingRsvp(false);
+    }
   };
 
   return (
@@ -388,29 +417,53 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
             Participants ({gala.members.length})
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto gala-scrollbar pr-2">
-            {gala.members.map(({ user, role }) => (
-              <div key={user.id} className="flex flex-col items-center gap-2 p-3 bg-secondary rounded-lg bold-border">
+            {gala.members.map((member) => {
+              const isCurrentUser = member.user_id === userId;
+              const memberRsvpStatus = isCurrentUser ? currentUserRsvpStatus : member.rsvp_status;
+              const isRsvpConfirmed = memberRsvpStatus === "confirmed";
+              
+              return (
+              <div key={member.user.id} className={`flex flex-col items-center gap-2 p-3 rounded-lg bold-border transition-colors ${
+                isRsvpConfirmed 
+                  ? "bg-[#ff5833]/10 border-[#ff5833]" 
+                  : "bg-secondary border-slate-300"
+              }`}>
                 <div className="size-12 rounded-full bg-[#ff5833] bold-border flex items-center justify-center overflow-hidden">
-                  {user.avatar ? (
-                    <img src={user.avatar} alt={user.name} className="size-full object-cover" />
+                  {member.user.avatar ? (
+                    <img src={member.user.avatar} alt={member.user.name} className="size-full object-cover" />
                   ) : (
                     <span className="text-white font-black text-base">
-                      {user.name.charAt(0).toUpperCase()}
+                      {member.user.name.charAt(0).toUpperCase()}
                     </span>
                   )}
                 </div>
                 <div className="w-full text-center">
-                  <p className="font-black text-[10px] truncate">{user.name}</p>
+                  <p className="font-black text-[10px] truncate">{member.user.name}</p>
                   <span className={`inline-block text-[9px] px-2 py-0.5 rounded-full font-black uppercase mt-1 ${
-                    role === "organizer" 
+                    member.role === "organizer" 
                       ? "bg-[#ff5833]/10 text-[#ff5833] border border-[#ff5833]" 
                       : "bg-slate-100 text-slate-600 border border-slate-300"
                   }`}>
-                    {role === "organizer" ? "Organizer" : "Member"}
+                    {member.role === "organizer" ? "Organizer" : "Member"}
                   </span>
                 </div>
+                {isCurrentUser && !isRsvpConfirmed && (
+                  <button
+                    onClick={handleRsvp}
+                    disabled={confirmingRsvp}
+                    className="w-full mt-2 bg-[#ff5833] hover:bg-[#ff6b47] disabled:opacity-50 text-white text-[9px] font-black px-2 py-1.5 rounded border-2 border-slate-900 transition-colors"
+                  >
+                    {confirmingRsvp ? "RSVP..." : "RSVP"}
+                  </button>
+                )}
+                {isCurrentUser && isRsvpConfirmed && (
+                  <span className="w-full text-center text-[9px] font-black text-[#ff5833] px-2 py-1.5">
+                    ✓ CONFIRMED
+                  </span>
+                )}
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
 

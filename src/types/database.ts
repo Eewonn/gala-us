@@ -84,6 +84,7 @@ export type Database = {
           gala_id: string;
           user_id: string;
           role: "organizer" | "member";
+          rsvp_status: "pending" | "confirmed";
           joined_at: string;
         };
         Insert: {
@@ -91,6 +92,7 @@ export type Database = {
           gala_id: string;
           user_id: string;
           role?: "organizer" | "member";
+          rsvp_status?: "pending" | "confirmed";
           joined_at?: string;
         };
         Update: {
@@ -98,6 +100,7 @@ export type Database = {
           gala_id?: string;
           user_id?: string;
           role?: "organizer" | "member";
+          rsvp_status?: "pending" | "confirmed";
           joined_at?: string;
         };
         Relationships: [];
