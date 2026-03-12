@@ -281,6 +281,18 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
               {/* Header/Preview Area */}
               {s.type === "location" && s.link ? (
                 <LocationPreview url={s.link} />
+              ) : s.link && s.type !== "location" ? (
+                <a
+                  href={s.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-40 bg-[#ff5833] hover:bg-[#ff6b47] flex flex-col items-center justify-center border-b-3 border-slate-900 transition-colors group"
+                >
+                  <span className="material-symbols-outlined text-6xl text-white/30 group-hover:text-white/40 mb-2">
+                    link
+                  </span>
+                  <span className="text-white font-black text-sm">VIEW LINK</span>
+                </a>
               ) : (
                 <div className="h-40 bg-[#ff5833] flex items-center justify-center border-b-3 border-slate-900">
                   <span className="material-symbols-outlined text-6xl text-white/30">
@@ -293,20 +305,8 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                 <p className={`text-xs font-black px-2 py-0.5 rounded-full border w-fit mb-2 ${TYPE_META[s.type]?.color}`}>
                   {s.type.toUpperCase()}
                 </p>
-                <p className="font-bold text-slate-800 leading-snug line-clamp-3 mb-3">{s.content}</p>
-                <div className="flex-1 min-h-0">
-                  {s.link && s.type !== "location" && (
-                    <a
-                      href={s.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-blue-50 text-blue-700 border-2 border-blue-400 font-bold text-sm px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-100 transition-colors w-fit"
-                    >
-                      <span className="material-symbols-outlined text-base">link</span>
-                      View Link
-                    </a>
-                  )}
-                </div>
+                <p className="font-bold text-slate-800 dark:text-slate-200 leading-snug line-clamp-3 mb-3">{s.content}</p>
+                <div className="flex-1 min-h-0"></div>
                 {s.author_name && (
                   <p className="text-xs text-slate-400 font-medium mb-3">by {s.author_name}</p>
                 )}
