@@ -199,7 +199,7 @@ export default function LandingPage() {
             </div>
             <div className="flex-1 flex justify-center items-center">
               <div className="size-64 md:size-72 bg-yellow-300 rounded-full bold-border flex items-center justify-center relative">
-                <span className="material-symbols-outlined text-slate-900 text-[100px] font-black">
+                <span className="material-symbols-outlined text-slate-900 text-[1000px] font-black">
                   rocket_launch
                 </span>
                 <div className="absolute top-2 right-2 size-16 bg-blue-400 rounded-xl bold-border flex items-center justify-center rotate-12">

@@ -2,11 +2,19 @@ export default function Footer() {
   const footerLinks = [
     {
       label: "Contact",
-      links: ["Email", "Github", "LinkedIn"],
+      links: [
+        { text: "Email", href: "mailto:markeron5@gmail.com" },
+        { text: "Github", href: "https://github.com/Eewonn/gala-us" },
+        { text: "LinkedIn", href: "https://linkedin.com/in/mark-eron-diaz" },
+      ],
     },
     {
       label: "Legal",
-      links: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
+      links: [
+        { text: "Privacy Policy", href: "/privacy" },
+        { text: "Terms of Service", href: "/terms" },
+        { text: "Cookie Policy", href: "/cookies" },
+      ],
     },
   ];
 
@@ -31,9 +39,14 @@ export default function Footer() {
             </h4>
             <ul className="flex flex-col gap-3 text-slate-400 font-bold text-sm">
               {col.links.map((l) => (
-                <li key={l}>
-                  <a href="#" className="hover:text-white transition-colors">
-                    {l}
+                <li key={l.text}>
+                  <a 
+                    href={l.href} 
+                    className="hover:text-white transition-colors"
+                    target={l.href.startsWith('http') ? '_blank' : undefined}
+                    rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  >
+                    {l.text}
                   </a>
                 </li>
               ))}

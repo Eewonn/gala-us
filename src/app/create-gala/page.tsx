@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import GalaLogo from "@/components/GalaLogo";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import type { User, Gala } from "@/types/database";
 
 const DECISION_TYPES = [
@@ -33,6 +34,7 @@ const DECISION_TYPES = [
 
 export default function CreateGalaPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
@@ -50,22 +52,36 @@ export default function CreateGalaPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.organizerName || !form.title) return;
+    if (!user && !form.organizerName) return;
+    if (!form.title) return;
     setLoading(true);
     setError("");
 
     try {
       const supabase = createClient();
+      let userId: string;
 
-      // Create user by name (MVP: name-based identity)
-      const { data: userData, error: userErr } = await supabase
-        .from("users")
-        .insert({ name: form.organizerName })
-        .select()
-        .single();
+      if (user) {
+        // Use existing logged-in user
+        userId = user.id;
+      } else {
+        // Create user by name (MVP: name-based identity)
+        const { data: userData, error: userErr } = await supabase
+          .from("users")
+          .insert({ name: form.organizerName })
+          .select()
+          .single();
 
-      if (userErr) throw userErr;
-      const user = userData as User;
+        if (userErr) throw userErr;
+        const newUser = userData as User;
+        userId = newUser.id;
+
+        // Store current user in localStorage for MVP
+        localStorage.setItem(
+          "galaus_user",
+          JSON.stringify({ id: newUser.id, name: newUser.name })
+        );
+      }
 
       // Create gala
       const { data: galaData, error: galaErr } = await supabase
@@ -73,7 +89,7 @@ export default function CreateGalaPage() {
         .insert({
           title: form.title,
           description: form.description || null,
-          organizer_id: user.id,
+          organizer_id: userId,
           decision_type: form.decisionType,
         })
         .select()
@@ -85,15 +101,9 @@ export default function CreateGalaPage() {
       // Add organizer as member
       await supabase.from("gala_members").insert({
         gala_id: gala.id,
-        user_id: user.id,
+        user_id: userId,
         role: "organizer",
       });
-
-      // Store current user in localStorage for MVP
-      localStorage.setItem(
-        "galaus_user",
-        JSON.stringify({ id: user.id, name: user.name })
-      );
 
       router.push(`/gala/${gala.id}`);
     } catch (err: unknown) {
@@ -134,20 +144,39 @@ export default function CreateGalaPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          {/* Organizer name */}
-          <div className="bg-white rounded-xl bold-border p-6 shadow-playful-sm flex flex-col gap-4">
-            <h2 className="text-xl font-black uppercase tracking-wide">
-              Your Name
-            </h2>
-            <input
-              name="organizerName"
-              value={form.organizerName}
-              onChange={handleChange}
-              required
-              placeholder="e.g. Alex Chen"
-              className="w-full h-12 px-4 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
-            />
-          </div>
+          {/* Show logged-in user info */}
+          {user && (
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl bold-border p-6 shadow-playful-sm flex items-center gap-4">
+              <div className="size-12 rounded-full bg-[#ff5833] flex items-center justify-center bold-border">
+                <span className="material-symbols-outlined text-white text-2xl">
+                  person
+                </span>
+              </div>
+              <div>
+                <p className="text-sm font-black uppercase tracking-wider text-slate-500">
+                  Creating as
+                </p>
+                <p className="text-xl font-black">{user.name}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Organizer name - only show if not logged in */}
+          {!user && (
+            <div className="bg-white rounded-xl bold-border p-6 shadow-playful-sm flex flex-col gap-4">
+              <h2 className="text-xl font-black uppercase tracking-wide">
+                Your Name
+              </h2>
+              <input
+                name="organizerName"
+                value={form.organizerName}
+                onChange={handleChange}
+                required
+                placeholder="e.g. Alex Chen"
+                className="w-full h-12 px-4 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+              />
+            </div>
+          )}
 
           {/* Gala details */}
           <div className="bg-white rounded-xl bold-border p-6 shadow-playful-sm flex flex-col gap-4">
@@ -235,7 +264,7 @@ export default function CreateGalaPage() {
 
           <button
             type="submit"
-            disabled={loading || !form.organizerName || !form.title}
+            disabled={loading || (!user && !form.organizerName) || !form.title}
             className="h-16 bg-[#ff5833] text-white text-xl font-black rounded-xl bold-border shadow-playful btn-push flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
