@@ -10,7 +10,7 @@ export function createClient() {
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
-        flowType: 'pkce',
+        flowType: 'implicit',
       },
     }
   );
