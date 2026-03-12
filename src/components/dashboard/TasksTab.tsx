@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { TaskWithAssignee, GalaMember, User } from "@/types/database";
+import AlertDialog from "@/components/AlertDialog";
 
 interface Props {
   galaId: string;
@@ -25,6 +26,7 @@ export default function TasksTab({ galaId, userId, tasks, members, onRefresh }: 
   const [newTitle, setNewTitle] = useState("");
   const [assignTo, setAssignTo] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [alertDialog, setAlertDialog] = useState<{isOpen: boolean; title: string; message: string; type: "error"|"success"|"warning"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
 
   const grouped = {
     todo: tasks.filter((t) => t.status === "todo"),
@@ -46,7 +48,7 @@ export default function TasksTab({ galaId, userId, tasks, members, onRefresh }: 
     
     if (error) {
       console.error("Failed to create task:", error);
-      alert("Failed to create task. Please try again.");
+      setAlertDialog({isOpen: true, title: "Task Creation Failed", message: "Failed to create task. Please try again.", type: "error"});
       setSubmitting(false);
       return;
     }
@@ -64,7 +66,7 @@ export default function TasksTab({ galaId, userId, tasks, members, onRefresh }: 
     
     if (error) {
       console.error("Failed to update task:", error);
-      alert("Failed to update task. Please try again.");
+      setAlertDialog({isOpen: true, title: "Task Update Failed", message: "Failed to update task. Please try again.", type: "error"});
       return;
     }
     
@@ -203,6 +205,14 @@ export default function TasksTab({ galaId, userId, tasks, members, onRefresh }: 
           </div>
         ))}
       </div>
+
+      <AlertDialog
+        isOpen={alertDialog.isOpen}
+        title={alertDialog.title}
+        message={alertDialog.message}
+        type={alertDialog.type}
+        onClose={() => setAlertDialog({...alertDialog, isOpen: false})}
+      />
     </div>
   );
 }

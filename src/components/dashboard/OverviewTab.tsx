@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import AlertDialog from "@/components/AlertDialog";
 import type { GalaWithMembers, Task, Expense, Suggestion } from "@/types/database";
 
 interface Props {
@@ -16,7 +18,10 @@ interface Props {
 
 export default function OverviewTab({ gala, tasks, expenses, suggestions, inviteLink, userId, onRefresh }: Props) {
   const [copied, setCopied] = useState(false);
-  const [advancingStage, setAdvancingStage] = useState(false);
+  const [changingStage, setChangingStage] = useState(false);
+  const [showConfirmChange, setShowConfirmChange] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [targetStage, setTargetStage] = useState<"planning" | "confirmed" | "live" | "completed">("planning");
 
   const totalExpenses = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const doneTasks = tasks.filter((t) => t.status === "done").length;
@@ -31,32 +36,33 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, invite
   const stageSteps = ["planning", "confirmed", "live", "completed"];
   const currentStageIdx = stageSteps.indexOf(gala.stage);
   const isOrganizer = gala.organizer_id === userId;
-  const canAdvance = currentStageIdx < stageSteps.length - 1;
 
-  const handleAdvanceStage = async () => {
-    if (!canAdvance || !isOrganizer) return;
+  const handleStageClick = (stage: string) => {
+    if (!isOrganizer) return;
+    if (stage === gala.stage) return; // Already at this stage
     
-    const nextStage = stageSteps[currentStageIdx + 1] as "planning" | "confirmed" | "live" | "completed";
-    const confirmMessage = `Are you sure you want to move to the "${nextStage}" stage? This will update the event status for all members.`;
-    
-    if (!confirm(confirmMessage)) return;
-    
-    setAdvancingStage(true);
+    setTargetStage(stage as "planning" | "confirmed" | "live" | "completed");
+    setShowConfirmChange(true);
+  };
+
+  const confirmStageChange = async () => {
+    setShowConfirmChange(false);
+    setChangingStage(true);
     const supabase = createClient();
     
     const { error } = await supabase
       .from("galas")
-      .update({ stage: nextStage })
+      .update({ stage: targetStage })
       .eq("id", gala.id);
     
     if (error) {
-      console.error("Failed to advance stage:", error);
-      alert("Failed to update stage. Please try again.");
-      setAdvancingStage(false);
+      console.error("Failed to change stage:", error);
+      setChangingStage(false);
+      setShowErrorAlert(true);
       return;
     }
     
-    setAdvancingStage(false);
+    setChangingStage(false);
     onRefresh();
   };
 
@@ -87,53 +93,48 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, invite
           <div className="bg-white rounded-xl bold-border p-6 shadow-playful-sm">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-black uppercase tracking-wider">Event Stage</h3>
-              {isOrganizer && canAdvance && (
-                <button
-                  onClick={handleAdvanceStage}
-                  disabled={advancingStage}
-                  className="bg-[#ff5833] hover:bg-[#ff6b47] text-white font-black px-4 py-2 rounded-lg border-2 border-slate-900 btn-push text-xs flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {advancingStage ? (
-                    <>
-                      <span className="material-symbols-outlined text-sm animate-spin">sync</span>
-                      Advancing...
-                    </>
-                  ) : (
-                    <>
-                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                      Move to {stageSteps[currentStageIdx + 1]}
-                    </>
-                  )}
-                </button>
+              {isOrganizer && (
+                <span className="text-xs font-bold text-slate-500">Click a stage to change</span>
               )}
             </div>
-            <div className="relative pt-2">
-              <div className="absolute top-4 left-0 w-full h-1 bg-slate-200 z-0" />
+            <div className="relative pt-4 pb-2 px-4">
+              {/* Background line */}
+              <div className="absolute top-8 left-0 right-0 h-1 bg-slate-200" />
+              {/* Progress line */}
               <div
-                className="absolute top-4 left-0 h-1 bg-[#ff5833] z-0 transition-all"
+                className="absolute top-8 left-0 h-1 bg-[#ff5833] transition-all duration-300"
                 style={{ width: `${(currentStageIdx / (stageSteps.length - 1)) * 100}%` }}
               />
-              <div className="relative z-10 flex justify-between">
+              <div className="relative z-10 flex justify-between -mx-4">
                 {stageSteps.map((step, i) => (
-                  <div key={step} className="flex flex-col items-center gap-2">
+                  <button
+                    key={step}
+                    onClick={() => handleStageClick(step)}
+                    disabled={!isOrganizer || changingStage}
+                    className={`flex flex-col items-center gap-3 transition-all ${
+                      isOrganizer && step !== gala.stage ? "cursor-pointer hover:scale-110" : "cursor-default"
+                    } disabled:cursor-not-allowed disabled:opacity-50`}
+                  >
                     <div
-                      className={`size-8 rounded-full flex items-center justify-center border-3 ${
+                      className={`size-8 rounded-full flex items-center justify-center border-3 transition-all shadow-sm ${
                         i <= currentStageIdx
-                          ? "bg-[#ff5833] border-[#ff5833]"
-                          : "bg-white border-slate-300"
+                          ? "border-[#ff5833] bg-[#ff5833]"
+                          : "border-slate-300 bg-white"
+                      } ${
+                        isOrganizer && step !== gala.stage ? "hover:shadow-[0_0_0_4px_rgba(255,88,51,0.2)]" : ""
                       }`}
                     >
                       {i < currentStageIdx && (
-                        <span className="material-symbols-outlined text-white text-sm">check</span>
+                        <span className="material-symbols-outlined text-white text-sm font-bold">check</span>
                       )}
                       {i === currentStageIdx && (
                         <span className="material-symbols-outlined text-white text-sm">rocket_launch</span>
                       )}
                     </div>
-                    <span className={`text-xs font-black uppercase ${i === currentStageIdx ? "text-[#ff5833]" : i < currentStageIdx ? "text-slate-700" : "text-slate-400"}`}>
+                    <span className={`text-xs font-black uppercase tracking-wide ${i === currentStageIdx ? "text-[#ff5833]" : i < currentStageIdx ? "text-slate-900" : "text-slate-400"}`}>
                       {step}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -231,6 +232,28 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, invite
           )}
         </div>
       </div>
+
+      {/* Confirm Stage Change Dialog */}
+      <ConfirmDialog
+        isOpen={showConfirmChange}
+        title="Change Event Stage"
+        message={`Are you sure you want to change the stage to "${targetStage}"? This will update the event status for all members.`}
+        confirmText="Yes, Change Stage"
+        cancelText="Cancel"
+        type="warning"
+        onConfirm={confirmStageChange}
+        onCancel={() => setShowConfirmChange(false)}
+      />
+
+      {/* Error Alert Dialog */}
+      <AlertDialog
+        isOpen={showErrorAlert}
+        title="Failed to Update Stage"
+        message="Failed to update stage. Please try again."
+        buttonText="OK"
+        type="error"
+        onClose={() => setShowErrorAlert(false)}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import GalaLogo from "@/components/GalaLogo";
 import SqueezeLoader from "@/components/SqueezeLoader";
 import { useAuth } from "@/contexts/AuthContext";
 import UserDropdown from "@/components/UserDropdown";
+import AlertDialog from "@/components/AlertDialog";
 import OverviewTab from "@/components/dashboard/OverviewTab";
 import VotingTab from "@/components/dashboard/VotingTab";
 import TasksTab from "@/components/dashboard/TasksTab";
@@ -57,6 +58,7 @@ export default function GalaDashboard() {
   const [error, setError] = useState("");
   const [inviteLink, setInviteLink] = useState("");
   const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [alertDialog, setAlertDialog] = useState<{isOpen: boolean; title: string; message: string; type: "error"|"success"|"warning"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -64,7 +66,7 @@ export default function GalaDashboard() {
     
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert("Image must be less than 2MB");
+      setAlertDialog({isOpen: true, title: "Image Too Large", message: "Image must be less than 2MB", type: "warning"});
       return;
     }
     
@@ -82,7 +84,7 @@ export default function GalaDashboard() {
       
       if (updateError) {
         console.error("Failed to save cover image:", updateError);
-        alert("Failed to save cover image. Please try again.");
+        setAlertDialog({isOpen: true, title: "Upload Failed", message: "Failed to save cover image. Please try again.", type: "error"});
         setCoverImage(null);
       }
     };
@@ -622,6 +624,14 @@ export default function GalaDashboard() {
           />
         )}
       </main>
+
+      <AlertDialog
+        isOpen={alertDialog.isOpen}
+        title={alertDialog.title}
+        message={alertDialog.message}
+        type={alertDialog.type}
+        onClose={() => setAlertDialog({...alertDialog, isOpen: false})}
+      />
     </div>
   );
 }

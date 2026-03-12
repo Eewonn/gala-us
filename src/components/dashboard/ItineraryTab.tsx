@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { ItineraryItemWithCreator } from "@/types/database";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 interface Props {
   galaId: string;
@@ -17,6 +18,7 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
   const [newDescription, setNewDescription] = useState("");
   const [newTime, setNewTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   // Sort items by scheduled_time, then by order_index
   const sorted = [...items].sort((a, b) => {
@@ -62,10 +64,16 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
     onRefresh();
   };
 
-  const handleDelete = async (itemId: string) => {
-    if (!confirm("Remove this item from the itinerary?")) return;
+  const handleDelete = (itemId: string) => {
+    setConfirmDelete(itemId);
+  };
+
+  const confirmDeleteItem = async () => {
+    if (!confirmDelete) return;
+    
     const supabase = createClient();
-    await supabase.from("itinerary_items").delete().eq("id", itemId);
+    await supabase.from("itinerary_items").delete().eq("id", confirmDelete);
+    setConfirmDelete(null);
     onRefresh();
   };
 
@@ -231,6 +239,18 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
           ))}
         </div>
       )}
+
+      {/* Confirm Delete Dialog */}
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        title="Remove Item"
+        message="Remove this item from the itinerary? This action cannot be undone."
+        confirmText="Remove"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmDeleteItem}
+        onCancel={() => setConfirmDelete(null)}
+      />
     </div>
   );
 }

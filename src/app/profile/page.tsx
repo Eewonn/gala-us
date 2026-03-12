@@ -6,6 +6,7 @@ import Link from "next/link";
 import GalaLogo from "@/components/GalaLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
+import AlertDialog from "@/components/AlertDialog";
 import type { User } from "@/types/database";
 
 export default function ProfilePage() {
@@ -19,6 +20,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [alertDialog, setAlertDialog] = useState<{isOpen: boolean; title: string; message: string; type: "error"|"success"|"warning"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
 
   // Redirect if not logged in
   useEffect(() => {
@@ -59,7 +61,7 @@ export default function ProfilePage() {
 
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert("Image must be less than 2MB");
+      setAlertDialog({isOpen: true, title: "Image Too Large", message: "Image must be less than 2MB", type: "warning"});
       return;
     }
 
@@ -269,6 +271,14 @@ export default function ProfilePage() {
           </button>
         </form>
       </main>
+
+      <AlertDialog
+        isOpen={alertDialog.isOpen}
+        title={alertDialog.title}
+        message={alertDialog.message}
+        type={alertDialog.type}
+        onClose={() => setAlertDialog({...alertDialog, isOpen: false})}
+      />
     </div>
   );
 }

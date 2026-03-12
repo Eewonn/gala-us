@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { SuggestionWithVotes } from "@/types/database";
 import LocationPreview from "@/components/LocationPreview";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 interface Props {
   galaId: string;
@@ -33,6 +34,7 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
   const [submitting, setSubmitting] = useState(false);
   const [editingSuggestion, setEditingSuggestion] = useState<SuggestionWithVotes | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const filtered = suggestions.filter((s) => s.type === activeType);
   const sorted = [...filtered].sort((a, b) => b.vote_count - a.vote_count);
@@ -126,12 +128,17 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
     setMenuOpen(null);
   };
 
-  const handleDeleteClick = async (suggestionId: string) => {
-    if (!confirm("Are you sure you want to delete this suggestion?")) return;
+  const handleDeleteClick = (suggestionId: string) => {
+    setConfirmDelete(suggestionId);
+    setMenuOpen(null);
+  };
+
+  const confirmDeleteSuggestion = async () => {
+    if (!confirmDelete) return;
     
     const supabase = createClient();
-    await supabase.from("suggestions").delete().eq("id", suggestionId);
-    setMenuOpen(null);
+    await supabase.from("suggestions").delete().eq("id", confirmDelete);
+    setConfirmDelete(null);
     onRefresh();
   };
 
@@ -396,6 +403,18 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
           ))}
         </div>
       )}
+
+      {/* Confirm Delete Dialog */}
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        title="Delete Suggestion"
+        message="Are you sure you want to delete this suggestion? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmDeleteSuggestion}
+        onCancel={() => setConfirmDelete(null)}
+      />
     </div>
   );
 }

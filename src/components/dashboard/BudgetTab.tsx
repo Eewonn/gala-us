@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { ExpenseWithDetails, GalaMember, User } from "@/types/database";
+import AlertDialog from "@/components/AlertDialog";
 
 interface Props {
   galaId: string;
@@ -20,6 +21,9 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
   const [submitting, setSubmitting] = useState(false);
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState(proposedBudget?.toString() || "");
+  const [alertDialog, setAlertDialog] = useState<{isOpen: boolean; title: string; message: string; type: "error" | "success" | "warning" | "info"}>(
+    {isOpen: false, title: "", message: "", type: "error"}
+  );
 
   const totalSpent = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const actualPerPerson = members.length > 0 ? totalSpent / members.length : 0;
@@ -57,7 +61,12 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.description || !form.amount || selectedUsers.length === 0) {
-      alert("Please fill all fields and select at least one person to assign the expense.");
+      setAlertDialog({
+        isOpen: true,
+        title: "Missing Information",
+        message: "Please fill all fields and select at least one person to assign the expense.",
+        type: "warning"
+      });
       return;
     }
     
@@ -79,7 +88,12 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
     
     if (expenseError || !newExpense) {
       console.error("Failed to create expense:", expenseError);
-      alert("Failed to create expense. Please try again.");
+      setAlertDialog({
+        isOpen: true,
+        title: "Failed to Create Expense",
+        message: "Failed to create expense. Please try again.",
+        type: "error"
+      });
       setSubmitting(false);
       return;
     }
@@ -99,7 +113,12 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
     
     if (assignmentError) {
       console.error("Failed to create expense assignments:", assignmentError);
-      alert("Failed to assign expense. Please try again.");
+      setAlertDialog({
+        isOpen: true,
+        title: "Failed to Assign Expense",
+        message: "Failed to assign expense. Please try again.",
+        type: "error"
+      });
       setSubmitting(false);
       return;
     }
@@ -123,7 +142,12 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
     
     if (error) {
       console.error("Failed to mark as paid:", error);
-      alert("Failed to update payment status. Please try again.");
+      setAlertDialog({
+        isOpen: true,
+        title: "Update Failed",
+        message: "Failed to update payment status. Please try again.",
+        type: "error"
+      });
       return;
     }
     
@@ -133,7 +157,12 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
   const handleUpdateBudget = async () => {
     const newBudget = parseFloat(budgetInput);
     if (isNaN(newBudget) || newBudget < 0) {
-      alert("Please enter a valid budget amount.");
+      setAlertDialog({
+        isOpen: true,
+        title: "Invalid Amount",
+        message: "Please enter a valid budget amount.",
+        type: "warning"
+      });
       return;
     }
     
@@ -145,7 +174,12 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
     
     if (error) {
       console.error("Failed to update budget:", error);
-      alert("Failed to update budget. Please try again.");
+      setAlertDialog({
+        isOpen: true,
+        title: "Update Failed",
+        message: "Failed to update budget. Please try again.",
+        type: "error"
+      });
       return;
     }
     
@@ -471,6 +505,15 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
           </div>
         )}
       </div>
+
+      {/* Alert Dialog */}
+      <AlertDialog
+        isOpen={alertDialog.isOpen}
+        title={alertDialog.title}
+        message={alertDialog.message}
+        type={alertDialog.type}
+        onClose={() => setAlertDialog({...alertDialog, isOpen: false})}
+      />
     </div>
   );
 }
