@@ -13,27 +13,58 @@ function CallbackHandler() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const supabase = createClient();
+    const handleCallback = async () => {
+      try {
+        const supabase = createClient();
 
-    // The implicit flow puts tokens in the URL hash (#access_token=...)
-    // Supabase client auto-detects them via detectSessionInUrl: true
-    supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN") {
-        router.replace(redirect);
-      }
-    });
+        // With implicit flow, tokens are in the URL hash (#access_token=...)
+        // The Supabase client auto-detects via detectSessionInUrl: true,
+        // but we need to wait for it to process.
+        
+        // First, check if there's a hash with tokens
+        const hash = window.location.hash;
+        if (hash && hash.includes("access_token")) {
+          // Give the Supabase client a moment to process the hash
+          // Then verify the session was established
+          let attempts = 0;
+          const maxAttempts = 20;
+          
+          while (attempts < maxAttempts) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+              router.replace(redirect);
+              return;
+            }
+            // Wait 250ms before checking again
+            await new Promise(resolve => setTimeout(resolve, 250));
+            attempts++;
+          }
+          
+          // If we get here, session was never established
+          setError("Login timed out. Please try requesting a new magic link.");
+          return;
+        }
 
-    // Also check if session already exists (in case onAuthStateChange already fired)
-    supabase.auth.getSession().then(({ data: { session }, error: sessionError }) => {
-      if (sessionError) {
-        console.error("Auth callback error:", sessionError);
-        setError(sessionError.message);
-        return;
+        // No hash tokens — check if already signed in
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          setError(sessionError.message);
+          return;
+        }
+        if (session) {
+          router.replace(redirect);
+          return;
+        }
+        
+        // No session found at all
+        setError("No login session found. Please request a new magic link.");
+      } catch (err: unknown) {
+        console.error("Auth callback error:", err);
+        setError("Something went wrong. Please try again.");
       }
-      if (session) {
-        router.replace(redirect);
-      }
-    });
+    };
+
+    handleCallback();
   }, [router, redirect]);
 
   if (error) {
