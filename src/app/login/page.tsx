@@ -119,8 +119,16 @@ function LoginForm() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border-2 border-red-400 rounded-xl p-3 text-red-700 font-bold text-sm">
-            {error}
+          <div className="bg-red-50 border-2 border-red-400 rounded-xl p-3 text-red-700 font-bold text-sm flex items-start gap-2">
+            <span className="material-symbols-outlined text-red-500 text-lg shrink-0 mt-0.5">warning</span>
+            <div>
+              <p>{error}</p>
+              {error.toLowerCase().includes('same device') && (
+                <p className="text-red-500 font-medium mt-1 text-xs">
+                  Tip: Request a new magic link below and open it on this device.
+                </p>
+              )}
+            </div>
           </div>
         )}
 
