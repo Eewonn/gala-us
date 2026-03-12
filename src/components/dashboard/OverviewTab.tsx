@@ -43,7 +43,9 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
   // General metrics
   const totalExpenses = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const doneTasks = tasks.filter((t) => t.status === "done").length;
-  const topSuggestion = suggestions[0];
+  const topSuggestion = suggestions.length > 0 
+    ? suggestions.reduce((top, current) => current.vote_count > top.vote_count ? current : top, suggestions[0])
+    : undefined;
 
   const stageSteps = ["planning", "confirmed", "live", "completed"];
   const currentStageIdx = stageSteps.indexOf(gala.stage);
