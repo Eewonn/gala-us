@@ -112,6 +112,19 @@ export default function UserDropdown({ redirectAfterLogout = "/" }: Props) {
           {/* Menu items */}
           <div className="py-1.5">
             <Link
+              href="/my-galas"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 hover:bg-[#ff5833]/5 transition-colors group"
+            >
+              <span className="material-symbols-outlined text-slate-500 dark:text-slate-400 text-base group-hover:text-[#ff5833]">
+                celebration
+              </span>
+              <span className="font-bold text-sm text-slate-700 dark:text-slate-300 group-hover:text-[#ff5833]">
+                My Galas
+              </span>
+            </Link>
+
+            <Link
               href="/profile"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-4 py-3 hover:bg-[#ff5833]/5 transition-colors group"
