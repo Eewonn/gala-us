@@ -1,30 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 import GalaLogo from "@/components/GalaLogo";
 import { createClient } from "@/lib/supabase/client";
-import type { Gala, User } from "@/types/database";
+import { useAuth } from "@/contexts/AuthContext";
+import type { Gala } from "@/types/database";
 
 function JoinForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [form, setForm] = useState({
-    name: "",
-    inviteCode: searchParams.get("code") || "",
-  });
+  const [inviteCode, setInviteCode] = useState(searchParams.get("code") || "");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-  };
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      const currentUrl = `/join${inviteCode ? `?code=${inviteCode}` : ""}`;
+      router.push(`/login?redirect=${encodeURIComponent(currentUrl)}`);
+    }
+  }, [user, authLoading, router, inviteCode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.inviteCode) return;
+    if (!user || !inviteCode) return;
     setLoading(true);
     setError("");
 
@@ -35,7 +38,7 @@ function JoinForm() {
       const { data: galaData, error: galaErr } = await supabase
         .from("galas")
         .select("*")
-        .eq("invite_code", form.inviteCode.trim().toLowerCase())
+        .eq("invite_code", inviteCode.trim().toLowerCase())
         .single();
 
       if (galaErr || !galaData) {
@@ -43,28 +46,18 @@ function JoinForm() {
       }
       const gala = galaData as Gala;
 
-      // Create user
-      const { data: userData, error: userErr } = await supabase
-        .from("users")
-        .insert({ name: form.name })
-        .select()
-        .single();
-
-      if (userErr) throw userErr;
-      const user = userData as User;
-
       // Add as member (ignore if already member)
-      await supabase.from("gala_members").upsert({
-        gala_id: gala.id,
-        user_id: user.id,
-        role: "member",
-      });
+      const { error: memberErr } = await supabase
+        .from("gala_members")
+        .upsert({
+          gala_id: gala.id,
+          user_id: user.id,
+          role: "member",
+        }, {
+          onConflict: "gala_id,user_id",
+        });
 
-      // Store user in localStorage
-      localStorage.setItem(
-        "galaus_user",
-        JSON.stringify({ id: user.id, name: user.name })
-      );
+      if (memberErr) throw memberErr;
 
       router.push(`/gala/${gala.id}`);
     } catch (err: unknown) {
@@ -74,20 +67,35 @@ function JoinForm() {
     }
   };
 
+  // Show loading state while checking auth
+  if (authLoading) {
+    return (
+      <div className="text-center py-10 text-slate-400 font-bold">
+        Loading…
+      </div>
+    );
+  }
+
+  // Don't render form if not authenticated
+  if (!user) {
+    return null;
+  }
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <label className="font-black text-sm uppercase tracking-wider text-slate-500">
-          Your Name
-        </label>
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          required
-          placeholder="e.g. Jamie Lee"
-          className="w-full h-12 px-4 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
-        />
+      {/* Show logged-in user info */}
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl bold-border p-6 shadow-playful-sm flex items-center gap-4">
+        <div className="size-12 rounded-full bg-[#ff5833] flex items-center justify-center bold-border">
+          <span className="material-symbols-outlined text-white text-2xl">
+            person
+          </span>
+        </div>
+        <div>
+          <p className="text-sm font-black uppercase tracking-wider text-slate-500">
+            Joining as
+          </p>
+          <p className="text-xl font-black">{user.name || user.email}</p>
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -96,8 +104,8 @@ function JoinForm() {
         </label>
         <input
           name="inviteCode"
-          value={form.inviteCode}
-          onChange={handleChange}
+          value={inviteCode}
+          onChange={(e) => setInviteCode(e.target.value)}
           required
           placeholder="e.g. 3F7A9C2D"
           className="w-full h-12 px-4 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] uppercase tracking-widest"
@@ -115,7 +123,7 @@ function JoinForm() {
 
       <button
         type="submit"
-        disabled={loading || !form.name || !form.inviteCode}
+        disabled={loading || !inviteCode}
         className="h-16 bg-[#ff5833] text-white text-xl font-black rounded-xl bold-border shadow-playful btn-push flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
