@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
+import type { User as DbUser } from "@/types/database";
 
 interface AuthUser {
   id: string;
@@ -45,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .from("users")
           .select("*")
           .eq("id", session.user.id)
-          .single();
+          .single<DbUser>();
 
         if (profile) {
           setUser({
@@ -60,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .from("users")
             .insert({ id: session.user.id, name })
             .select()
-            .single();
+            .single<DbUser>();
 
           if (newProfile) {
             setUser({
