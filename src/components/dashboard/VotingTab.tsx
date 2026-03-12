@@ -63,16 +63,26 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
 
   const handleAddSuggestion = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newContent.trim()) return;
+    // Validate based on type
+    if (activeType === "date") {
+      if (!newDate) return;
+    } else {
+      if (!newContent.trim()) return;
+    }
     setSubmitting(true);
     const supabase = createClient();
+    
+    // For date suggestions, use the date as content if no content provided
+    const contentToSave = activeType === "date" && !newContent.trim() 
+      ? newDate 
+      : newContent.trim();
     
     if (editingSuggestion) {
       // Update existing suggestion
       await supabase
         .from("suggestions")
         .update({
-          content: newContent.trim(),
+          content: contentToSave,
           link: newLink.trim() || null,
           event_date: newDate || null,
           start_time: newStartTime || null,
@@ -85,7 +95,7 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
         gala_id: galaId,
         user_id: userId,
         type: activeType,
-        content: newContent.trim(),
+        content: contentToSave,
         link: newLink.trim() || null,
         event_date: newDate || null,
         start_time: newStartTime || null,
@@ -180,14 +190,16 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                   </button>
                 ))}
               </div>
-              <textarea
-                value={newContent}
-                onChange={(e) => setNewContent(e.target.value)}
-                required
-                rows={3}
-                placeholder={`Suggest a ${activeType}...`}
-                className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] resize-none"
-              />
+              {activeType !== "date" && (
+                <textarea
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  required
+                  rows={3}
+                  placeholder={`Suggest a ${activeType}...`}
+                  className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] resize-none"
+                />
+              )}
               {(activeType === "location" || activeType === "food" || activeType === "activity") && (
                 <input
                   type="url"
@@ -203,6 +215,7 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                     type="date"
                     value={newDate}
                     onChange={(e) => setNewDate(e.target.value)}
+                    required
                     className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
                   />
                   <div className="grid grid-cols-2 gap-3">
