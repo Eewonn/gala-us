@@ -19,6 +19,7 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
   const [changingStage, setChangingStage] = useState(false);
   const [showConfirmChange, setShowConfirmChange] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [showAllParticipants, setShowAllParticipants] = useState(false);
   const [targetStage, setTargetStage] = useState<"planning" | "confirmed" | "live" | "completed">("planning");
 
   // Get current user info
@@ -342,22 +343,42 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
           <h3 className="text-sm font-black uppercase tracking-wider mb-3">
             Participants ({gala.members.length})
           </h3>
-          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-            {gala.members.map(({ user, role }) => (
-              <div key={user.id} className="flex flex-col items-center gap-1.5 p-2 bg-[#f8f6f5] rounded-lg bold-border">
-                <div className="size-10 rounded-full bg-[#ff5833] bold-border flex items-center justify-center">
-                  <span className="text-white font-black text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {gala.members.slice(0, 8).map(({ user, role }) => (
+              <div key={user.id} className="flex flex-col items-center gap-2 p-3 bg-[#f8f6f5] rounded-lg bold-border">
+                <div className="size-12 rounded-full bg-[#ff5833] bold-border flex items-center justify-center">
+                  <span className="text-white font-black text-base">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <p className="font-black text-[9px] truncate w-full text-center">{user.name}</p>
-                {role === "organizer" && (
-                  <span className="text-[8px] px-1.5 py-0.5 rounded-full font-black uppercase bg-[#ff5833]/10 text-[#ff5833] border border-[#ff5833]">
-                    ORG
+                <div className="w-full text-center">
+                  <p className="font-black text-[10px] truncate">{user.name}</p>
+                  <span className={`inline-block text-[9px] px-2 py-0.5 rounded-full font-black uppercase mt-1 ${
+                    role === "organizer" 
+                      ? "bg-[#ff5833]/10 text-[#ff5833] border border-[#ff5833]" 
+                      : "bg-slate-100 text-slate-600 border border-slate-300"
+                  }`}>
+                    {role === "organizer" ? "Organizer" : "Member"}
                   </span>
-                )}
+                </div>
               </div>
             ))}
+            {gala.members.length > 8 && (
+              <button
+                onClick={() => setShowAllParticipants(true)}
+                className="flex flex-col items-center justify-center gap-2 p-3 bg-[#ff5833]/5 rounded-lg bold-border hover:bg-[#ff5833]/10 transition-colors cursor-pointer"
+              >
+                <div className="size-12 rounded-full bg-[#ff5833]/20 bold-border flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[#ff5833] text-xl">group_add</span>
+                </div>
+                <div className="w-full text-center">
+                  <p className="font-black text-[10px] text-[#ff5833]">View All</p>
+                  <span className="inline-block text-[9px] px-2 py-0.5 rounded-full font-black uppercase mt-1 bg-[#ff5833]/10 text-[#ff5833] border border-[#ff5833]">
+                    +{gala.members.length - 8}
+                  </span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
 
@@ -406,6 +427,54 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
         type="error"
         onClose={() => setShowErrorAlert(false)}
       />
+
+      {/* All Participants Modal */}
+      {showAllParticipants && (
+        <>
+          <div 
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowAllParticipants(false)}
+          >
+            <div 
+              className="bg-white rounded-xl bold-border shadow-playful w-full max-w-2xl max-h-[80vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-5 border-b-3 border-slate-200">
+                <h2 className="text-lg font-black uppercase tracking-wider">All Participants ({gala.members.length})</h2>
+                <button
+                  onClick={() => setShowAllParticipants(false)}
+                  className="size-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
+                >
+                  <span className="material-symbols-outlined text-slate-600">close</span>
+                </button>
+              </div>
+              <div className="p-5 overflow-y-auto max-h-[calc(80vh-80px)]">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {gala.members.map(({ user, role }) => (
+                    <div key={user.id} className="flex flex-col items-center gap-2 p-3 bg-[#f8f6f5] rounded-lg bold-border">
+                      <div className="size-12 rounded-full bg-[#ff5833] bold-border flex items-center justify-center">
+                        <span className="text-white font-black text-base">
+                          {user.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="w-full text-center">
+                        <p className="font-black text-[10px] truncate">{user.name}</p>
+                        <span className={`inline-block text-[9px] px-2 py-0.5 rounded-full font-black uppercase mt-1 ${
+                          role === "organizer" 
+                            ? "bg-[#ff5833]/10 text-[#ff5833] border border-[#ff5833]" 
+                            : "bg-slate-100 text-slate-600 border border-slate-300"
+                        }`}>
+                          {role === "organizer" ? "Organizer" : "Member"}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
