@@ -574,6 +574,8 @@ export default function GalaDashboard() {
             expenses={expenses}
             suggestions={suggestions}
             inviteLink={inviteLink}
+            userId={currentUser?.id || ""}
+            onRefresh={fetchData}
           />
         )}
         {tab === "voting" && (

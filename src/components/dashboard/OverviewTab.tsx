@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import type { GalaWithMembers, Task, Expense, Suggestion } from "@/types/database";
 
 interface Props {
@@ -9,10 +10,13 @@ interface Props {
   expenses: Expense[];
   suggestions: Suggestion[];
   inviteLink: string;
+  userId: string;
+  onRefresh: () => void;
 }
 
-export default function OverviewTab({ gala, tasks, expenses, suggestions, inviteLink }: Props) {
+export default function OverviewTab({ gala, tasks, expenses, suggestions, inviteLink, userId, onRefresh }: Props) {
   const [copied, setCopied] = useState(false);
+  const [advancingStage, setAdvancingStage] = useState(false);
 
   const totalExpenses = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const doneTasks = tasks.filter((t) => t.status === "done").length;
@@ -26,6 +30,35 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, invite
 
   const stageSteps = ["planning", "confirmed", "live", "completed"];
   const currentStageIdx = stageSteps.indexOf(gala.stage);
+  const isOrganizer = gala.organizer_id === userId;
+  const canAdvance = currentStageIdx < stageSteps.length - 1;
+
+  const handleAdvanceStage = async () => {
+    if (!canAdvance || !isOrganizer) return;
+    
+    const nextStage = stageSteps[currentStageIdx + 1] as "planning" | "confirmed" | "live" | "completed";
+    const confirmMessage = `Are you sure you want to move to the "${nextStage}" stage? This will update the event status for all members.`;
+    
+    if (!confirm(confirmMessage)) return;
+    
+    setAdvancingStage(true);
+    const supabase = createClient();
+    
+    const { error } = await supabase
+      .from("galas")
+      .update({ stage: nextStage })
+      .eq("id", gala.id);
+    
+    if (error) {
+      console.error("Failed to advance stage:", error);
+      alert("Failed to update stage. Please try again.");
+      setAdvancingStage(false);
+      return;
+    }
+    
+    setAdvancingStage(false);
+    onRefresh();
+  };
 
   return (
     <div className="space-y-8">
@@ -52,7 +85,28 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, invite
         <div className="lg:col-span-2 space-y-6">
           {/* Event Stage */}
           <div className="bg-white rounded-xl bold-border p-6 shadow-playful-sm">
-            <h3 className="text-lg font-black uppercase tracking-wider mb-6">Event Stage</h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-black uppercase tracking-wider">Event Stage</h3>
+              {isOrganizer && canAdvance && (
+                <button
+                  onClick={handleAdvanceStage}
+                  disabled={advancingStage}
+                  className="bg-[#ff5833] hover:bg-[#ff6b47] text-white font-black px-4 py-2 rounded-lg border-2 border-slate-900 btn-push text-xs flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {advancingStage ? (
+                    <>
+                      <span className="material-symbols-outlined text-sm animate-spin">sync</span>
+                      Advancing...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                      Move to {stageSteps[currentStageIdx + 1]}
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
             <div className="relative pt-2">
               <div className="absolute top-4 left-0 w-full h-1 bg-slate-200 z-0" />
               <div
