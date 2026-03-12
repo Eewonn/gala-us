@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { SuggestionWithVotes } from "@/types/database";
+import LocationPreview from "@/components/LocationPreview";
 
 interface Props {
   galaId: string;
@@ -210,22 +211,41 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
           {sorted.map((s) => (
             <div
               key={s.id}
-              className={`bg-white rounded-xl bold-border overflow-hidden flex flex-col transition-all ${s.user_has_voted ? "shadow-playful-primary" : "shadow-playful-sm"}`}
+              className={`bg-white rounded-xl bold-border overflow-hidden flex flex-col transition-all relative ${s.user_has_voted ? "shadow-playful-primary" : "shadow-playful-sm"}`}
             >
-              <div className="h-40 bg-gradient-to-br from-[#ff5833]/10 to-slate-100 flex items-center justify-center border-b-3 border-slate-900 relative">
-                <span className="material-symbols-outlined text-6xl text-slate-300">
-                  {TYPE_META[s.type]?.icon || "lightbulb"}
-                </span>
-                <div className="absolute top-3 right-3 bg-white px-3 py-1 border-2 border-slate-900 rounded-full font-bold text-sm">
-                  {s.vote_count} VOTES
-                </div>
+              {/* Votes badge */}
+              <div className="absolute top-3 right-3 bg-white px-3 py-1 border-2 border-slate-900 rounded-full font-bold text-sm z-10">
+                {s.vote_count} VOTES
               </div>
+              
+              {/* Header/Preview Area */}
+              {s.type === "location" && s.link ? (
+                <LocationPreview url={s.link} />
+              ) : (
+                <div className="h-40 bg-[#ff5833] flex items-center justify-center border-b-3 border-slate-900">
+                  <span className="material-symbols-outlined text-6xl text-white/30">
+                    {TYPE_META[s.type]?.icon || "lightbulb"}
+                  </span>
+                </div>
+              )}
+              
               <div className="p-5 flex flex-col flex-1">
                 <p className={`text-xs font-black px-2 py-0.5 rounded-full border w-fit mb-2 ${TYPE_META[s.type]?.color}`}>
                   {s.type.toUpperCase()}
                 </p>
                 <p className="font-bold text-slate-800 flex-1 leading-snug">{s.content}</p>
-                {s.link && (
+                {s.link && s.type === "location" && (
+                  <a
+                    href={s.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 bg-blue-600 text-white font-bold text-sm px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors border-2 border-slate-900 btn-push"
+                  >
+                    <span className="material-symbols-outlined text-base">directions</span>
+                    Open in Maps
+                  </a>
+                )}
+                {s.link && s.type !== "location" && (
                   <a
                     href={s.link}
                     target="_blank"
@@ -233,7 +253,7 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                     className="mt-3 bg-blue-50 text-blue-700 border-2 border-blue-400 font-bold text-sm px-3 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-100 transition-colors"
                   >
                     <span className="material-symbols-outlined text-base">link</span>
-                    {s.type === "location" ? "View on Maps" : "View Link"}
+                    View Link
                   </a>
                 )}
                 {s.type === "date" && (s.event_date || s.start_time) && (
