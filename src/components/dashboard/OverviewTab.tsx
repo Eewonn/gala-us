@@ -43,9 +43,13 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
   // General metrics
   const totalExpenses = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const doneTasks = tasks.filter((t) => t.status === "done").length;
-  const topSuggestion = suggestions.length > 0 
-    ? suggestions.reduce((top, current) => current.vote_count > top.vote_count ? current : top, suggestions[0])
-    : undefined;
+  
+  // Group and sort suggestions by category
+  const suggestionsByType = {
+    location: suggestions.filter(s => s.type === "location").sort((a, b) => b.vote_count - a.vote_count),
+    food: suggestions.filter(s => s.type === "food").sort((a, b) => b.vote_count - a.vote_count),
+    activity: suggestions.filter(s => s.type === "activity").sort((a, b) => b.vote_count - a.vote_count),
+  };
 
   const stageSteps = ["planning", "confirmed", "live", "completed"];
   const currentStageIdx = stageSteps.indexOf(gala.stage);
@@ -321,21 +325,60 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
           </div>
         )}
 
-        {/* Leading Suggestion - spans 2 cols */}
-        {topSuggestion && (
+        {/* Leading Suggestions by Category - spans 2 cols */}
+        {suggestions.length > 0 && (
           <div className="md:col-span-2 bg-card rounded-xl bold-border p-5 shadow-playful-sm">
-            <h3 className="text-sm font-black uppercase tracking-wider mb-3">Leading Suggestion</h3>
-            <div className="p-3 bg-yellow-50 rounded-lg border-2 border-yellow-400">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-black uppercase text-yellow-700 bg-yellow-100 px-2 py-0.5 rounded-full border border-yellow-400">
-                  {topSuggestion.type}
-                </span>
-                <span className="text-[10px] font-bold text-slate-500">{topSuggestion.vote_count} vote{topSuggestion.vote_count !== 1 ? 's' : ''}</span>
-              </div>
-              <p className="font-bold text-sm text-slate-800 line-clamp-2">{topSuggestion.content}</p>
-              {topSuggestion.author_name && (
-                <p className="text-xs text-slate-500 font-medium mt-2">by {topSuggestion.author_name}</p>
-              )}
+            <h3 className="text-sm font-black uppercase tracking-wider mb-3">Top Suggestions</h3>
+            <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+              {Object.entries(suggestionsByType).map(([type, items]) => (
+                items.length > 0 && (
+                  <div key={type}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`material-symbols-outlined text-base ${
+                        type === "location" ? "text-blue-600" : 
+                        type === "food" ? "text-orange-600" : 
+                        "text-purple-600"
+                      }`}>
+                        {type === "location" ? "location_on" : type === "food" ? "restaurant" : "local_activity"}
+                      </span>
+                      <h4 className="text-xs font-black uppercase tracking-wide text-slate-700 dark:text-slate-300">
+                        {type === "location" ? "Location" : type === "food" ? "Food & Drinks" : "Activities"}
+                      </h4>
+                    </div>
+                    <div className="space-y-2 mb-4">
+                      {items.map((suggestion) => (
+                        <div
+                          key={suggestion.id}
+                          className={`p-3 rounded-lg border-2 ${
+                            type === "location" ? "bg-blue-50 border-blue-300 dark:bg-blue-900/20 dark:border-blue-700" :
+                            type === "food" ? "bg-orange-50 border-orange-300 dark:bg-orange-900/20 dark:border-orange-700" :
+                            "bg-purple-50 border-purple-300 dark:bg-purple-900/20 dark:border-purple-700"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2 mb-1">
+                            <p className="font-bold text-sm text-slate-800 dark:text-slate-200 flex-1 line-clamp-2">
+                              {suggestion.content}
+                            </p>
+                            <div className={`flex items-center gap-1 px-2 py-1 rounded-full ${
+                              type === "location" ? "bg-blue-200 dark:bg-blue-800" :
+                              type === "food" ? "bg-orange-200 dark:bg-orange-800" :
+                              "bg-purple-200 dark:bg-purple-800"
+                            }`}>
+                              <span className="material-symbols-outlined text-xs">thumb_up</span>
+                              <span className="text-xs font-black">{suggestion.vote_count}</span>
+                            </div>
+                          </div>
+                          {suggestion.author_name && (
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                              by {suggestion.author_name}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              ))}
             </div>
           </div>
         )}
