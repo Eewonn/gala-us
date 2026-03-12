@@ -13,13 +13,12 @@ interface Props {
   onRefresh: () => void;
 }
 
-const TYPES = ["location", "food", "date", "activity"] as const;
+const TYPES = ["location", "food", "activity"] as const;
 type SuggType = (typeof TYPES)[number];
 
 const TYPE_META: Record<SuggType, { icon: string; label: string; color: string }> = {
   location: { icon: "location_on", label: "Location", color: "text-blue-600 bg-blue-100 border-blue-400" },
   food: { icon: "restaurant", label: "Food & Drinks", color: "text-orange-600 bg-orange-100 border-orange-400" },
-  date: { icon: "calendar_month", label: "Date & Time", color: "text-green-600 bg-green-100 border-green-400" },
   activity: { icon: "local_activity", label: "Activities", color: "text-purple-600 bg-purple-100 border-purple-400" },
 };
 
@@ -28,9 +27,6 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
   const [showForm, setShowForm] = useState(false);
   const [newContent, setNewContent] = useState("");
   const [newLink, setNewLink] = useState("");
-  const [newDate, setNewDate] = useState("");
-  const [newStartTime, setNewStartTime] = useState("");
-  const [newEndTime, setNewEndTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [editingSuggestion, setEditingSuggestion] = useState<SuggestionWithVotes | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
@@ -65,30 +61,18 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
 
   const handleAddSuggestion = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Validate based on type
-    if (activeType === "date") {
-      if (!newDate) return;
-    } else {
-      if (!newContent.trim()) return;
-    }
+    if (!newContent.trim()) return;
+    
     setSubmitting(true);
     const supabase = createClient();
-    
-    // For date suggestions, use the date as content if no content provided
-    const contentToSave = activeType === "date" && !newContent.trim() 
-      ? newDate 
-      : newContent.trim();
     
     if (editingSuggestion) {
       // Update existing suggestion
       await supabase
         .from("suggestions")
         .update({
-          content: contentToSave,
+          content: newContent.trim(),
           link: newLink.trim() || null,
-          event_date: newDate || null,
-          start_time: newStartTime || null,
-          end_time: newEndTime || null,
         })
         .eq("id", editingSuggestion.id);
     } else {
@@ -97,19 +81,13 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
         gala_id: galaId,
         user_id: userId,
         type: activeType,
-        content: contentToSave,
+        content: newContent.trim(),
         link: newLink.trim() || null,
-        event_date: newDate || null,
-        start_time: newStartTime || null,
-        end_time: newEndTime || null,
       });
     }
     
     setNewContent("");
     setNewLink("");
-    setNewDate("");
-    setNewStartTime("");
-    setNewEndTime("");
     setShowForm(false);
     setEditingSuggestion(null);
     setSubmitting(false);
@@ -121,9 +99,6 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
     setActiveType(suggestion.type);
     setNewContent(suggestion.content);
     setNewLink(suggestion.link || "");
-    setNewDate(suggestion.event_date || "");
-    setNewStartTime(suggestion.start_time || "");
-    setNewEndTime(suggestion.end_time || "");
     setShowForm(true);
     setMenuOpen(null);
   };
@@ -147,9 +122,6 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
     setEditingSuggestion(null);
     setNewContent("");
     setNewLink("");
-    setNewDate("");
-    setNewStartTime("");
-    setNewEndTime("");
   };
 
   return (
@@ -197,52 +169,21 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                   </button>
                 ))}
               </div>
-              {activeType !== "date" && (
-                <textarea
-                  value={newContent}
-                  onChange={(e) => setNewContent(e.target.value)}
-                  required
-                  rows={3}
-                  placeholder={`Suggest a ${activeType}...`}
-                  className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] resize-none"
-                />
-              )}
-              {(activeType === "location" || activeType === "food" || activeType === "activity") && (
-                <input
-                  type="url"
-                  value={newLink}
-                  onChange={(e) => setNewLink(e.target.value)}
-                  placeholder={activeType === "location" ? "Google Maps link (recommended)" : "Link (optional)"}
-                  className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
-                />
-              )}
-              {activeType === "date" && (
-                <div className="space-y-3">
-                  <input
-                    type="date"
-                    value={newDate}
-                    onChange={(e) => setNewDate(e.target.value)}
-                    required
-                    className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
-                  />
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="time"
-                      value={newStartTime}
-                      onChange={(e) => setNewStartTime(e.target.value)}
-                      placeholder="Start time"
-                      className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
-                    />
-                    <input
-                      type="time"
-                      value={newEndTime}
-                      onChange={(e) => setNewEndTime(e.target.value)}
-                      placeholder="End time (optional)"
-                      className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
-                    />
-                  </div>
-                </div>
-              )}
+              <textarea
+                value={newContent}
+                onChange={(e) => setNewContent(e.target.value)}
+                required
+                rows={3}
+                placeholder={`Suggest a ${activeType}...`}
+                className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] resize-none"
+              />
+              <input
+                type="url"
+                value={newLink}
+                onChange={(e) => setNewLink(e.target.value)}
+                placeholder={activeType === "location" ? "Google Maps link (recommended)" : "Link (optional)"}
+                className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+              />
               <div className="flex gap-3">
                 <button
                   type="submit"
@@ -364,22 +305,6 @@ export default function VotingTab({ galaId, userId, suggestions, onRefresh }: Pr
                       <span className="material-symbols-outlined text-base">link</span>
                       View Link
                     </a>
-                  )}
-                  {s.type === "date" && (s.event_date || s.start_time) && (
-                    <div className="bg-green-50 border-2 border-green-400 rounded-lg p-3">
-                      {s.event_date && (
-                        <div className="flex items-center gap-2 font-bold text-green-800 text-sm">
-                          <span className="material-symbols-outlined text-base">calendar_today</span>
-                          {new Date(s.event_date).toLocaleDateString()}
-                        </div>
-                      )}
-                      {s.start_time && (
-                        <div className="flex items-center gap-2 font-bold text-green-800 text-sm mt-1">
-                          <span className="material-symbols-outlined text-base">schedule</span>
-                          {s.start_time}{s.end_time && ` - ${s.end_time}`}
-                        </div>
-                      )}
-                    </div>
                   )}
                 </div>
                 {s.author_name && (

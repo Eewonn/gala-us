@@ -60,6 +60,11 @@ export default function GalaDashboard() {
   const [alertDialog, setAlertDialog] = useState<{isOpen: boolean; title: string; message: string; type: "error"|"success"|"warning"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
   const [showInviteDropdown, setShowInviteDropdown] = useState(false);
   const [copiedItem, setCopiedItem] = useState<"link" | "code" | null>(null);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [editingDate, setEditingDate] = useState(false);
+  const [newStartDate, setNewStartDate] = useState("");
+  const [newEndDate, setNewEndDate] = useState("");
 
   const copyInviteLink = () => {
     const link = `${window.location.origin}/join?code=${gala?.invite_code || ""}`;
@@ -74,6 +79,48 @@ export default function GalaDashboard() {
     setCopiedItem("code");
     setShowInviteDropdown(false);
     setTimeout(() => setCopiedItem(null), 2000);
+  };
+
+  const handleTitleUpdate = async () => {
+    if (!newTitle.trim() || !gala) return;
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("galas")
+      .update({ title: newTitle.trim() })
+      .eq("id", id);
+    
+    if (!error) {
+      setGala({ ...gala, title: newTitle.trim() });
+      setEditingTitle(false);
+    }
+  };
+
+  const handleDateUpdate = async () => {
+    if (!gala) return;
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("galas")
+      .update({ 
+        start_date: newStartDate || null, 
+        end_date: newEndDate || null 
+      })
+      .eq("id", id);
+    
+    if (!error) {
+      setGala({ ...gala, start_date: newStartDate || null, end_date: newEndDate || null });
+      setEditingDate(false);
+    }
+  };
+
+  const startEditingTitle = () => {
+    setNewTitle(gala?.title || "");
+    setEditingTitle(true);
+  };
+
+  const startEditingDate = () => {
+    setNewStartDate(gala?.start_date || "");
+    setNewEndDate(gala?.end_date || "");
+    setEditingDate(true);
   };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -447,7 +494,14 @@ export default function GalaDashboard() {
             <p className="text-xs font-black uppercase tracking-widest text-slate-400">
               Active Gala
             </p>
-            <p className="font-black text-slate-900 leading-tight">{gala.title}</p>
+            <p className="font-black text-slate-900 dark:text-white leading-tight">{gala.title}</p>
+            {gala.start_date && (
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                <span className="material-symbols-outlined" style={{fontSize: "12px"}}>event</span>
+                {new Date(gala.start_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                {gala.end_date && ` - ${new Date(gala.end_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}
+              </p>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -551,15 +605,132 @@ export default function GalaDashboard() {
         </label>
 
         <div className="absolute bottom-0 left-0 p-6 md:p-10 flex justify-between items-end w-full">
-          <div>
+          <div className="flex-1">
             <span className="bg-[#ff5833] text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest mb-2 inline-block">
               {gala.stage}
             </span>
-            <h1 className={`text-3xl md:text-5xl font-black leading-tight uppercase ${coverImage ? "text-white" : "text-slate-900"}`}>
-              {gala.title}
-            </h1>
+            
+            {/* Editable Title */}
+            {editingTitle ? (
+              <div className="flex items-center gap-2 mb-2">
+                <input
+                  type="text"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleTitleUpdate();
+                    if (e.key === "Escape") setEditingTitle(false);
+                  }}
+                  className="px-3 py-2 border-3 border-slate-900 rounded-lg font-black text-2xl md:text-4xl bg-white uppercase"
+                  autoFocus
+                />
+                <button
+                  onClick={handleTitleUpdate}
+                  className="p-2 bg-green-500 text-white rounded-lg border-2 border-slate-900 btn-push"
+                >
+                  <span className="material-symbols-outlined text-xl">check</span>
+                </button>
+                <button
+                  onClick={() => setEditingTitle(false)}
+                  className="p-2 bg-slate-200 rounded-lg border-2 border-slate-900 btn-push"
+                >
+                  <span className="material-symbols-outlined text-xl">close</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3 mb-2 group">
+                <h1 className={`text-3xl md:text-5xl font-black leading-tight uppercase ${coverImage ? "text-white" : "text-slate-900"}`}>
+                  {gala.title}
+                </h1>
+                <button
+                  onClick={startEditingTitle}
+                  className={`opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg border-2 border-slate-900 btn-push ${coverImage ? "bg-white/90" : "bg-white"}`}
+                  title="Edit title"
+                >
+                  <span className="material-symbols-outlined text-slate-700 text-base">edit</span>
+                </button>
+              </div>
+            )}
+            
+            {/* Editable Date */}
+            {editingDate ? (
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div>
+                    <label className={`text-xs font-bold block mb-1 ${coverImage ? "text-white/70" : "text-slate-600"}`}>Start Date & Time</label>
+                    <input
+                      type="datetime-local"
+                      value={newStartDate}
+                      onChange={(e) => setNewStartDate(e.target.value)}
+                      className="px-3 py-1.5 border-2 border-slate-900 rounded-lg font-bold text-sm bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className={`text-xs font-bold block mb-1 ${coverImage ? "text-white/70" : "text-slate-600"}`}>End Date & Time (optional)</label>
+                    <input
+                      type="datetime-local"
+                      value={newEndDate}
+                      onChange={(e) => setNewEndDate(e.target.value)}
+                      className="px-3 py-1.5 border-2 border-slate-900 rounded-lg font-bold text-sm bg-white"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-1">
+                  <button
+                    onClick={handleDateUpdate}
+                    className="p-1.5 bg-green-500 text-white rounded-lg border-2 border-slate-900 btn-push"
+                  >
+                    <span className="material-symbols-outlined text-base">check</span>
+                  </button>
+                  <button
+                    onClick={() => setEditingDate(false)}
+                    className="p-1.5 bg-slate-200 rounded-lg border-2 border-slate-900 btn-push"
+                  >
+                    <span className="material-symbols-outlined text-base">close</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 group mt-1">
+                {gala.start_date ? (
+                  <>
+                    <span className="material-symbols-outlined text-base" style={{color: coverImage ? "rgba(255,255,255,0.9)" : "#ff5833"}}>
+                      event
+                    </span>
+                    <p className={`font-bold text-sm ${coverImage ? "text-white/90" : "text-slate-700"}`}>
+                      {new Date(gala.start_date).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                      {gala.end_date && ` - ${new Date(gala.end_date).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}`}
+                    </p>
+                  </>
+                ) : (
+                  <p className={`font-medium text-sm italic ${coverImage ? "text-white/70" : "text-slate-500"}`}>
+                    No date set
+                  </p>
+                )}
+                <button
+                  onClick={startEditingDate}
+                  className={`opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg border-2 border-slate-900 btn-push ${coverImage ? "bg-white/90" : "bg-white"}`}
+                  title="Edit date"
+                >
+                  <span className="material-symbols-outlined text-slate-700 text-sm">edit</span>
+                </button>
+              </div>
+            )}
+            
             {gala.description && (
-              <p className={`font-medium mt-1 max-w-xl ${coverImage ? "text-white/70" : "text-slate-500"}`}>
+              <p className={`font-medium mt-2 max-w-xl ${coverImage ? "text-white/70" : "text-slate-500"}`}>
                 {gala.description}
               </p>
             )}

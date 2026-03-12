@@ -44,6 +44,8 @@ export type Database = {
           stage: "planning" | "confirmed" | "live" | "completed";
           invite_code: string;
           proposed_budget_per_person: number | null;
+          start_date: string | null;
+          end_date: string | null;
           created_at: string;
         };
         Insert: {
@@ -56,6 +58,8 @@ export type Database = {
           stage?: "planning" | "confirmed" | "live" | "completed";
           invite_code?: string;
           proposed_budget_per_person?: number | null;
+          start_date?: string | null;
+          end_date?: string | null;
           created_at?: string;
         };
         Update: {
@@ -68,6 +72,8 @@ export type Database = {
           stage?: "planning" | "confirmed" | "live" | "completed";
           invite_code?: string;
           proposed_budget_per_person?: number | null;
+          start_date?: string | null;
+          end_date?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -101,7 +107,7 @@ export type Database = {
           id: string;
           gala_id: string;
           user_id: string;
-          type: "location" | "food" | "date" | "activity";
+          type: "location" | "food" | "activity";
           content: string;
           link: string | null;
           event_date: string | null;
@@ -113,7 +119,7 @@ export type Database = {
           id?: string;
           gala_id: string;
           user_id: string;
-          type: "location" | "food" | "date" | "activity";
+          type: "location" | "food" | "activity";
           content: string;
           link?: string | null;
           event_date?: string | null;
@@ -125,7 +131,7 @@ export type Database = {
           id?: string;
           gala_id?: string;
           user_id?: string;
-          type?: "location" | "food" | "date" | "activity";
+          type?: "location" | "food" | "activity";
           content?: string;
           link?: string | null;
           event_date?: string | null;

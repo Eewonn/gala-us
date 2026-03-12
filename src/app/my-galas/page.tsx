@@ -129,11 +129,30 @@ export default function MyGalasPage() {
                       </span>
                     </div>
                     {gala.description && (
-                      <p className="text-slate-600 font-medium text-sm line-clamp-3">
+                      <p className="text-slate-600 dark:text-slate-400 font-medium text-sm line-clamp-3">
                         {gala.description}
                       </p>
                     )}
-                    <div className="flex items-center gap-2 mt-auto pt-4 border-t-2 border-slate-100">
+                    {gala.start_date && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="material-symbols-outlined text-[#ff5833] text-base">
+                          event
+                        </span>
+                        <span className="text-sm text-slate-700 dark:text-slate-300 font-bold">
+                          {new Date(gala.start_date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                          {gala.end_date && ` - ${new Date(gala.end_date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}`}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 mt-auto pt-4 border-t-2 border-slate-100 dark:border-slate-700">
                       <span className="material-symbols-outlined text-slate-400 text-sm">
                         schedule
                       </span>
