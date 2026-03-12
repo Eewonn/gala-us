@@ -59,6 +59,22 @@ export default function GalaDashboard() {
   const [inviteLink, setInviteLink] = useState("");
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [alertDialog, setAlertDialog] = useState<{isOpen: boolean; title: string; message: string; type: "error"|"success"|"warning"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
+  const [showInviteDropdown, setShowInviteDropdown] = useState(false);
+  const [copiedItem, setCopiedItem] = useState<"link" | "code" | null>(null);
+
+  const copyInviteLink = () => {
+    navigator.clipboard.writeText(inviteLink);
+    setCopiedItem("link");
+    setShowInviteDropdown(false);
+    setTimeout(() => setCopiedItem(null), 2000);
+  };
+
+  const copyInviteCode = () => {
+    navigator.clipboard.writeText(gala?.invite_code || "");
+    setCopiedItem("code");
+    setShowInviteDropdown(false);
+    setTimeout(() => setCopiedItem(null), 2000);
+  };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -440,6 +456,49 @@ export default function GalaDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <div className="relative">
+            <button
+              onClick={() => setShowInviteDropdown(!showInviteDropdown)}
+              className="h-10 px-4 bg-[#ff5833] text-white font-black rounded-full bold-border text-sm btn-push flex items-center gap-2 hover:bg-[#ff6b47] transition-colors"
+            >
+              <span className="material-symbols-outlined text-base">{copiedItem ? "check" : "person_add"}</span>
+              <span className="hidden sm:inline">
+                {copiedItem === "link" ? "Link Copied!" : copiedItem === "code" ? "Code Copied!" : "Invite Friends"}
+              </span>
+              <span className="material-symbols-outlined text-sm">{showInviteDropdown ? "expand_less" : "expand_more"}</span>
+            </button>
+            
+            {showInviteDropdown && (
+              <>
+                <div 
+                  className="fixed inset-0 z-40" 
+                  onClick={() => setShowInviteDropdown(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl bold-border shadow-playful z-50">
+                  <button
+                    onClick={copyInviteLink}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors border-b-2 border-slate-200 rounded-t-xl"
+                  >
+                    <span className="material-symbols-outlined text-[#ff5833]">link</span>
+                    <div className="flex-1 text-left">
+                      <p className="font-black text-sm text-slate-900">Copy Link</p>
+                      <p className="text-[10px] text-slate-500 font-medium">Share full URL</p>
+                    </div>
+                  </button>
+                  <button
+                    onClick={copyInviteCode}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors rounded-b-xl"
+                  >
+                    <span className="material-symbols-outlined text-[#ff5833]">tag</span>
+                    <div className="flex-1 text-left">
+                      <p className="font-black text-sm text-slate-900">Copy Code</p>
+                      <p className="text-[10px] text-slate-500 font-medium">{gala.invite_code}</p>
+                    </div>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
           {currentUser ? (
             <UserDropdown redirectAfterLogout="/" />
           ) : (
@@ -575,7 +634,6 @@ export default function GalaDashboard() {
             tasks={tasks}
             expenses={expenses}
             suggestions={suggestions}
-            inviteLink={inviteLink}
             userId={currentUser?.id || ""}
             onRefresh={fetchData}
           />

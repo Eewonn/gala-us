@@ -11,13 +11,11 @@ interface Props {
   tasks: TaskWithAssignee[];
   expenses: ExpenseWithDetails[];
   suggestions: SuggestionWithVotes[];
-  inviteLink: string;
   userId: string;
   onRefresh: () => void;
 }
 
-export default function OverviewTab({ gala, tasks, expenses, suggestions, inviteLink, userId, onRefresh }: Props) {
-  const [copied, setCopied] = useState(false);
+export default function OverviewTab({ gala, tasks, expenses, suggestions, userId, onRefresh }: Props) {
   const [changingStage, setChangingStage] = useState(false);
   const [showConfirmChange, setShowConfirmChange] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -45,12 +43,6 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, invite
   const totalExpenses = expenses.reduce((s, e) => s + Number(e.amount), 0);
   const doneTasks = tasks.filter((t) => t.status === "done").length;
   const topSuggestion = suggestions[0];
-
-  const copyInvite = () => {
-    navigator.clipboard.writeText(inviteLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   const stageSteps = ["planning", "confirmed", "live", "completed"];
   const currentStageIdx = stageSteps.indexOf(gala.stage);
@@ -390,20 +382,6 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, invite
             </div>
           </div>
         )}
-
-        {/* Invite Friends - 1 col */}
-        <div className="bg-[#ff5833] rounded-xl bold-border p-5 shadow-playful text-white">
-          <h3 className="text-sm font-black uppercase tracking-wider mb-2">Invite Friends</h3>
-          <p className="text-xs text-white/80 font-medium mb-2">Share code:</p>
-          <p className="font-black text-xl tracking-wider mb-3">{gala.invite_code}</p>
-          <button
-            onClick={copyInvite}
-            className="w-full h-9 bg-white text-[#ff5833] font-black rounded-lg border-2 border-[#23130f] flex items-center justify-center gap-1.5 hover:bg-white/90 transition-colors text-xs"
-          >
-            <span className="material-symbols-outlined text-sm">{copied ? "check" : "content_copy"}</span>
-            {copied ? "Copied!" : "Copy Link"}
-          </button>
-        </div>
 
       </div>
 
