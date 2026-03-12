@@ -156,6 +156,7 @@ export default function GalaDashboard() {
       user: usersData.find((u) => u.id === m.user_id) || {
         id: m.user_id,
         name: "Unknown",
+        email: null,
         avatar: null,
         created_at: "",
       },
@@ -164,7 +165,7 @@ export default function GalaDashboard() {
     setGala({
       ...gala,
       members: membersWithUsers,
-      organizer: organizerData || { id: gala.organizer_id, name: "Unknown", avatar: null, created_at: "" },
+      organizer: organizerData || { id: gala.organizer_id, name: "Unknown", email: null, avatar: null, created_at: "" },
     });
 
     setInviteLink(
