@@ -283,6 +283,17 @@ export default function GalaDashboard() {
     if (!gala) return;
     const supabase = createClient();
     
+    // Refresh gala data (for budget updates)
+    const { data: galaData } = await supabase
+      .from("galas")
+      .select("*")
+      .eq("id", id)
+      .single();
+    
+    if (galaData) {
+      setGala(prev => prev ? { ...prev, ...galaData } : prev);
+    }
+    
     const { data: rawExpenses } = await supabase
       .from("expenses")
       .select("*")
@@ -588,6 +599,7 @@ export default function GalaDashboard() {
             userId={currentUser?.id || ""}
             expenses={expenses}
             members={gala.members}
+            proposedBudget={gala.proposed_budget_per_person}
             onRefresh={refreshExpenses}
           />
         )}

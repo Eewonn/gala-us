@@ -9,16 +9,20 @@ interface Props {
   userId: string;
   expenses: ExpenseWithDetails[];
   members: (GalaMember & { user: User })[];
+  proposedBudget: number | null;
   onRefresh: () => void;
 }
 
-export default function BudgetTab({ galaId, userId, expenses, members, onRefresh }: Props) {
+export default function BudgetTab({ galaId, userId, expenses, members, proposedBudget, onRefresh }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ description: "", amount: "" });
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [editingBudget, setEditingBudget] = useState(false);
+  const [budgetInput, setBudgetInput] = useState(proposedBudget?.toString() || "");
 
   const totalSpent = expenses.reduce((s, e) => s + Number(e.amount), 0);
+  const actualPerPerson = members.length > 0 ? totalSpent / members.length : 0;
   
   // Calculate per-user totals
   const userTotals = members.map(member => {
@@ -126,6 +130,29 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
     onRefresh();
   };
 
+  const handleUpdateBudget = async () => {
+    const newBudget = parseFloat(budgetInput);
+    if (isNaN(newBudget) || newBudget < 0) {
+      alert("Please enter a valid budget amount.");
+      return;
+    }
+    
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("galas")
+      .update({ proposed_budget_per_person: newBudget })
+      .eq("id", galaId);
+    
+    if (error) {
+      console.error("Failed to update budget:", error);
+      alert("Failed to update budget. Please try again.");
+      return;
+    }
+    
+    setEditingBudget(false);
+    onRefresh();
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -227,6 +254,78 @@ export default function BudgetTab({ galaId, userId, expenses, members, onRefresh
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* Proposed Budget Card */}
+      {editingBudget ? (
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl bold-border p-6 shadow-playful text-white">
+          <p className="text-sm font-black uppercase tracking-widest mb-3">Proposed Budget Per Person</p>
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-2xl font-black">$</span>
+            <input
+              type="number"
+              value={budgetInput}
+              onChange={(e) => setBudgetInput(e.target.value)}
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              className="flex-1 h-12 px-4 border-3 border-slate-900 rounded-lg font-black text-3xl bg-white text-slate-900 focus:outline-none focus:border-blue-700"
+              autoFocus
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleUpdateBudget}
+              className="flex-1 bg-white text-blue-600 font-black px-4 py-2 rounded-lg border-2 border-slate-900 btn-push text-sm"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setEditingBudget(false);
+                setBudgetInput(proposedBudget?.toString() || "");
+              }}
+              className="flex-1 bg-blue-700 text-white font-black px-4 py-2 rounded-lg border-2 border-slate-900 btn-push text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl bold-border p-6 shadow-playful text-white">
+          <div className="flex items-center justify-between mb-3">
+            <div className="size-10 rounded-full bg-white/20 flex items-center justify-center">
+              <span className="material-symbols-outlined">target</span>
+            </div>
+            <button
+              onClick={() => setEditingBudget(true)}
+              className="bg-white/20 hover:bg-white/30 text-white font-black text-xs px-3 py-1.5 rounded-lg border-2 border-white/30 transition-colors"
+            >
+              {proposedBudget ? "Edit" : "Set"}
+            </button>
+          </div>
+          <p className="text-sm font-black uppercase tracking-widest mb-1">Proposed Budget Per Person</p>
+          {proposedBudget ? (
+            <>
+              <p className="text-4xl font-black">${proposedBudget.toFixed(2)}</p>
+              <div className="mt-3 pt-3 border-t-2 border-white/30">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-bold text-white/80">Actual:</span>
+                  <span className="font-black">${actualPerPerson.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm mt-1">
+                  <span className="font-bold text-white/80">Difference:</span>
+                  <span className={`font-black ${actualPerPerson > proposedBudget ? "text-red-200" : "text-green-200"}`}>
+                    {actualPerPerson > proposedBudget ? "+" : ""}
+                    ${(actualPerPerson - proposedBudget).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="text-xl font-medium text-white/70 mt-2">No budget set yet</p>
+          )}
         </div>
       )}
 

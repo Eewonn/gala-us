@@ -43,6 +43,7 @@ export type Database = {
           decision_type: "organizer" | "majority" | "random";
           stage: "planning" | "confirmed" | "live" | "completed";
           invite_code: string;
+          proposed_budget_per_person: number | null;
           created_at: string;
         };
         Insert: {
@@ -54,6 +55,7 @@ export type Database = {
           decision_type?: "organizer" | "majority" | "random";
           stage?: "planning" | "confirmed" | "live" | "completed";
           invite_code?: string;
+          proposed_budget_per_person?: number | null;
           created_at?: string;
         };
         Update: {
@@ -65,6 +67,7 @@ export type Database = {
           decision_type?: "organizer" | "majority" | "random";
           stage?: "planning" | "confirmed" | "live" | "completed";
           invite_code?: string;
+          proposed_budget_per_person?: number | null;
           created_at?: string;
         };
         Relationships: [];

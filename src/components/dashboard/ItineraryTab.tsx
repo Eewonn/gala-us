@@ -31,8 +31,16 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
     setSubmitting(true);
     const supabase = createClient();
 
+    // datetime-local gives us "YYYY-MM-DDTHH:mm" which represents local time
+    // Append seconds and timezone to create proper ISO string
+    const localDateTime = new Date(newTime + ':00'); // Add seconds
+    const scheduledTime = localDateTime.toISOString(); // Convert to UTC for storage
+
     // Get the next order_index for this time slot
-    const itemsAtTime = items.filter((i) => i.scheduled_time === newTime);
+    const itemsAtTime = items.filter((i) => {
+      const itemLocalTime = new Date(i.scheduled_time);
+      return itemLocalTime.getTime() === localDateTime.getTime();
+    });
     const nextOrderIndex = itemsAtTime.length > 0 
       ? Math.max(...itemsAtTime.map((i) => i.order_index)) + 1 
       : 0;
@@ -41,7 +49,7 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
       gala_id: galaId,
       title: newTitle.trim(),
       description: newDescription.trim() || null,
-      scheduled_time: newTime,
+      scheduled_time: scheduledTime,
       order_index: nextOrderIndex,
       created_by: userId,
     });
@@ -61,16 +69,31 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
     onRefresh();
   };
 
-  // Group items by date and time for better display
-  const groupedByTime = sorted.reduce((acc, item) => {
-    const time = new Date(item.scheduled_time).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+  // Group items by date first, then by time
+  const groupedByDate = sorted.reduce((acc, item) => {
+    // Parse the timestamp correctly
+    const date = new Date(item.scheduled_time);
+    const dateKey = date.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
     });
-    if (!acc[time]) acc[time] = [];
-    acc[time].push(item);
+    const timeKey = date.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true
+    });
+    
+    if (!acc[dateKey]) {
+      acc[dateKey] = {};
+    }
+    if (!acc[dateKey][timeKey]) {
+      acc[dateKey][timeKey] = [];
+    }
+    acc[dateKey][timeKey].push(item);
     return acc;
-  }, {} as Record<string, ItineraryItemWithCreator[]>);
+  }, {} as Record<string, Record<string, ItineraryItemWithCreator[]>>);
 
   return (
     <div className="space-y-8">
@@ -150,38 +173,56 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
           <p className="text-slate-400 font-medium mt-1">Add items to build your event timeline</p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {Object.entries(groupedByTime).map(([time, timeItems]) => (
-            <div key={time} className="flex gap-4">
-              <div className="flex-shrink-0 w-24 text-right">
-                <div className="sticky top-24 bg-[#ff5833] text-white font-black px-3 py-2 rounded-lg border-2 border-slate-900 text-sm inline-block">
-                  {time}
+        <div className="space-y-12">
+          {Object.entries(groupedByDate).map(([date, timeGroups]) => (
+            <div key={date} className="space-y-6">
+              {/* Date Header */}
+              <div className="sticky top-20 z-10 bg-[#f8f6f5] py-2">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 bg-slate-900 text-white px-6 py-3 rounded-xl border-3 border-slate-900 shadow-playful-sm">
+                    <span className="material-symbols-outlined">calendar_today</span>
+                    <h3 className="text-xl font-black">{date}</h3>
+                  </div>
+                  <div className="flex-1 h-1 bg-slate-200 rounded-full"></div>
                 </div>
               </div>
-              <div className="flex-1 space-y-4 pb-4">
-                {timeItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-white rounded-xl bold-border p-5 shadow-playful-sm hover:shadow-playful transition-all"
-                  >
-                    <div className="flex justify-between items-start gap-3">
-                      <div className="flex-1">
-                        <h4 className="font-black text-lg text-slate-900">{item.title}</h4>
-                        {item.description && (
-                          <p className="text-slate-600 font-medium mt-1 leading-snug">{item.description}</p>
-                        )}
-                        {item.creator_name && (
-                          <p className="text-xs text-slate-400 font-medium mt-2">
-                            Added by {item.creator_name}
-                          </p>
-                        )}
+
+              {/* Activities for this date */}
+              <div className="space-y-6 ml-4">
+                {Object.entries(timeGroups).map(([time, timeItems]) => (
+                  <div key={time} className="flex gap-4">
+                    <div className="flex-shrink-0 w-28 text-right pt-1">
+                      <div className="bg-[#ff5833] text-white font-black px-4 py-2 rounded-lg border-2 border-slate-900 text-base inline-block">
+                        {time}
                       </div>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="text-slate-400 hover:text-red-600 transition-colors"
-                      >
-                        <span className="material-symbols-outlined text-base">delete</span>
-                      </button>
+                    </div>
+                    <div className="flex-1 space-y-4 pb-4">
+                      {timeItems.map((item) => (
+                        <div
+                          key={item.id}
+                          className="bg-white rounded-xl bold-border p-5 shadow-playful-sm hover:shadow-playful transition-all"
+                        >
+                          <div className="flex justify-between items-start gap-3">
+                            <div className="flex-1">
+                              <h4 className="font-black text-lg text-slate-900">{item.title}</h4>
+                              {item.description && (
+                                <p className="text-slate-600 font-medium mt-1 leading-snug">{item.description}</p>
+                              )}
+                              {item.creator_name && (
+                                <p className="text-xs text-slate-400 font-medium mt-2">
+                                  Added by {item.creator_name}
+                                </p>
+                              )}
+                            </div>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              className="text-slate-400 hover:text-red-600 transition-colors"
+                            >
+                              <span className="material-symbols-outlined text-base">delete</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}
