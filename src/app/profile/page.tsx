@@ -119,7 +119,7 @@ export default function ProfilePage() {
 
   if (!authUser || !profile) {
     return (
-      <div className="min-h-screen bg-[#f8f6f5] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="size-10 border-4 border-[#ff5833] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -133,11 +133,11 @@ export default function ProfilePage() {
     .toUpperCase();
 
   return (
-    <div className="min-h-screen bg-[#f8f6f5]">
+    <div className="min-h-screen bg-background">
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');`}</style>
 
       {/* Header */}
-      <header className="flex items-center justify-between px-6 md:px-20 py-5 bg-white border-b-3 border-slate-900/10">
+      <header className="flex items-center justify-between px-6 md:px-20 py-5 bg-card border-b-3 border-slate-900/10 dark:border-white/10">
         <GalaLogo />
         <Link
           href="/"
@@ -160,7 +160,7 @@ export default function ProfilePage() {
 
         <form onSubmit={handleSave} className="flex flex-col gap-6">
           {/* Avatar section */}
-          <div className="bg-white rounded-xl border-3 border-slate-900 shadow-[6px_6px_0px_0px_#23130f] p-6 flex flex-col items-center gap-5">
+          <div className="bg-card rounded-xl border-3 border-slate-900 dark:border-white/20 shadow-[6px_6px_0px_0px_#23130f] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.1)] p-6 flex flex-col items-center gap-5">
             {/* Avatar preview */}
             <div className="relative">
               <div className="size-28 rounded-full bg-[#ff5833] border-4 border-slate-900 shadow-[4px_4px_0px_0px_#23130f] flex items-center justify-center overflow-hidden">
@@ -213,7 +213,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Name section */}
-          <div className="bg-white rounded-xl border-3 border-slate-900 shadow-[6px_6px_0px_0px_#23130f] p-6 flex flex-col gap-4">
+          <div className="bg-card rounded-xl border-3 border-slate-900 dark:border-white/20 shadow-[6px_6px_0px_0px_#23130f] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.1)] p-6 flex flex-col gap-4">
             <h2 className="font-black text-lg uppercase tracking-wide">Details</h2>
             <div className="flex flex-col gap-1.5">
               <label className="font-black text-xs uppercase tracking-widest text-slate-400">
@@ -224,7 +224,7 @@ export default function ProfilePage() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="Your name"
-                className="w-full h-12 px-4 border-3 border-slate-900 rounded-xl font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                className="w-full h-12 px-4 border-3 border-slate-900 dark:border-white/20 rounded-xl font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-background text-foreground"
               />
             </div>
             <div className="flex flex-col gap-1">

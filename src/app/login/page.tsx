@@ -113,7 +113,7 @@ function LoginForm() {
             required
             autoFocus
             placeholder="you@example.com"
-            className="w-full h-13 px-4 border-3 border-slate-900 rounded-xl font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] placeholder:text-slate-300"
+            className="w-full h-13 px-4 border-3 border-slate-900 dark:border-white/20 rounded-xl font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-background placeholder:text-slate-300 dark:placeholder:text-slate-600 text-foreground"
             style={{ height: "52px" }}
           />
         </div>
@@ -174,11 +174,11 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-[#f8f6f5] flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');`}</style>
 
       {/* Header */}
-      <header className="flex items-center justify-between px-6 md:px-20 py-5 bg-white border-b-3 border-slate-900/10">
+      <header className="flex items-center justify-between px-6 md:px-20 py-5 bg-card border-b-3 border-slate-900/10 dark:border-white/10">
         <GalaLogo />
         <Link
           href="/"
@@ -208,7 +208,7 @@ export default function LoginPage() {
           </div>
 
           {/* Card */}
-          <div className="bg-white rounded-2xl border-3 border-slate-900 shadow-[8px_8px_0px_0px_#23130f] p-7">
+          <div className="bg-card rounded-2xl border-3 border-slate-900 dark:border-white/20 shadow-[8px_8px_0px_0px_#23130f] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)] p-7">
             <Suspense
               fallback={
                 <div className="text-center py-10 text-slate-400 font-bold">
@@ -221,7 +221,7 @@ export default function LoginPage() {
           </div>
 
           {/* Footer note */}
-          <p className="text-center text-sm text-slate-400 font-medium mt-6">
+          <p className="text-center text-sm text-muted-foreground font-medium mt-6">
             By continuing, you agree to our{" "}
             <a href="/terms" className="text-[#ff5833] hover:underline font-bold">
               Terms

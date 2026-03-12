@@ -5,6 +5,17 @@ import { createClient } from "@/lib/supabase/client";
 import type { ExpenseWithDetails, GalaMember, User, Expense } from "@/types/database";
 import AlertDialog from "@/components/AlertDialog";
 
+const EXPENSE_CATEGORIES = [
+  { value: "breakfast", label: "Breakfast", icon: "egg_alt", color: "bg-amber-100 text-amber-700 border-amber-400" },
+  { value: "lunch", label: "Lunch", icon: "lunch_dining", color: "bg-orange-100 text-orange-700 border-orange-400" },
+  { value: "dinner", label: "Dinner", icon: "dinner_dining", color: "bg-red-100 text-red-700 border-red-400" },
+  { value: "drinks", label: "Drinks/Alak", icon: "local_bar", color: "bg-purple-100 text-purple-700 border-purple-400" },
+  { value: "transport", label: "Transport", icon: "directions_car", color: "bg-blue-100 text-blue-700 border-blue-400" },
+  { value: "accommodation", label: "Accommodation", icon: "hotel", color: "bg-indigo-100 text-indigo-700 border-indigo-400" },
+  { value: "activities", label: "Activities", icon: "attractions", color: "bg-green-100 text-green-700 border-green-400" },
+  { value: "other", label: "Other", icon: "more_horiz", color: "bg-slate-100 text-slate-700 border-slate-400" },
+] as const;
+
 interface Props {
   galaId: string;
   userId: string;
@@ -16,7 +27,7 @@ interface Props {
 
 export default function BudgetTab({ galaId, userId, expenses, members, proposedBudget, onRefresh }: Props) {
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ description: "", amount: "" });
+  const [form, setForm] = useState({ description: "", amount: "", category: "" });
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [editingBudget, setEditingBudget] = useState(false);
@@ -46,7 +57,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
     };
   }).filter(u => u.total > 0); // Only show users with expenses
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   };
 
@@ -81,6 +92,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
         paid_by: userId, // Legacy field, keeping for compatibility
         amount: parseFloat(form.amount),
         description: form.description,
+        category: form.category || null,
         created_by: userId,
       })
       .select()
@@ -123,7 +135,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
       return;
     }
     
-    setForm({ description: "", amount: "" });
+    setForm({ description: "", amount: "", category: "" });
     setSelectedUsers([]);
     setShowForm(false);
     setSubmitting(false);
@@ -207,7 +219,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
       {/* Add expense modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-xl bold-border shadow-playful w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+          <div className="bg-card rounded-xl bold-border shadow-playful w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
             <h3 className="text-2xl font-black mb-4">Add Expense</h3>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
@@ -220,12 +232,12 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
                   onChange={handleChange}
                   required
                   placeholder="e.g. Venue deposit"
-                  className="w-full h-12 px-4 border-3 border-slate-900 rounded-lg font-semibold focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                  className="w-full h-12 px-4 border-3 border-slate-900 dark:border-white/20 rounded-lg font-semibold focus:outline-none focus:border-[#ff5833] bg-background text-foreground"
                 />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="font-black text-xs uppercase tracking-wider text-slate-500">
-                  Total Amount (USD) *
+                  Total Amount (PHP) *
                 </label>
                 <input
                   name="amount"
@@ -236,8 +248,24 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
                   min="0.01"
                   step="0.01"
                   placeholder="0.00"
-                  className="w-full h-12 px-4 border-3 border-slate-900 rounded-lg font-semibold focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                  className="w-full h-12 px-4 border-3 border-slate-900 dark:border-white/20 rounded-lg font-semibold focus:outline-none focus:border-[#ff5833] bg-background text-foreground"
                 />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-black text-xs uppercase tracking-wider text-slate-500">
+                  Category
+                </label>
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={handleChange}
+                  className="w-full h-12 px-4 border-3 border-slate-900 dark:border-white/20 rounded-lg font-semibold focus:outline-none focus:border-[#ff5833] bg-background text-foreground"
+                >
+                  <option value="">No category</option>
+                  {EXPENSE_CATEGORIES.map((cat) => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="font-black text-xs uppercase tracking-wider text-slate-500">
@@ -263,7 +291,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
                 </div>
                 {selectedUsers.length > 0 && form.amount && (
                   <p className="text-xs text-slate-500 font-medium">
-                    Split: ${(parseFloat(form.amount) / selectedUsers.length).toFixed(2)} per person
+                    Split: ₱{(parseFloat(form.amount) / selectedUsers.length).toFixed(2)} per person
                   </p>
                 )}
               </div>
@@ -296,7 +324,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl bold-border p-6 shadow-playful text-white">
           <p className="text-sm font-black uppercase tracking-widest mb-3">Proposed Budget Per Person</p>
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-2xl font-black">$</span>
+            <span className="text-2xl font-black">₱</span>
             <input
               type="number"
               value={budgetInput}
@@ -342,17 +370,17 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
           <p className="text-sm font-black uppercase tracking-widest mb-1">Proposed Budget Per Person</p>
           {proposedBudget ? (
             <>
-              <p className="text-4xl font-black">${proposedBudget.toFixed(2)}</p>
+              <p className="text-4xl font-black">₱{proposedBudget.toFixed(2)}</p>
               <div className="mt-3 pt-3 border-t-2 border-white/30">
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-bold text-white/80">Actual:</span>
-                  <span className="font-black">${actualPerPerson.toFixed(2)}</span>
+                  <span className="font-black">₱{actualPerPerson.toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm mt-1">
                   <span className="font-bold text-white/80">Difference:</span>
                   <span className={`font-black ${actualPerPerson > proposedBudget ? "text-red-200" : "text-green-200"}`}>
                     {actualPerPerson > proposedBudget ? "+" : ""}
-                    ${(actualPerPerson - proposedBudget).toFixed(2)}
+                    ₱{(actualPerPerson - proposedBudget).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -364,16 +392,16 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl bold-border p-6 shadow-playful-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+        <div className="bg-card rounded-xl bold-border p-6 shadow-playful-sm">
           <div className="size-10 rounded-full bg-[#ff5833]/10 flex items-center justify-center mb-3">
             <span className="material-symbols-outlined text-[#ff5833]">payments</span>
           </div>
-          <p className="text-sm font-black uppercase tracking-widest text-slate-400 mb-1">Total Spent</p>
-          <p className="text-4xl font-black">${totalSpent.toFixed(2)}</p>
+          <p className="text-sm font-black uppercase tracking-widest text-muted-foreground mb-1">Total Spent</p>
+          <p className="text-4xl font-black">₱{totalSpent.toFixed(2)}</p>
         </div>
-        <div className="bg-white rounded-xl bold-border p-6 shadow-playful-sm">
-          <div className="size-10 rounded-full bg-blue-100 flex items-center justify-center mb-3">
+        <div className="bg-card rounded-xl bold-border p-6 shadow-playful-sm">
+          <div className="size-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-3">
             <span className="material-symbols-outlined text-blue-600">people</span>
           </div>
           <p className="text-sm font-black uppercase tracking-widest text-slate-400 mb-1">People with Expenses</p>
@@ -387,10 +415,34 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
         </div>
       </div>
 
+      {/* Category Breakdown */}
+      {expenses.some(e => e.category) && (
+        <div className="bg-card rounded-xl bold-border p-6 shadow-playful-sm">
+          <h3 className="text-sm font-black uppercase tracking-wider mb-4">Spending by Category</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {EXPENSE_CATEGORIES.map((cat) => {
+              const catExpenses = expenses.filter(e => e.category === cat.value);
+              if (catExpenses.length === 0) return null;
+              const catTotal = catExpenses.reduce((s, e) => s + Number(e.amount), 0);
+              return (
+                <div key={cat.value} className={`rounded-lg border-2 p-3 ${cat.color}`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="material-symbols-outlined text-sm">{cat.icon}</span>
+                    <span className="font-black text-xs uppercase">{cat.label}</span>
+                  </div>
+                  <p className="text-xl font-black">₱{catTotal.toFixed(0)}</p>
+                  <p className="text-[10px] font-bold opacity-70">{catExpenses.length} expense{catExpenses.length !== 1 ? "s" : ""}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Per-User Budget Summary */}
       {userTotals.length > 0 && (
-        <div className="bg-white rounded-xl bold-border shadow-playful overflow-hidden">
-          <div className="p-5 border-b-3 border-slate-900 flex justify-between items-center bg-slate-50">
+        <div className="bg-card rounded-xl bold-border shadow-playful overflow-hidden">
+          <div className="p-5 border-b-3 border-slate-900 dark:border-white/20 flex justify-between items-center bg-secondary">
             <h3 className="text-lg font-black uppercase">Budget by Person</h3>
           </div>
           <div className="p-6 space-y-4">
@@ -403,14 +455,14 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
                   <div>
                     <p className="font-black text-slate-900">{user.name}</p>
                     <p className="text-xs text-slate-500 font-medium">
-                      {paid > 0 && `Paid: $${paid.toFixed(2)}`}
+                      {paid > 0 && `Paid: ₱${paid.toFixed(2)}`}
                       {paid > 0 && pending > 0 && " • "}
-                      {pending > 0 && `Pending: $${pending.toFixed(2)}`}
+                      {pending > 0 && `Pending: ₱${pending.toFixed(2)}`}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-black text-[#ff5833]">${total.toFixed(2)}</p>
+                  <p className="text-2xl font-black text-[#ff5833]">₱{total.toFixed(2)}</p>
                   <p className="text-xs text-slate-500 font-bold">
                     {pending === 0 ? "✓ All paid" : `${((paid / total) * 100).toFixed(0)}% paid`}
                   </p>
@@ -422,8 +474,8 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
       )}
 
       {/* Expense Details */}
-      <div className="bg-white rounded-xl bold-border shadow-playful overflow-hidden">
-        <div className="p-5 border-b-3 border-slate-900 flex justify-between items-center bg-slate-50">
+      <div className="bg-card rounded-xl bold-border shadow-playful overflow-hidden">
+        <div className="p-5 border-b-3 border-slate-900 dark:border-white/20 flex justify-between items-center bg-secondary">
           <h3 className="text-lg font-black uppercase">All Expenses</h3>
         </div>
         {expenses.length === 0 ? (
@@ -438,7 +490,18 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
               <div key={expense.id} className="p-6 hover:bg-slate-50 transition-colors">
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
                   <div className="flex-1">
-                    <h4 className="font-black text-lg text-slate-900">{expense.description}</h4>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="font-black text-lg text-slate-900">{expense.description}</h4>
+                      {expense.category && (() => {
+                        const cat = EXPENSE_CATEGORIES.find(c => c.value === expense.category);
+                        return cat ? (
+                          <span className={`inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full border ${cat.color}`}>
+                            <span className="material-symbols-outlined text-[12px]">{cat.icon}</span>
+                            {cat.label}
+                          </span>
+                        ) : null;
+                      })()}
+                    </div>
                     <div className="flex items-center gap-2 mt-1 text-sm">
                       <span className="font-medium text-slate-500">Added by:</span>
                       <span className="font-bold text-slate-700">{expense.creator_name || "Unknown"}</span>
@@ -449,7 +512,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-3xl font-black text-[#ff5833]">${Number(expense.amount).toFixed(2)}</p>
+                    <p className="text-3xl font-black text-[#ff5833]">₱{Number(expense.amount).toFixed(2)}</p>
                     <p className="text-xs text-slate-500 font-bold mt-1">Total Expense</p>
                   </div>
                 </div>
@@ -470,7 +533,7 @@ export default function BudgetTab({ galaId, userId, expenses, members, proposedB
                         <div>
                           <p className="font-bold text-sm">{assignment.user_name || "Unknown"}</p>
                           <p className="text-xs text-slate-500 font-medium">
-                            ${Number(assignment.amount).toFixed(2)}
+                            ₱{Number(assignment.amount).toFixed(2)}
                           </p>
                         </div>
                       </div>

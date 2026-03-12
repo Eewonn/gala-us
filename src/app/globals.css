@@ -101,3 +101,9 @@
 .dark .bold-border-2 { border-color: rgba(255,255,255,0.2); }
 .dark .shadow-playful { box-shadow: 8px 8px 0px 0px rgba(255,255,255,0.1); }
 .dark .shadow-playful-sm { box-shadow: 4px 4px 0px 0px rgba(255,255,255,0.1); }
+.dark .shadow-playful-primary { box-shadow: 8px 8px 0px 0px rgba(255,88,51,0.4); }
+.dark .shadow-playful-primary-sm { box-shadow: 4px 4px 0px 0px rgba(255,88,51,0.4); }
+
+/* Hide scrollbar for tabs */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

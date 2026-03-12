@@ -46,15 +46,25 @@ function JoinForm() {
       }
       const gala = galaData as Gala;
 
-      // Add as member (ignore if already member)
+      // Check if already a member
+      const { data: existingMember } = await supabase
+        .from("gala_members")
+        .select("id")
+        .eq("gala_id", gala.id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (existingMember) {
+        throw new Error("You're already in this gala!");
+      }
+
+      // Add as member
       const { error: memberErr } = await supabase
         .from("gala_members")
-        .upsert({
+        .insert({
           gala_id: gala.id,
           user_id: user.id,
           role: "member",
-        }, {
-          onConflict: "gala_id,user_id",
         });
 
       if (memberErr) throw memberErr;
@@ -108,7 +118,7 @@ function JoinForm() {
           onChange={(e) => setInviteCode(e.target.value)}
           required
           placeholder="e.g. 3F7A9C2D"
-          className="w-full h-12 px-4 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] uppercase tracking-widest"
+            className="w-full h-12 px-4 border-3 border-slate-900 dark:border-white/20 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-background uppercase tracking-widest text-foreground"
         />
         <p className="text-xs text-slate-400 font-medium">
           Ask your gala organizer for the invite code.
@@ -146,11 +156,11 @@ function JoinForm() {
 
 export default function JoinPage() {
   return (
-    <div className="min-h-screen bg-[#f8f6f5]">
+    <div className="min-h-screen bg-background">
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');`}</style>
 
       {/* Header */}
-      <header className="flex items-center justify-between px-6 md:px-20 py-6 bg-white border-b-3 border-slate-900/10 shadow-sm">
+      <header className="flex items-center justify-between px-6 md:px-20 py-6 bg-card border-b-3 border-slate-900/10 dark:border-white/10 shadow-sm">
         <GalaLogo />
         <Link
           href="/"
@@ -176,7 +186,7 @@ export default function JoinPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-xl bold-border p-8 shadow-playful">
+        <div className="bg-card rounded-xl bold-border p-8 shadow-playful">
           <Suspense fallback={<div className="text-center py-8 text-slate-400 font-bold">Loading...</div>}>
             <JoinForm />
           </Suspense>

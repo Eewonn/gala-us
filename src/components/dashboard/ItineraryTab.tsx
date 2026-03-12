@@ -16,6 +16,7 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
   const [showForm, setShowForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const [newLocation, setNewLocation] = useState("");
   const [newTime, setNewTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -51,6 +52,7 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
       gala_id: galaId,
       title: newTitle.trim(),
       description: newDescription.trim() || null,
+      location: newLocation.trim() || null,
       scheduled_time: scheduledTime,
       order_index: nextOrderIndex,
       created_by: userId,
@@ -58,6 +60,7 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
 
     setNewTitle("");
     setNewDescription("");
+    setNewLocation("");
     setNewTime("");
     setShowForm(false);
     setSubmitting(false);
@@ -127,7 +130,7 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
       {/* Add item modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-xl bold-border shadow-playful w-full max-w-md p-6">
+          <div className="bg-card rounded-xl bold-border shadow-playful w-full max-w-md p-6">
             <h3 className="text-2xl font-black mb-4">Add Itinerary Item</h3>
             <form onSubmit={handleAddItem} className="flex flex-col gap-4">
               <input
@@ -136,21 +139,28 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
                 onChange={(e) => setNewTitle(e.target.value)}
                 required
                 placeholder="Title (e.g., Dinner, Group Photo)"
-                className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                className="w-full px-4 py-3 border-3 border-slate-900 dark:border-white/20 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-background text-foreground"
               />
               <textarea
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
                 rows={3}
                 placeholder="Description (optional)"
-                className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5] resize-none"
+                className="w-full px-4 py-3 border-3 border-slate-900 dark:border-white/20 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-background text-foreground resize-none"
+              />
+              <input
+                type="text"
+                value={newLocation}
+                onChange={(e) => setNewLocation(e.target.value)}
+                placeholder="Location (optional, e.g. Beach Resort)"
+                className="w-full px-4 py-3 border-3 border-slate-900 dark:border-white/20 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-background text-foreground"
               />
               <input
                 type="datetime-local"
                 value={newTime}
                 onChange={(e) => setNewTime(e.target.value)}
                 required
-                className="w-full px-4 py-3 border-3 border-slate-900 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-[#f8f6f5]"
+                className="w-full px-4 py-3 border-3 border-slate-900 dark:border-white/20 rounded-lg font-semibold text-base focus:outline-none focus:border-[#ff5833] bg-background text-foreground"
               />
               <div className="flex gap-3">
                 <button
@@ -175,7 +185,7 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
 
       {/* Timeline */}
       {sorted.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-xl bold-border">
+        <div className="text-center py-20 bg-card rounded-xl bold-border">
           <span className="material-symbols-outlined text-6xl text-slate-300 block mb-4">event_note</span>
           <p className="text-xl font-black text-slate-400">No schedule yet</p>
           <p className="text-slate-400 font-medium mt-1">Add items to build your event timeline</p>
@@ -185,7 +195,7 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
           {Object.entries(groupedByDate).map(([date, timeGroups]) => (
             <div key={date} className="space-y-6">
               {/* Date Header */}
-              <div className="sticky top-20 z-10 bg-[#f8f6f5] py-2">
+              <div className="sticky top-20 z-10 bg-background py-2">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-3 bg-slate-900 text-white px-6 py-3 rounded-xl border-3 border-slate-900 shadow-playful-sm">
                     <span className="material-symbols-outlined">calendar_today</span>
@@ -208,13 +218,19 @@ export default function ItineraryTab({ galaId, userId, items, onRefresh }: Props
                       {timeItems.map((item) => (
                         <div
                           key={item.id}
-                          className="bg-white rounded-xl bold-border p-5 shadow-playful-sm hover:shadow-playful transition-all"
+                          className="bg-card rounded-xl bold-border p-5 shadow-playful-sm hover:shadow-playful transition-all"
                         >
                           <div className="flex justify-between items-start gap-3">
                             <div className="flex-1">
-                              <h4 className="font-black text-lg text-slate-900">{item.title}</h4>
+                              <h4 className="font-black text-lg text-slate-900 dark:text-foreground">{item.title}</h4>
+                              {item.location && (
+                                <div className="flex items-center gap-1.5 mt-1 text-sm text-[#ff5833]">
+                                  <span className="material-symbols-outlined text-sm">location_on</span>
+                                  <span className="font-bold">{item.location}</span>
+                                </div>
+                              )}
                               {item.description && (
-                                <p className="text-slate-600 font-medium mt-1 leading-snug">{item.description}</p>
+                                <p className="text-slate-600 dark:text-muted-foreground font-medium mt-1 leading-snug">{item.description}</p>
                               )}
                               {item.creator_name && (
                                 <p className="text-xs text-slate-400 font-medium mt-2">

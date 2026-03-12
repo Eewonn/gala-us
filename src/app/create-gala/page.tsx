@@ -98,7 +98,7 @@ export default function CreateGalaPage() {
   // Show loading state while checking auth
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#f8f6f5] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-slate-400 font-bold">Loading...</div>
       </div>
     );
@@ -110,11 +110,11 @@ export default function CreateGalaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f6f5]">
+    <div className="min-h-screen bg-background">
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');`}</style>
 
       {/* Header */}
-      <header className="flex items-center justify-between px-6 md:px-20 py-6 bg-white bold-border-2 border-x-0 border-t-0 shadow-sm">
+      <header className="flex items-center justify-between px-6 md:px-20 py-6 bg-card bold-border-2 border-x-0 border-t-0 shadow-sm">
         <GalaLogo />
         <Link
           href="/"

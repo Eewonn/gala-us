@@ -33,7 +33,7 @@ const features = [
 
 export default function LandingPage() {
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8f6f5]">
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background">
       {/* Google Material Symbols font */}
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');`}</style>
 
@@ -42,14 +42,14 @@ export default function LandingPage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="max-w-7xl mx-auto px-6 md:px-20 py-20 md:py-32 flex flex-col md:flex-row items-center gap-16">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-20 py-12 sm:py-20 md:py-32 flex flex-col md:flex-row items-center gap-8 md:gap-16">
           <div className="flex-1 flex flex-col gap-8">
-            <h1 className="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black leading-[1.1] tracking-tight">
               Plan Better{" "}
               <span className="text-[#ff5833] italic">Hangouts</span> with
               GalaUs
             </h1>
-            <p className="text-xl md:text-2xl font-medium text-slate-600 max-w-xl leading-relaxed">
+            <p className="text-xl md:text-2xl font-medium text-muted-foreground max-w-xl leading-relaxed">
               Stop the group chat chaos. GalaUs helps groups plan outings, track
               budgets, and share memories all in one beautiful space.
             </p>
@@ -62,7 +62,7 @@ export default function LandingPage() {
               </Link>
               <Link
                 href="/join"
-                className="h-16 px-10 bg-white text-xl font-black rounded-xl bold-border shadow-playful-primary btn-push flex items-center justify-center"
+                className="h-16 px-10 bg-card text-xl font-black rounded-xl bold-border shadow-playful-primary btn-push flex items-center justify-center"
               >
                 Join with Invite Link
               </Link>
@@ -70,7 +70,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex-1 relative w-full max-w-lg">
-            <div className="w-full aspect-square rounded-xl bold-border shadow-playful overflow-hidden bg-white">
+            <div className="w-full aspect-square rounded-xl bold-border shadow-playful overflow-hidden bg-card">
               <img
                 src="/catfriends.jpg"
                 alt="Friends hanging out together"
@@ -99,7 +99,7 @@ export default function LandingPage() {
                 party harder
               </span>
             </h2>
-            <p className="text-xl text-slate-600 max-w-2xl">
+            <p className="text-xl text-muted-foreground max-w-2xl">
               Ditch the messy group chats for a streamlined planning experience
               designed for real friends.
             </p>
@@ -108,7 +108,7 @@ export default function LandingPage() {
             {features.map((f) => (
               <div
                 key={f.title}
-                className="group flex flex-col bg-white rounded-xl bold-border p-8 shadow-playful hover:-translate-y-2 transition-all duration-200"
+                className="group flex flex-col bg-card rounded-xl bold-border p-8 shadow-playful hover:-translate-y-2 transition-all duration-200"
               >
                 <div
                   className={`size-16 rounded-full ${f.color} flex items-center justify-center bold-border mb-6 group-hover:rotate-12 transition-transform duration-200`}
@@ -118,14 +118,14 @@ export default function LandingPage() {
                   </span>
                 </div>
                 <h3 className="text-2xl font-black mb-3">{f.title}</h3>
-                <p className="text-slate-600 font-medium">{f.desc}</p>
+                <p className="text-muted-foreground font-medium">{f.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* How it works */}
-        <section id="how" className="bg-[#ff5833]/5 py-24 border-y-4 border-[#23130f]/10">
+        <section id="how" className="bg-[#ff5833]/5 py-24 border-y-4 border-[#23130f]/10 dark:border-white/10">
           <div className="max-w-7xl mx-auto px-6 md:px-20">
             <h2 className="text-4xl md:text-5xl font-black text-center mb-16 tracking-tight">
               How it works
@@ -153,7 +153,7 @@ export default function LandingPage() {
               ].map((item) => (
                 <div
                   key={item.step}
-                  className="bg-white rounded-xl bold-border p-8 shadow-playful flex flex-col gap-4"
+                  className="bg-card rounded-xl bold-border p-8 shadow-playful flex flex-col gap-4"
                 >
                   <div className="text-6xl font-black text-[#ff5833]/20">
                     {item.step}
@@ -164,7 +164,7 @@ export default function LandingPage() {
                     </span>
                   </div>
                   <h3 className="text-2xl font-black">{item.title}</h3>
-                  <p className="text-slate-600 font-medium">{item.desc}</p>
+                  <p className="text-muted-foreground font-medium">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -173,12 +173,12 @@ export default function LandingPage() {
 
         {/* CTA */}
         <section className="max-w-7xl mx-auto px-6 md:px-20 py-24">
-          <div className="bg-white rounded-xl bold-border p-8 md:p-16 shadow-playful-primary flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+          <div className="bg-card rounded-xl bold-border p-8 md:p-16 shadow-playful-primary flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
             <div className="flex-1 flex flex-col gap-6">
               <h2 className="text-4xl md:text-6xl font-black leading-tight">
                 Ready to start your next adventure?
               </h2>
-              <p className="text-xl text-slate-600 font-medium">
+              <p className="text-xl text-muted-foreground font-medium">
                 No credit card required. Just create a gala and invite your
                 friends.
               </p>
@@ -191,7 +191,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   href="/join"
-                  className="h-16 px-10 bg-white text-xl font-black rounded-xl bold-border shadow-playful-sm btn-push flex items-center justify-center"
+                  className="h-16 px-10 bg-card text-xl font-black rounded-xl bold-border shadow-playful-sm btn-push flex items-center justify-center"
                 >
                   Join with Code
                 </Link>

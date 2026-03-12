@@ -81,15 +81,15 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
   return (
     <div className="space-y-4">
       {/* Bento Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         
         {/* === ROW 1: PERSONAL INFO === */}
         
         {/* Welcome banner - spans 2 cols */}
-        <div className="md:col-span-2 bg-gradient-to-r from-[#ff5833] to-[#ff7a5c] rounded-xl bold-border p-5 shadow-playful text-white">
+        <div className="col-span-2 bg-gradient-to-r from-[#ff5833] to-[#ff7a5c] rounded-xl bold-border p-4 sm:p-5 shadow-playful text-white">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <h2 className="text-xl md:text-2xl font-black mb-1 truncate">Welcome back, {userName}!</h2>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-black mb-1 truncate">Welcome back, {userName}!</h2>
               <p className="text-white/90 font-medium text-sm truncate">Here's what's happening with {gala.title}</p>
             </div>
             <div className="hidden md:flex size-12 shrink-0 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center bold-border">
@@ -111,7 +111,7 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
         </div>
 
         {/* Your Impact - 1 col */}
-        <div className="bg-white rounded-xl bold-border p-5 shadow-playful-sm">
+        <div className="bg-card rounded-xl bold-border p-5 shadow-playful-sm">
           <h3 className="text-sm font-black uppercase tracking-wider mb-3">Your Impact</h3>
           <div className="space-y-2">
             <div className="flex items-center justify-between p-2.5 bg-green-50 rounded-lg border-2 border-green-200">
@@ -158,8 +158,8 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
         {/* === ROW 2: BIG PICTURE STATS === */}
 
         {/* Your Tasks Stat - with action-oriented empty state */}
-        <div className="bg-white rounded-xl bold-border p-4 shadow-playful-sm">
-          <div className="size-9 rounded-lg flex items-center justify-center bg-green-100 text-green-700 mb-2">
+        <div className="bg-card rounded-xl bold-border p-4 shadow-playful-sm">
+          <div className="size-9 rounded-lg flex items-center justify-center bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 mb-2">
             <span className="material-symbols-outlined text-base">task_alt</span>
           </div>
           {myTasks.length === 0 ? (
@@ -176,8 +176,8 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
         </div>
 
         {/* You Owe Stat - with satisfying empty state */}
-        <div className="bg-white rounded-xl bold-border p-4 shadow-playful-sm">
-          <div className="size-9 rounded-lg flex items-center justify-center bg-purple-100 text-purple-700 mb-2">
+        <div className="bg-card rounded-xl bold-border p-4 shadow-playful-sm">
+          <div className="size-9 rounded-lg flex items-center justify-center bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 mb-2">
             <span className="material-symbols-outlined text-base">account_balance_wallet</span>
           </div>
           {myPendingPayments === 0 ? (
@@ -187,15 +187,15 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
             </>
           ) : (
             <>
-              <p className="text-2xl font-black leading-none text-purple-700">${myPendingPayments.toFixed(0)}</p>
+              <p className="text-2xl font-black leading-none text-purple-700">₱{myPendingPayments.toFixed(0)}</p>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide mt-1 truncate">You Owe</p>
             </>
           )}
         </div>
 
         {/* Team Progress Stat - with encouraging empty state */}
-        <div className="bg-white rounded-xl bold-border p-4 shadow-playful-sm">
-          <div className="size-9 rounded-lg flex items-center justify-center bg-blue-100 text-blue-700 mb-2">
+        <div className="bg-card rounded-xl bold-border p-4 shadow-playful-sm">
+          <div className="size-9 rounded-lg flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 mb-2">
             <span className="material-symbols-outlined text-base">groups</span>
           </div>
           {tasks.length === 0 ? (
@@ -212,8 +212,8 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
         </div>
 
         {/* Total Budget Stat - with empty state */}
-        <div className="bg-white rounded-xl bold-border p-4 shadow-playful-sm">
-          <div className="size-9 rounded-lg flex items-center justify-center bg-orange-100 text-orange-700 mb-2">
+        <div className="bg-card rounded-xl bold-border p-4 shadow-playful-sm">
+          <div className="size-9 rounded-lg flex items-center justify-center bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 mb-2">
             <span className="material-symbols-outlined text-base">payments</span>
           </div>
           {totalExpenses === 0 ? (
@@ -223,14 +223,14 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
             </>
           ) : (
             <>
-              <p className="text-2xl font-black leading-none">${totalExpenses.toFixed(0)}</p>
+              <p className="text-2xl font-black leading-none">₱{totalExpenses.toFixed(0)}</p>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide mt-1 truncate">Total Budget</p>
             </>
           )}
         </div>
 
         {/* Event Stage - spans 4 cols */}
-        <div className="md:col-span-2 lg:col-span-4 bg-white rounded-xl bold-border p-5 shadow-playful-sm">
+        <div className="md:col-span-2 lg:col-span-4 bg-card rounded-xl bold-border p-5 shadow-playful-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-black uppercase tracking-wider">Event Stage</h3>
             {isOrganizer && (
@@ -301,7 +301,7 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
                 <div className="flex items-start gap-2 p-3 bg-white rounded-lg border-2 border-yellow-400">
                   <span className="material-symbols-outlined text-yellow-600 text-base">payment</span>
                   <div className="flex-1 min-w-0">
-                    <p className="font-black text-xs">${myPendingPayments.toFixed(2)} owed</p>
+                    <p className="font-black text-xs">₱{myPendingPayments.toFixed(2)} owed</p>
                     <p className="text-[10px] text-slate-600 font-medium mt-0.5 truncate">Visit Budget tab</p>
                   </div>
                 </div>
@@ -321,7 +321,7 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
 
         {/* Leading Suggestion - spans 2 cols */}
         {topSuggestion && (
-          <div className="md:col-span-2 bg-white rounded-xl bold-border p-5 shadow-playful-sm">
+          <div className="md:col-span-2 bg-card rounded-xl bold-border p-5 shadow-playful-sm">
             <h3 className="text-sm font-black uppercase tracking-wider mb-3">Leading Suggestion</h3>
             <div className="p-3 bg-yellow-50 rounded-lg border-2 border-yellow-400">
               <div className="flex items-center gap-2 mb-2">
@@ -339,17 +339,21 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
         )}
 
         {/* Participants - spans 2 cols */}
-        <div className="md:col-span-2 bg-white rounded-xl bold-border p-5 shadow-playful-sm">
+        <div className="md:col-span-2 bg-card rounded-xl bold-border p-5 shadow-playful-sm">
           <h3 className="text-sm font-black uppercase tracking-wider mb-3">
             Participants ({gala.members.length})
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {gala.members.slice(0, 8).map(({ user, role }) => (
-              <div key={user.id} className="flex flex-col items-center gap-2 p-3 bg-[#f8f6f5] rounded-lg bold-border">
-                <div className="size-12 rounded-full bg-[#ff5833] bold-border flex items-center justify-center">
-                  <span className="text-white font-black text-base">
-                    {user.name.charAt(0).toUpperCase()}
-                  </span>
+              <div key={user.id} className="flex flex-col items-center gap-2 p-3 bg-secondary rounded-lg bold-border">
+                <div className="size-12 rounded-full bg-[#ff5833] bold-border flex items-center justify-center overflow-hidden">
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="size-full object-cover" />
+                  ) : (
+                    <span className="text-white font-black text-base">
+                      {user.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
                 </div>
                 <div className="w-full text-center">
                   <p className="font-black text-[10px] truncate">{user.name}</p>
@@ -384,18 +388,21 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
 
         {/* Your Tasks - spans 2 cols if present */}
         {myTasks.length > 0 && (
-          <div className="md:col-span-2 bg-white rounded-xl bold-border p-5 shadow-playful-sm">
+          <div className="md:col-span-2 bg-card rounded-xl bold-border p-5 shadow-playful-sm">
             <h3 className="text-sm font-black uppercase tracking-wider mb-3">Your Tasks</h3>
             <div className="flex flex-col gap-2">
               {myTasks.slice(0, 3).map((task) => (
                 <div key={task.id} className="flex items-center gap-2 p-2.5 rounded-lg border-2 border-slate-200">
-                  <div className={`size-5 rounded-full border-2 flex items-center justify-center shrink-0 ${task.status === "done" ? "bg-green-500 border-green-500" : task.status === "doing" ? "bg-yellow-400 border-yellow-400" : "bg-white border-slate-300"}`}>
+                  <div className={`size-5 rounded-full border-2 flex items-center justify-center shrink-0 ${task.status === "done" ? "bg-green-500 border-green-500" : task.status === "doing" ? "bg-yellow-400 border-yellow-400" : task.status === "cancelled" ? "bg-red-500 border-red-500" : "bg-white border-slate-300"}`}>
                     {task.status === "done" && (
                       <span className="material-symbols-outlined text-white text-[10px]">check</span>
                     )}
+                    {task.status === "cancelled" && (
+                      <span className="material-symbols-outlined text-white text-[10px]">close</span>
+                    )}
                   </div>
-                  <span className={`font-bold text-xs flex-1 truncate ${task.status === "done" ? "line-through text-slate-400" : ""}`}>{task.title}</span>
-                  <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${task.status === "todo" ? "bg-slate-100 text-slate-500" : task.status === "doing" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}`}>
+                  <span className={`font-bold text-xs flex-1 truncate ${task.status === "done" ? "line-through text-slate-400" : task.status === "cancelled" ? "line-through text-red-300" : ""}`}>{task.title}</span>
+                  <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${task.status === "todo" ? "bg-slate-100 text-slate-500" : task.status === "doing" ? "bg-yellow-100 text-yellow-700" : task.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
                     {task.status.toUpperCase()}
                   </span>
                 </div>
@@ -436,7 +443,7 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
             onClick={() => setShowAllParticipants(false)}
           >
             <div 
-              className="bg-white rounded-xl bold-border shadow-playful w-full max-w-2xl max-h-[80vh] overflow-hidden"
+              className="bg-card rounded-xl bold-border shadow-playful w-full max-w-2xl max-h-[80vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between p-5 border-b-3 border-slate-200">
@@ -451,11 +458,15 @@ export default function OverviewTab({ gala, tasks, expenses, suggestions, userId
               <div className="p-5 overflow-y-auto max-h-[calc(80vh-80px)]">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {gala.members.map(({ user, role }) => (
-                    <div key={user.id} className="flex flex-col items-center gap-2 p-3 bg-[#f8f6f5] rounded-lg bold-border">
-                      <div className="size-12 rounded-full bg-[#ff5833] bold-border flex items-center justify-center">
-                        <span className="text-white font-black text-base">
-                          {user.name.charAt(0).toUpperCase()}
-                        </span>
+                    <div key={user.id} className="flex flex-col items-center gap-2 p-3 bg-secondary rounded-lg bold-border">
+                      <div className="size-12 rounded-full bg-[#ff5833] bold-border flex items-center justify-center overflow-hidden">
+                        {user.avatar ? (
+                          <img src={user.avatar} alt={user.name} className="size-full object-cover" />
+                        ) : (
+                          <span className="text-white font-black text-base">
+                            {user.name.charAt(0).toUpperCase()}
+                          </span>
+                        )}
                       </div>
                       <div className="w-full text-center">
                         <p className="font-black text-[10px] truncate">{user.name}</p>

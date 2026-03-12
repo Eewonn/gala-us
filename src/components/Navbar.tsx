@@ -14,7 +14,7 @@ export default function Navbar({ showCreateButton = true, variant = "default" }:
   const { user } = useAuth();
 
   return (
-    <header className="flex items-center px-6 md:px-20 py-6 sticky top-0 bg-[#f8f6f5]/90 backdrop-blur-md z-50 border-b-2 border-[#23130f]/10">
+    <header className="flex items-center px-6 md:px-20 py-6 sticky top-0 bg-background/90 backdrop-blur-md z-50 border-b-2 border-[#23130f]/10 dark:border-white/10">
       <div className="flex-1">
         <GalaLogo />
       </div>
@@ -52,7 +52,7 @@ export default function Navbar({ showCreateButton = true, variant = "default" }:
           <>
             <Link
               href="/login"
-              className="h-11 px-5 bg-white font-black rounded-full bold-border shadow-playful-sm btn-push items-center justify-center text-sm hidden sm:flex"
+              className="h-11 px-5 bg-card font-black rounded-full bold-border shadow-playful-sm btn-push items-center justify-center text-sm hidden sm:flex"
             >
               Log In
             </Link>
@@ -66,7 +66,7 @@ export default function Navbar({ showCreateButton = true, variant = "default" }:
             )}
             <Link
               href="/join"
-              className="h-11 px-6 bg-white font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm"
+              className="h-11 px-6 bg-card font-black rounded-full bold-border shadow-playful-sm btn-push flex items-center justify-center text-sm"
             >
               Join
             </Link>

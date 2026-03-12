@@ -25,7 +25,7 @@ function CallbackHandler() {
           const refreshToken = params.get("refresh_token");
 
           if (accessToken && refreshToken) {
-            const { error: sessionError } = await supabase.auth.setSession({
+            const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
               access_token: accessToken,
               refresh_token: refreshToken,
             });
@@ -34,6 +34,22 @@ function CallbackHandler() {
               console.error("Failed to set session:", sessionError);
               setError(sessionError.message);
               return;
+            }
+
+            // Check if user has a custom name or just the email prefix default
+            if (sessionData.user) {
+              const { data: profile } = await supabase
+                .from("users")
+                .select("name")
+                .eq("id", sessionData.user.id)
+                .single();
+              
+              const emailPrefix = sessionData.user.email?.split("@")[0] || "";
+              if (!profile || profile.name === emailPrefix) {
+                // New user or default name — go to setup
+                router.replace(`/setup-name?redirect=${encodeURIComponent(redirect)}`);
+                return;
+              }
             }
 
             router.replace(redirect);

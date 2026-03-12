@@ -418,8 +418,8 @@ export default function GalaDashboard() {
 
   if (error || !gala) {
     return (
-      <div className="min-h-screen bg-[#f8f6f5] flex items-center justify-center">
-        <div className="text-center bg-white rounded-xl bold-border p-12 shadow-playful max-w-md">
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center bg-card rounded-xl bold-border p-12 shadow-playful max-w-md">
           <span className="material-symbols-outlined text-slate-300 text-6xl block mb-4">error</span>
           <p className="font-black text-2xl mb-2">{error || "Gala not found"}</p>
           <Link href="/" className="text-[#ff5833] font-black hover:underline">
@@ -435,11 +435,11 @@ export default function GalaDashboard() {
     : false;
 
   return (
-    <div className="min-h-screen bg-[#f8f6f5]">
+    <div className="min-h-screen bg-background">
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');`}</style>
 
       {/* Header */}
-      <header className="flex items-center justify-between bg-white border-b-4 border-slate-900 px-6 md:px-10 py-4 sticky top-0 z-50">
+      <header className="flex items-center justify-between bg-card border-b-4 border-slate-900 dark:border-white/20 px-3 sm:px-6 md:px-10 py-3 sm:py-4 sticky top-0 z-50">
         <div className="flex items-center gap-6">
           <GalaLogo />
           <div className="hidden md:block h-8 w-px bg-slate-200" />
@@ -526,11 +526,11 @@ export default function GalaDashboard() {
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
-          <div className="absolute inset-0 bg-white" />
+          <div className="absolute inset-0 bg-card" />
         )}
 
         {/* Overlay: darker when image is set for text legibility */}
-        <div className={`absolute inset-0 ${coverImage ? "bg-gradient-to-t from-black/60 to-transparent" : "bg-gradient-to-t from-black/20 to-transparent"}`} />
+        <div className={`absolute inset-0 ${coverImage ? "bg-gradient-to-t from-black/60 to-transparent" : "bg-gradient-to-t from-black/20 to-transparent dark:from-black/40"}`} />
 
         {/* Edit cover button */}
         <label className="absolute top-4 right-4 cursor-pointer z-10">
@@ -585,14 +585,14 @@ export default function GalaDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border-b-4 border-slate-900 sticky top-[73px] z-40">
-        <div className="max-w-7xl mx-auto px-6 overflow-x-auto">
+      <div className="bg-card border-b-4 border-slate-900 dark:border-white/20 sticky top-[73px] z-40">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 overflow-x-auto scrollbar-hide">
           <div className="flex min-w-max">
             {TABS.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`flex items-center gap-2 px-6 py-4 font-black text-sm uppercase tracking-wide transition-all border-b-4 ${
+                className={`flex items-center gap-1.5 px-3 sm:px-6 py-4 font-black text-xs sm:text-sm uppercase tracking-wide transition-all border-b-4 ${
                   tab === t.id
                     ? "border-[#ff5833] text-[#ff5833]"
                     : "border-transparent text-slate-500 hover:text-slate-900"
@@ -607,7 +607,7 @@ export default function GalaDashboard() {
       </div>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {!isMember && currentUser && (
           <div className="mb-6 bg-yellow-50 border-3 border-yellow-400 rounded-xl p-4 flex items-center gap-3">
             <span className="material-symbols-outlined text-yellow-600">warning</span>

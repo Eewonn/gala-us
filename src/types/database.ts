@@ -159,7 +159,7 @@ export type Database = {
           gala_id: string;
           title: string;
           assigned_to: string | null;
-          status: "todo" | "doing" | "done";
+          status: "todo" | "doing" | "done" | "cancelled";
           created_at: string;
         };
         Insert: {
@@ -167,7 +167,7 @@ export type Database = {
           gala_id: string;
           title: string;
           assigned_to?: string | null;
-          status?: "todo" | "doing" | "done";
+          status?: "todo" | "doing" | "done" | "cancelled";
           created_at?: string;
         };
         Update: {
@@ -175,7 +175,7 @@ export type Database = {
           gala_id?: string;
           title?: string;
           assigned_to?: string | null;
-          status?: "todo" | "doing" | "done";
+          status?: "todo" | "doing" | "done" | "cancelled";
           created_at?: string;
         };
         Relationships: [];
@@ -187,6 +187,7 @@ export type Database = {
           paid_by: string;
           amount: number;
           description: string;
+          category: string | null;
           created_by: string | null;
           created_at: string;
         };
@@ -196,6 +197,7 @@ export type Database = {
           paid_by: string;
           amount: number;
           description: string;
+          category?: string | null;
           created_by?: string | null;
           created_at?: string;
         };
@@ -205,6 +207,7 @@ export type Database = {
           paid_by?: string;
           amount?: number;
           description?: string;
+          category?: string | null;
           created_by?: string | null;
           created_at?: string;
         };
@@ -246,6 +249,7 @@ export type Database = {
           gala_id: string;
           title: string;
           description: string | null;
+          location: string | null;
           scheduled_time: string;
           order_index: number;
           created_by: string | null;
@@ -256,6 +260,7 @@ export type Database = {
           gala_id: string;
           title: string;
           description?: string | null;
+          location?: string | null;
           scheduled_time: string;
           order_index?: number;
           created_by?: string | null;
@@ -266,6 +271,7 @@ export type Database = {
           gala_id?: string;
           title?: string;
           description?: string | null;
+          location?: string | null;
           scheduled_time?: string;
           order_index?: number;
           created_by?: string | null;

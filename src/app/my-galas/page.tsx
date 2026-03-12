@@ -49,7 +49,7 @@ export default function MyGalasPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f6f5]">
+    <div className="min-h-screen bg-background">
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');`}</style>
 
       <Navbar showCreateButton={true} variant="default" />
@@ -84,7 +84,7 @@ export default function MyGalasPage() {
                 <Link
                   key={gala.id}
                   href={`/gala/${gala.id}`}
-                  className="group bg-white rounded-xl bold-border overflow-hidden shadow-playful hover:-translate-y-2 hover:shadow-playful-primary transition-all duration-200 flex flex-col"
+                  className="group bg-card rounded-xl bold-border overflow-hidden shadow-playful hover:-translate-y-2 hover:shadow-playful-primary transition-all duration-200 flex flex-col"
                 >
                   {/* Cover Image */}
                   <div className="w-full h-48 bg-gradient-to-br from-[#ff5833] to-[#ff8833] relative overflow-hidden">
@@ -147,7 +147,7 @@ export default function MyGalasPage() {
             })}
           </div>
         ) : (
-          <div className="bg-white rounded-xl bold-border p-16 shadow-playful text-center">
+          <div className="bg-card rounded-xl bold-border p-16 shadow-playful text-center">
             <div className="size-24 mx-auto mb-6 bg-[#ff5833]/10 rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined text-5xl text-[#ff5833]">
                 celebration
