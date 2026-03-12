@@ -50,10 +50,14 @@ function LoginForm() {
         },
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        console.error("Supabase auth error:", authError);
+        throw authError;
+      }
 
       setSuccess(true);
     } catch (err: any) {
+      console.error("Login error:", err);
       setError(err.message || "Failed to send magic link. Please try again.");
     } finally {
       setLoading(false);
@@ -76,7 +80,7 @@ function LoginForm() {
           <p className="text-[#ff5833] font-black mt-1">{email}</p>
         </div>
         <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-4 text-sm">
-          <p className="font-bold text-blue-900 mb-1">📧 What's next?</p>
+          <p className="font-bold text-blue-900 mb-1">What's next?</p>
           <p className="text-blue-700 font-medium">
             Click the link in your email to log in. The link expires in 1 hour.
           </p>

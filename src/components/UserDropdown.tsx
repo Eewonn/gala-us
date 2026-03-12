@@ -48,16 +48,16 @@ export default function UserDropdown({ redirectAfterLogout = "/" }: Props) {
 
   if (!user) return null;
 
-  const initials = user.name
+  const initials = (user.name || user.email)
     .split(" ")
     .map((w) => w[0])
     .join("")
     .slice(0, 2)
     .toUpperCase();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setOpen(false);
-    logout();
+    await logout();
     window.location.href = redirectAfterLogout;
   };
 
@@ -74,12 +74,12 @@ export default function UserDropdown({ redirectAfterLogout = "/" }: Props) {
             Logged in as
           </p>
           <p className="font-black text-sm group-hover:text-[#ff5833] transition-colors leading-none">
-            {user.name}
+            {user.name || user.email}
           </p>
         </div>
         <div className="size-10 rounded-full bg-[#ff5833] bold-border shadow-playful-sm flex items-center justify-center overflow-hidden group-hover:opacity-85 transition-opacity">
           {avatar ? (
-            <img src={avatar} alt={user.name} className="w-full h-full object-cover" />
+            <img src={avatar} alt={user.name || user.email} className="w-full h-full object-cover" />
           ) : (
             <span className="text-white font-black text-sm">{initials}</span>
           )}
@@ -96,13 +96,13 @@ export default function UserDropdown({ redirectAfterLogout = "/" }: Props) {
           <div className="flex items-center gap-3 px-4 py-4 border-b-2 border-slate-100">
             <div className="size-10 rounded-full bg-[#ff5833] border-2 border-slate-900 flex items-center justify-center overflow-hidden shrink-0">
               {avatar ? (
-                <img src={avatar} alt={user.name} className="w-full h-full object-cover" />
+                <img src={avatar} alt={user.name || user.email} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-white font-black text-sm">{initials}</span>
               )}
             </div>
             <div className="min-w-0">
-              <p className="font-black text-sm truncate">{user.name}</p>
+              <p className="font-black text-sm truncate">{user.name || user.email}</p>
               <p className="text-xs text-slate-400 font-medium">Member</p>
             </div>
           </div>
